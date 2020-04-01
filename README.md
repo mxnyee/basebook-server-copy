@@ -6,54 +6,387 @@ hmm
 
 ## API
 
-### User
+### Create a new user
 
 POST /user/signup
 
+Request:
+```
+{
+  "username": "john",
+  "email": "johnsmith@example.com",
+  "password": "12345",
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+  "accountType": "personal"
+}
+```
+### Login as an existing user
+
 POST /user/login
 
-GET /user/{userId}
+Request:
+```
+{
+  "username": "john",
+  "password": "12345"
+}
+```
 
-GET /user?locationName={locationName}&city={city}&state={state}
+### Get a user's profile information
 
-POST /user/{userId}/follow
+GET /user/{username}
 
-DELETE /user/{userId}/follow
+Response:
+```
+{
+  "email": "johnsmith@example.com",
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+  "numCoins": 645,
+  "accountType": "personal"
+}
+```
 
-POST /user/logout
+### Edit a user's profile information
 
-### Post
+PATCH /user/{username}
+
+Request:
+```
+{
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+}
+```
+Response:
+```
+{
+  "username": "john",
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+}
+```
+
+### Get a user's inventory
+
+GET /user/{username}/inventory
+
+Response:
+```
+{
+  "result": [
+    {
+      "itemId": "111",
+      "itemName": "Double Like",
+      "description": "Gives 2 coins every time you like a post or comment.",
+      "expiryDate": "2020-04-10"
+    },
+    {
+      "itemId": "333",
+      "itemName": "Badge",
+      "description": "A shiny badge to put on your profile.",
+      "color": "#00B7EB"
+    }
+  ]
+}
+```
+
+### See a user's stats
+
+GET /user/{username}/stats
+
+Response:
+```
+{
+  "numPosts": 12,
+  "numComments": 29
+}
+```
+
+### See the user leaderboard
+
+GET /user/{username}/leaderboard
+
+Response:
+```
+{
+  "topNumPosts": [
+    { "username": "jane", "numPosts": 34 },
+    { "username": "john", "numPosts": 31 },
+    { "username": "greg", "numPosts": 21 },
+    { "username": "tom", "numPosts": 8 }
+  ],
+  "topNumComments": [
+    { "username": "greg", "numPosts": 45 },
+    { "username": "john", "numPosts": 20 },
+    { "username": "jane", "numPosts": 4 },
+    { "username": "tom", "numPosts": 0 }
+  ]
+}
+```
+
+### Create a new post
 
 POST /post
 
-GET /post/{postId}
+Request:
+```
+{
+  "username": "john",
+  "title": "The best cinnamon buns",
+  "text": "Visited the bakery today. Delicious! Their coffee is good too.",
+  "locationName": "Grounds for Coffee",
+  "city": "Vancouver",
+  "state": "BC"
+}
+```
+Response:
+```
+{
+  "postId": "12345678",
+  "username": "john",
+  "title": "The best cinnamon buns",
+  "text": "Visited the bakery today. Delicious! Their coffee is good too.",
+  "locationName": "Grounds for Coffee",
+  "city": "Vancouver",
+  "state": "BC",
+  "timestamp": "2020-01-22 12:20:05",
+  "numLikes": 0,
+  "numDislikes": 0,
+  "numComments": 0
+}
+```
 
-GET /post?locationName={locationName}&city={city}&state={state}&hashtag={hashtag}
+### Fetch a feed of posts and filter the details
 
-DELETE /post/{postId}
+GET /post?username={true}&title={true}&locationName={true}&city={true}&state={true}&timestamp={true}&numLikes={true}&numDislikes={true}&numComments={true}
 
-POST /post/{postId}/react
+Response:
+```
+{
+  "result": [
+    {
+      "postId": "12345678",
+      "username": "john",
+      "title": "The best cinnamon buns",
+      "locationName": "Grounds for Coffee",
+      "city": "Vancouver",
+      "state": "BC",
+      "timestamp": "2020-01-22 12:20:05",
+      "numLikes": 15,
+      "numDislikes": 3,
+      "numComments": 6
+    },
+    {
+      "postId": "23456789",
+      "username": "jane",
+      "title": "My new puppy",
+      "city": "Richmond",
+      "state": "BC",
+      "timestamp": "2020-01-10 15:51:40",
+      "numLikes": 21,
+      "numDislikes": 0,
+      "numComments": 2
+    }
+  ]
+}
+```
 
-DELETE /post/{postId}/react
+### Search for posts by title and/or location
 
-### Comment
+GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}
+
+Response:
+```
+{
+  "result": [
+    {
+      "postId": "12345678",
+      "username": "john",
+      "title": "The best cinnamon buns",
+      "locationName": "Grounds for Coffee",
+      "city": "Vancouver",
+      "state": "BC",
+      "timestamp": "2020-01-22 12:20:05",
+      "numLikes": 15,
+      "numDislikes": 3,
+      "numComments": 6
+    },
+    {
+      "postId": "23456789",
+      "username": "jane",
+      "title": "My new puppy",
+      "city": "Richmond",
+      "state": "BC",
+      "timestamp": "2020-01-10 15:51:40",
+      "numLikes": 21,
+      "numDislikes": 0,
+      "numComments": 2
+    }
+  ]
+}
+```
+
+### React to a post
+
+POST /post/{postId}/reaction
+
+Request:
+```
+{
+  "username": "jane"
+}
+```
+Response:
+```
+{
+  "username": "jane",
+  "postId": "12345678",
+  "value": 1
+}
+```
+
+### Undo a reaction to a post
+
+DELETE /post/{postId}/reaction/{username}
+
+
+### Create a new comment on a post
 
 POST /post/{postId}/comment
 
-GET /post/{postId}/comment
+Request:
+```
+{
+  "username": "jane",
+  "text": "Looks fun!"
+}
+```
+Response:
+```
+{
+  "commentId": "1111",
+  "username": "jane",
+  "text": "Looks fun!",
+  "timestamp": "2020-03-30 19:12:10",
+  "numLikes": 0,
+  "numDislikes": 0
+}
+```
 
-GET /post/{postId}/comment/{commentId}
+### Get the comments on a post and filter the details
 
-DELETE /post/{postId}/comment
+GET /post/{postId}/comment?username={true}&timestamp={true}&numLikes={true}&numDislikes={true}
 
-POST /post/{postId}/comment/{commentId}/react
+Response:
+```
+{
+  "result": [
+    {
+      "commentId": "1111",
+      "username": "jane",
+      "text": "Looks fun!",
+      "timestamp": "2020-03-30 19:12:10",
+      "numLikes": 0,
+      "numDislikes": 0
+    },
+    {
+      "commentId": "2222",
+      "username": "tom",
+      "text": "Let's go again next time",
+      "timestamp": "2020-02-26 21:10:32",
+      "numLikes": 2,
+      "numDislikes": 0
+    },
+    {
+      "commentId": "3333",
+      "username": "greg",
+      "text": "woah",
+      "timestamp": "2020-02-23 01:03:18",
+      "numLikes": 0,
+      "numDislikes": 3
+    },
+  ]
+}
+```
 
-DELETE /post/{postId}/comment/{commentId}/react
+### React to a comment
 
-### Market
+POST /post/{postId}/comment/{commentId}/reaction
+
+Request:
+```
+{
+  "username": "jane"
+}
+```
+Response:
+```
+{
+  "username": "jane",
+  "commentId": "3333",
+  "postId": "12345678",
+  "value": -1
+}
+```
+
+### Undo a reaction to a comment
+
+DELETE /post/{postId}/comment/{commentId}/reaction/{username}
+
+### See all items available in the market
 
 GET /market
 
-POST /market/buy/{itemId}
+Response:
+```
+{
+  "result": [
+    {
+      "itemId": "111",
+      "itemName": "Double Like",
+      "description": "Gives 2 coins every time you like a post or comment.",
+      "price": 200,
+      "duration": 3
+    },
+    {
+      "itemId": "222",
+      "itemName": "Triple Like",
+      "description": "Gives 3 coins every time you like a post or comment.",
+      "price": 400,
+      "duration": 1
+    },
+    {
+      "itemId": "333",
+      "itemName": "Badge",
+      "description": "A shiny badge to put on your profile.",
+      "price": 500
+    }
+  ]
+}
+```
 
-GET /market/inventory/{userId}
+### Purchase an item from the market
+
+POST /market/purchase
+
+Request:
+```
+{
+  "username": "john",
+  "itemId": "111"
+}
+```
+Response:
+```
+{
+  "username": "john",
+  "itemId": "111",
+  "expiryDate": "2020-04-10"
+}
+```
