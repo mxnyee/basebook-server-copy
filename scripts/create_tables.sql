@@ -31,20 +31,22 @@ CREATE TABLE permissions (
 );
 
 CREATE TABLE account ( 
-  username VARCHAR(64),
+  user_id CHAR(16),
+  token CHAR(16) NOT NULL UNIQUE,
+  username VARCHAR(64) NOT NULL UNIQUE,
   email VARCHAR(256) NOT NULL UNIQUE,
   password VARCHAR(64) NOT NULL,
   num_coins INT NOT NULL DEFAULT 0,
   account_type VARCHAR(16) NOT NULL DEFAULT 'personal',
   profile_page_url VARCHAR(256) UNIQUE,
-  PRIMARY KEY (username),
+  PRIMARY KEY (user_id),
   FOREIGN KEY (account_type) REFERENCES permissions(account_type)
     ON UPDATE CASCADE
 );
 
 CREATE TABLE profile_page (
   profile_page_url VARCHAR(256),
-  username VARCHAR(64) NOT NULL UNIQUE,
+  user_id CHAR(16) NOT NULL UNIQUE,
   profile_picture_url VARCHAR(256),
   name VARCHAR(64),
   biography VARCHAR(1024),
@@ -56,7 +58,7 @@ CREATE TABLE profile_page (
   PRIMARY KEY (profile_page_url),
   FOREIGN KEY (city, state) REFERENCES city(city, state)
     ON UPDATE CASCADE,
-  FOREIGN KEY (username) REFERENCES account(username)
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
@@ -67,48 +69,52 @@ ADD FOREIGN KEY (profile_page_url) REFERENCES profile_page(profile_page_url)
 ;
 
 CREATE TABLE follow (
-  follower_username VARCHAR(64),
-  following_username VARCHAR(64),
-  PRIMARY KEY (follower_username, following_username),
-  FOREIGN KEY (follower_username) REFERENCES account(username)
+  follower CHAR(16),
+  following CHAR(16),
+  PRIMARY KEY (follower, following),
+  FOREIGN KEY (follower) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (following_username) REFERENCES account(username)
+  FOREIGN KEY (following) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE account_upgrade (
-  item_name VARCHAR(16),
+  item_id CHAR(16),
+  item_name VARCHAR(16) NOT NULL UNIQUE,
   price INT NOT NULL,
-  PRIMARY KEY (item_name)
+  PRIMARY KEY (item_id)
 );
 
 CREATE TABLE superpower (
-  item_name VARCHAR(16),
+  item_id CHAR(16),
   duration INT NOT NULL,
-  PRIMARY KEY (item_name),
-  FOREIGN KEY (item_name) REFERENCES account_upgrade(item_name)
+  PRIMARY KEY (item_id),
+  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE accessory (
-  item_name VARCHAR(16),
+  item_id CHAR(16),
   color CHAR(7) NOT NULL DEFAULT '#00B7EB',
-  PRIMARY KEY (item_name),
-  FOREIGN KEY (item_name) REFERENCES account_upgrade(item_name)
+  PRIMARY KEY (item_id),
+  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE purchase (
-  username VARCHAR(64),
-  item_name VARCHAR(16),
+  user_id CHAR(16)
+  item_id CHAR(16),
   amount INT NOT NULL DEFAULT 1,
   expiry_date DATE,
-  PRIMARY KEY (username, item_name),
-  FOREIGN KEY (item_name) REFERENCES account_upgrade(item_name)
+  PRIMARY KEY (user_id, item_id),
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
@@ -120,7 +126,7 @@ CREATE TABLE hashtag (
 
 CREATE TABLE post (
   post_id CHAR(16),
-  username VARCHAR(64) NOT NULL,
+  user_id CHAR(16) NOT NULL,
   title VARCHAR(64) NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   num_likes INT NOT NULL DEFAULT 0,
@@ -130,7 +136,7 @@ CREATE TABLE post (
   city VARCHAR(64),
   state CHAR(2),
   PRIMARY KEY (post_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
   FOREIGN KEY (location_name, city, state) REFERENCES location(location_name, city, state)
@@ -179,15 +185,15 @@ CREATE TABLE post_hashtag (
 );
 
 CREATE TABLE post_reaction (
-  username VARCHAR(64),
+  user_id CHAR(16)
   post_id CHAR(16),
   value INT NOT NULL,
   timestamp TIMESTAMP NOT NULL,
-  PRIMARY KEY (username, post_id),
+  PRIMARY KEY (user_id, post_id),
   FOREIGN KEY (post_id) REFERENCES post(post_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (username) REFERENCES account(username)
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
@@ -195,7 +201,7 @@ CREATE TABLE post_reaction (
 CREATE TABLE comment (
   comment_id CHAR(4),
   post_id CHAR(16),
-  username VARCHAR(64) NOT NULL,
+  user_id CHAR(16) NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   text VARCHAR(1024) NOT NULL,
   num_likes INT NOT NULL DEFAULT 0,
@@ -204,19 +210,19 @@ CREATE TABLE comment (
   FOREIGN KEY (post_id) REFERENCES post(post_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (username) REFERENCES account(username)
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE comment_reaction (
-  username VARCHAR(64),
+  user_id CHAR(16)
   comment_id CHAR(4),
   post_id CHAR(16),
   value INT NOT NULL,
   timestamp TIMESTAMP NOT NULL,
-  PRIMARY KEY (username, comment_id, post_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  PRIMARY KEY (user_id, comment_id, post_id),
+  FOREIGN KEY (user_id) REFERENCES account(user_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
   FOREIGN KEY (comment_id, post_id) REFERENCES comment(comment_id, post_id)
