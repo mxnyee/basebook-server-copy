@@ -191,7 +191,9 @@ Response:
 
 ### Fetch a feed of posts and filter the details
 
-GET /post?username={true}&locationName={true}&city={true}&state={true}&timestamp={true}&numLikes={true}&numDislikes={true}&numComments={true}
+GET /post?username&locationName&city&state&timestamp&numLikes&numDislikes&numComments
+
+All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, and `text`.
 
 Response:
 ```
@@ -229,6 +231,8 @@ Response:
 ### Search for posts by title and/or location
 
 GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}
+
+All query parameters are optional. If none are specified, all posts will be returned.
 
 Response:
 ```
@@ -312,7 +316,9 @@ Response:
 
 ### Get the comments on a post and filter the details
 
-GET /post/{postId}/comment?username={true}&timestamp={true}&numLikes={true}&numDislikes={true}
+GET /post/{postId}/comment?username&timestamp&numLikes&numDislikes
+
+All query parameters are optional. If none are specified, each comment will only contain `commentId` and `text`.
 
 Response:
 ```
