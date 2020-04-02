@@ -79,18 +79,21 @@ PATCH /user/{username}
 Request:
 ```
 {
-  "name": "John Smith",
-  "city": "Vancouver",
-  "state": "BC",
+  "username": "johnny",
+  "password": "67890",
+  "name": "Johnny Smith",
+  "city": "Seattle",
+  "state": "WA",
 }
 ```
 Response:
 ```
 {
-  "username": "john",
-  "name": "John Smith",
-  "city": "Vancouver",
-  "state": "BC",
+  "email": "johnny",
+  "password": "67890",
+  "name": "Johnny Smith",
+  "city": "Seattle",
+  "state": "WA",
 }
 ```
 
