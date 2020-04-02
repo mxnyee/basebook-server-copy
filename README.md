@@ -2,7 +2,29 @@
 
 ## Setup
 
-hmm
+### Installations
+
+1. Install [XAMPP](https://www.apachefriends.org/download.html)
+2. Install [Composer](https://getcomposer.org/download/)
+
+### Configuring XAMPP
+
+3. Open the XAMPP control panel and start the Apache server
+4. Start the MySQL server and click "Admin" under MySQL
+5. Go to the "User Accounts" tab
+6. Under the user "root" with host name "localhost", click "Edit privileges"
+7. Click "Change password", type in a new superuser password, and click "Go"
+8. In the XAMPP installation folder (default is C:/xampp), navigate to phpMyAdmin/config.inc.php
+9. Add your new password to the `$cfg['Servers'][$i]['password']` field
+
+### Setting up Basebook
+
+10. In the XAMPP installation folder, navigate to htdocs/
+11. `git clone https://github.com/mxnyee/basebook-server` into that folder
+12. Run `composer install`
+13. Copy `.env.example` into a new file named `.env` and edit the variables to match your setup
+14. Make sure the XAMPP Apache and MySQL servers are running
+15. Visit http://localhost or, if you defined the `BASE_PATH` environment variable in your `.env` file, `http://localhost/BASE_PATH`
 
 ## API
 
@@ -79,13 +101,15 @@ GET /user/{username}/inventory
 Response:
 ```
 {
-  "result": [
+  "superpowers": [
     {
       "itemId": "111",
       "itemName": "Double Like",
       "description": "Gives 2 coins every time you like a post or comment.",
       "expiryDate": "2020-04-10"
-    },
+    }
+  ],
+  "accessories": [
     {
       "itemId": "333",
       "itemName": "Badge",
@@ -346,7 +370,7 @@ GET /market
 Response:
 ```
 {
-  "result": [
+  "superpowers": [
     {
       "itemId": "111",
       "itemName": "Double Like",
@@ -360,7 +384,9 @@ Response:
       "description": "Gives 3 coins every time you like a post or comment.",
       "price": 400,
       "duration": 1
-    },
+    }
+  ],
+  "accessories": [
     {
       "itemId": "333",
       "itemName": "Badge",
