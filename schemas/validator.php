@@ -20,10 +20,14 @@ function validate($schemaStorage, $request, $validParams, $validFields, $require
 }
 
 function checkExistence($data, $validData) {
+  if (is_null($data)) {
+    throw new Exception("Invalid request: Data is null.\n");
+  }
+  
   // Can't have an empty enum, so manually check $data when $validData is empty
   if (empty($validData)) {
     if (!empty($data)) {
-      throw new Exception("Invalid request: extraneous parameters or data.\n");
+      throw new Exception("Invalid request: Extraneous parameters or data.\n");
     } else {
       return;
     }
