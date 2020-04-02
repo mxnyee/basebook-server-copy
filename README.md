@@ -41,7 +41,7 @@ Request:
   "name": "John Smith",
   "city": "Vancouver",
   "state": "BC",
-  "accountType": "personal"
+  "accountType": "Regular"
 }
 ```
 ### Login as an existing user
@@ -68,7 +68,7 @@ Response:
   "city": "Vancouver",
   "state": "BC",
   "numCoins": 645,
-  "accountType": "personal"
+  "accountType": "Regular"
 }
 ```
 

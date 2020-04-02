@@ -25,11 +25,11 @@ INSERT INTO permissions VALUE ('regular',FALSE,FALSE);
 INSERT INTO permissions VALUE ('premium',TRUE,FALSE);
 INSERT INTO permissions VALUE ('deluxe',TRUE,TRUE);
 
-INSERT INTO account VALUES ('alpha','alpha@example.com','amber','Alpha','Vancouver','BC',200,'deluxe');
-INSERT INTO account VALUES ('bravo','bravo@example.com','bronze','Bravo','Victoria','BC',153,'premium');
-INSERT INTO account VALUES ('charlie','charlie@example.com','coral','Charlie','Vancouver','OR',2000,'regular');
-INSERT INTO account VALUES ('delta','delta@example.com','denim',NULL,NULL,'BC',0,'regular');
-INSERT INTO account VALUES ('echo','echo@example.com','emerald',NULL,NULL,NULL,0,'regular');
+INSERT INTO account VALUES ('alpha','alpha@example.com','amber','Alpha','Vancouver','BC',200,'Deluxe');
+INSERT INTO account VALUES ('bravo','bravo@example.com','bronze','Bravo','Victoria','BC',153,'Premium');
+INSERT INTO account VALUES ('charlie','charlie@example.com','coral','Charlie','Vancouver','OR',2000,'Regular');
+INSERT INTO account VALUES ('delta','delta@example.com','denim',NULL,NULL,'BC',0,'Regular');
+INSERT INTO account VALUES ('echo','echo@example.com','emerald',NULL,NULL,NULL,0,'Regular');
 
 INSERT INTO account_upgrade VALUES ('000','Double Like','Gives 2 coins every time you like a post or comment.',200);
 INSERT INTO account_upgrade VALUES ('001','Triple Like','Gives 3 coins every time you like a post or comment.',300);

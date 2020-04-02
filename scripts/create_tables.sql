@@ -36,7 +36,7 @@ CREATE TABLE account (
   city VARCHAR(64),
   state CHAR(2),
   num_coins INT NOT NULL DEFAULT 0,
-  account_type VARCHAR(16) NOT NULL DEFAULT 'regular',
+  account_type VARCHAR(16) NOT NULL DEFAULT 'Regular',
   PRIMARY KEY (username),
   FOREIGN KEY (city, state) REFERENCES city(city, state)
     ON UPDATE CASCADE,
