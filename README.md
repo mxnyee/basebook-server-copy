@@ -191,7 +191,7 @@ Response:
 
 ### Fetch a feed of posts and filter the details
 
-GET /post?username={true}&title={true}&locationName={true}&city={true}&state={true}&timestamp={true}&numLikes={true}&numDislikes={true}&numComments={true}
+GET /post?username={true}&locationName={true}&city={true}&state={true}&timestamp={true}&numLikes={true}&numDislikes={true}&numComments={true}
 
 Response:
 ```
@@ -201,6 +201,7 @@ Response:
       "postId": "12345678",
       "username": "john",
       "title": "The best cinnamon buns",
+      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
@@ -213,6 +214,7 @@ Response:
       "postId": "23456789",
       "username": "jane",
       "title": "My new puppy",
+      "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
       "timestamp": "2020-01-10 15:51:40",
@@ -236,6 +238,7 @@ Response:
       "postId": "12345678",
       "username": "john",
       "title": "The best cinnamon buns",
+      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
@@ -248,6 +251,7 @@ Response:
       "postId": "23456789",
       "username": "jane",
       "title": "My new puppy",
+      "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
       "timestamp": "2020-01-10 15:51:40",
