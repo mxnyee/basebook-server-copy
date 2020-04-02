@@ -31,12 +31,12 @@ INSERT INTO account VALUES ('charlie','charlie@example.com','coral','Charlie','V
 INSERT INTO account VALUES ('delta','delta@example.com','denim',NULL,NULL,'BC',0,'regular');
 INSERT INTO account VALUES ('echo','echo@example.com','emerald',NULL,NULL,NULL,0,'regular');
 
-INSERT INTO account_upgrade VALUES ('000','Double Like',200);
-INSERT INTO account_upgrade VALUES ('001','Triple Like',300);
-INSERT INTO account_upgrade VALUES ('002','Double Dislike',200);
-INSERT INTO account_upgrade VALUES ('003','Badge',500);
-INSERT INTO account_upgrade VALUES ('004','Star',1000);
-INSERT INTO account_upgrade VALUES ('005','Heart',2000);
+INSERT INTO account_upgrade VALUES ('000','Double Like','Gives 2 coins every time you like a post or comment.',200);
+INSERT INTO account_upgrade VALUES ('001','Triple Like','Gives 3 coins every time you like a post or comment.',300);
+INSERT INTO account_upgrade VALUES ('002','Double Dislike','For when you''re extra angry.',200);
+INSERT INTO account_upgrade VALUES ('003','Badge','A shiny badge to put on your profile.',500);
+INSERT INTO account_upgrade VALUES ('004','Star','You''re a star!',1000);
+INSERT INTO account_upgrade VALUES ('005','Heart','Self care.',2000);
 
 INSERT INTO superpower VALUES ('000',3);
 INSERT INTO superpower VALUES ('001',1);
