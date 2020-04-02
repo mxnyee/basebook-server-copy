@@ -20,17 +20,17 @@ function validate($schemaStorage, $request, $validParams, $validFields, $require
 }
 
 function checkExistence($data, $validData) {
-  if (is_null($data)) {
-    throw new Exception("Invalid request: Data is null.\n");
-  }
-  
   // Can't have an empty enum, so manually check $data when $validData is empty
   if (empty($validData)) {
     if (!empty($data)) {
-      throw new Exception("Invalid request: Extraneous parameters or data.\n");
+      throw new Exception("Invalid request: Extraneous parameters or data.");
     } else {
       return;
     }
+  }
+
+  if (is_null($data)) {
+    throw new Exception("Invalid request: Data is null.");
   }
   
   $array = array_keys($data);
@@ -40,7 +40,7 @@ function checkExistence($data, $validData) {
   $validator->validate($array, $enum);
   
   if (!$validator->isValid()) {
-    $err = 'Invalid request:' . PHP_EOL;
+    $err = '';
     foreach ($validator->getErrors() as $error) {
       $err .= sprintf("  [\"%s\"] %s\n", $array[$error['property'][1]], $error['message']);
     }
@@ -53,15 +53,15 @@ function checkValues($schemaStorage, $data, $validData, $requiredData) {
   $schema = buildSchema($validData, $requiredData);
 
   // The path to definitions.json relative to index.php
-  $schemaStorage->addSchema('../schemas/definitions.json', $schema);
+  $schemaStorage->addSchema('../validation/definitions.json', $schema);
   $validator = new Validator( new Factory($schemaStorage) );
 
   $validator->coerce($object, $schema);
   
   if (!$validator->isValid()) {
-    $err = 'Invalid request:' . PHP_EOL;
+    $err = '';
     foreach ($validator->getErrors() as $error) {
-      $err .= sprintf("  [\"%s\"] %s\n", $error['property'], $error['message']);
+      $err .= sprintf("[\"%s\"] %s", $error['property'], $error['message']);
     }
     throw new Exception($err);
   }

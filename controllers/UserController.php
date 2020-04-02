@@ -1,8 +1,6 @@
 <?php
 use Psr\Container\ContainerInterface;
 
-require_once '../schemas/validator.php';
-
 class UserController {
   protected $container;
 
@@ -19,13 +17,11 @@ class UserController {
     try {
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (Exception $e) {
-      echo $e->getMessage();
+      return handleBadRequest($response, $e->getMessage());
     }
     
     $data = $request->getParsedBody();
-    $html = var_export($data, true);
-    $response->getBody()->write($html);
-    return $response;
+    return responseOk($response, $data);
   }
 
   public function login($request, $response, $args) {

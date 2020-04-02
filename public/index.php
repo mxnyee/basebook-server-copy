@@ -8,11 +8,12 @@ use Slim\Routing\RouteCollectorProxy;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../database/connect.php';
-require_once '../schemas/validator.php';
+require_once '../validation/validator.php';
 // Import all controllers
 foreach (glob('../controllers/*.php') as $filename) {
   require_once $filename;
 }
+require_once '../errorHandling/responseTypes.php';
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');

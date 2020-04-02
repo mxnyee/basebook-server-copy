@@ -21,12 +21,11 @@ class PostController {
     try {
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (Exception $e) {
-      echo $e->getMessage();
+      return handleBadRequest($response, $e->getMessage());
     }
 
     $params = $request->getQueryParams();
-    $response->getBody()->write(var_export($params, true));
-    return $response;
+    return responseOk($response, $params);
   }
 
   public function searchPosts($request, $response, $args) {

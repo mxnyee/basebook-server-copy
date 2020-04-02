@@ -9,7 +9,6 @@ class CommentController {
   }
 
   public function createComment($request, $response, $args) {
-    $response->getBody()->write('Hello!');
     return $response;
   }
 
