@@ -8,6 +8,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../database/connect.php';
+require_once '../schemas/validator.php';
 // Import all controllers
 foreach (glob('../controllers/*.php') as $filename) {
   require_once $filename;
@@ -17,9 +18,14 @@ foreach (glob('../controllers/*.php') as $filename) {
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+// Global database connection and validator object
 $conn = openConnection();
+$validator = createValidator();
 
 $container = new Container();
+$container->set('conn', $conn);
+$container->set('validator', $validator);
+
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 $app->setBasePath(getenv('BASE_PATH'));

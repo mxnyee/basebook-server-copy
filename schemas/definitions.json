@@ -1,23 +1,22 @@
 {
     "accountType": {
         "type": "string",
-        "enum": ["Regular", "Premium", "Deluxe"],
-        "default": "Regular"
+        "enum": ["Regular", "Premium", "Deluxe"]
     },
     "username": {
         "type": "string",
         "pattern": "^\\w+$",
-        "minLength": 5,
+        "minLength": 4,
         "maxLength": 64
     },
     "email": {
         "type": "string",
-        "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,})+$"
+        "format": "email"
     },
     "password": {
         "type": "string",
         "pattern": "^\\w[\\w!@#$%^&*,.?']*$",
-        "minLength": 5,
+        "minLength": 4,
         "maxLength": 64
     },
     "name": {
