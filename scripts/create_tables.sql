@@ -45,16 +45,16 @@ CREATE TABLE account (
 );
 
 CREATE TABLE account_upgrade (
-  item_id CHAR(3),
+  item_id SMALLINT AUTO_INCREMENT,
   item_name VARCHAR(16) NOT NULL UNIQUE,
   description VARCHAR(64),
-  price INT NOT NULL,
+  price SMALLINT NOT NULL,
   PRIMARY KEY (item_id)
 );
 
 CREATE TABLE superpower (
-  item_id CHAR(3),
-  duration INT NOT NULL,
+  item_id SMALLINT,
+  duration TINYINT NOT NULL,
   PRIMARY KEY (item_id),
   FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
     ON UPDATE CASCADE
@@ -62,7 +62,7 @@ CREATE TABLE superpower (
 );
 
 CREATE TABLE accessory (
-  item_id CHAR(3),
+  item_id SMALLINT,
   color CHAR(7) NOT NULL DEFAULT '#00B7EB',
   PRIMARY KEY (item_id),
   FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
@@ -72,7 +72,7 @@ CREATE TABLE accessory (
 
 CREATE TABLE purchase (
   username VARCHAR(64),
-  item_id CHAR(3),
+  item_id SMALLINT,
   expiry_date DATE,
   PRIMARY KEY (username, item_id),
   FOREIGN KEY (username) REFERENCES account(username)
@@ -84,14 +84,14 @@ CREATE TABLE purchase (
 );
 
 CREATE TABLE post (
-  post_id CHAR(8),
+  post_id SMALLINT AUTO_INCREMENT,
   username VARCHAR(64) NOT NULL,
   title VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,
   location_name VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
-  timestamp TIMESTAMP NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   num_likes INT NOT NULL DEFAULT 0,
   num_dislikes INT NOT NULL DEFAULT 0,
   num_comments INT NOT NULL DEFAULT 0,
@@ -107,8 +107,8 @@ CREATE TABLE post (
 
 CREATE TABLE post_reaction (
   username VARCHAR(64),
-  post_id CHAR(8),
-  value INT NOT NULL,
+  post_id SMALLINT,
+  value TINYINT NOT NULL,
   PRIMARY KEY (username, post_id),
   FOREIGN KEY (username) REFERENCES account(username)
     ON UPDATE CASCADE
@@ -119,11 +119,11 @@ CREATE TABLE post_reaction (
 );
 
 CREATE TABLE comment (
-  comment_id CHAR(4),
-  post_id CHAR(8),
+  comment_id SMALLINT AUTO_INCREMENT,
+  post_id SMALLINT,
   username VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,
-  timestamp TIMESTAMP NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   num_likes INT NOT NULL DEFAULT 0,
   num_dislikes INT NOT NULL DEFAULT 0,
   PRIMARY KEY (comment_id, post_id),
@@ -137,9 +137,9 @@ CREATE TABLE comment (
 
 CREATE TABLE comment_reaction (
   username VARCHAR(64),
-  comment_id CHAR(4),
-  post_id CHAR(8),
-  value INT NOT NULL,
+  comment_id SMALLINT,
+  post_id SMALLINT,
+  value TINYINT NOT NULL,
   PRIMARY KEY (username, comment_id, post_id),
   FOREIGN KEY (username) REFERENCES account(username)
     ON UPDATE CASCADE
