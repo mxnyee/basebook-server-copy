@@ -64,4 +64,29 @@ $app->group('/market', function (RouteCollectorProxy $group) {
   $group->post('/purchase', '\MarketController:purchaseItem');
 });
 
+// For testing!!
+$app->post('/test', function (Request $request, Response $response) {
+  $data = $request->getParsedBody();
+  $response->getBody()->write('POST /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
+  return $response;
+});
+$app->get('/test', function (Request $request, Response $response) {
+  $response->getBody()->write('GET /test ' . PHP_EOL . 'Request received!');
+  return $response;
+});
+$app->put('/test', function (Request $request, Response $response) {
+  $data = $request->getParsedBody();
+  $response->getBody()->write('PUT /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
+  return $response;
+});
+$app->patch('/test', function (Request $request, Response $response) {
+  $data = $request->getParsedBody();
+  $response->getBody()->write('PATCH /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
+  return $response;
+});
+$app->delete('/test', function (Request $request, Response $response) {
+  $response->getBody()->write('DELETE /test ' . PHP_EOL . 'Request received!');
+  return $response;
+});
+
 $app->run();
