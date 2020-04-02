@@ -21,99 +21,62 @@ INSERT INTO location VALUES ('Main Street','North Vancouver','BC');
 INSERT INTO location VALUES ('Metrotown','Burnaby','BC');
 INSERT INTO location VALUES ('Aberdeen','Richmond','BC');
 
-INSERT INTO permissions VALUE ('personal',FALSE,FALSE,FALSE,FALSE);
-INSERT INTO permissions VALUE ('premium',TRUE,FALSE,FALSE,FALSE);
-INSERT INTO permissions VALUE ('admin',TRUE,TRUE,TRUE,TRUE);
+INSERT INTO permissions VALUE ('regular',FALSE,FALSE);
+INSERT INTO permissions VALUE ('premium',TRUE,FALSE);
+INSERT INTO permissions VALUE ('deluxe',TRUE,TRUE);
 
-INSERT INTO account VALUES ('alpha','alpha@example.com','amber',200,'personal',NULL);
-INSERT INTO account VALUES ('bravo','bravo@example.com','bronze',153,'personal',NULL);
-INSERT INTO account VALUES ('charlie','charlie@example.com','coral',2000,'personal',NULL);
-INSERT INTO account VALUES ('delta','delta@example.com','denim',0,'personal',NULL);
-INSERT INTO account VALUES ('echo','echo@example.com','emerald',0,'personal',NULL);
+INSERT INTO account VALUES ('alpha','alpha@example.com','amber','Alpha','Vancouver','BC',200,'deluxe');
+INSERT INTO account VALUES ('bravo','bravo@example.com','bronze','Bravo','Victoria','BC',153,'premium');
+INSERT INTO account VALUES ('charlie','charlie@example.com','coral','Charlie','Vancouver','OR',2000,'regular');
+INSERT INTO account VALUES ('delta','delta@example.com','denim',NULL,NULL,'BC',0,'regular');
+INSERT INTO account VALUES ('echo','echo@example.com','emerald',NULL,NULL,NULL,0,'regular');
 
-INSERT INTO profile_page VALUES ('/alpha','alpha',NULL,'Alpha','Number one!','Vancouver','BC',0,0,0);
-INSERT INTO profile_page VALUES ('/bravo','bravo',NULL,'Bravo','The second banana.','Victoria','BC',0,0,0);
-INSERT INTO profile_page VALUES ('/charlie','charlie',NULL,'Charlie',NULL,'Vancouver','OR',0,0,0);
-INSERT INTO profile_page VALUES ('/delta','delta',NULL,NULL,'Good ol triangle.',NULL,'BC',0,0,0);
-INSERT INTO profile_page VALUES ('/echo','echo',NULL,NULL,NULL,NULL,NULL,0,0,0);
+INSERT INTO account_upgrade VALUES ('000','Double Like','Gives 2 coins every time you like a post or comment.',200);
+INSERT INTO account_upgrade VALUES ('001','Triple Like','Gives 3 coins every time you like a post or comment.',300);
+INSERT INTO account_upgrade VALUES ('002','Double Dislike','For when you''re extra angry.',200);
+INSERT INTO account_upgrade VALUES ('003','Badge','A shiny badge to put on your profile.',500);
+INSERT INTO account_upgrade VALUES ('004','Star','You''re a star!',1000);
+INSERT INTO account_upgrade VALUES ('005','Heart','Self care.',2000);
 
-UPDATE account SET profile_page_url = '/alpha' WHERE username = 'alpha';
-UPDATE account SET profile_page_url = '/bravo' WHERE username = 'bravo';
-UPDATE account SET profile_page_url = '/charlie' WHERE username = 'charlie';
-UPDATE account SET profile_page_url = '/delta' WHERE username = 'delta';
-UPDATE account SET profile_page_url = '/echo' WHERE username = 'echo';
+INSERT INTO superpower VALUES ('000',3);
+INSERT INTO superpower VALUES ('001',1);
+INSERT INTO superpower VALUES ('002',3);
 
-INSERT INTO follow VALUES ('charlie','alpha');
-INSERT INTO follow VALUES ('charlie','bravo');
-INSERT INTO follow VALUES ('delta','alpha');
-INSERT INTO follow VALUES ('delta','bravo');
-INSERT INTO follow VALUES ('delta','charlie');
-INSERT INTO follow VALUES ('delta','echo');
-INSERT INTO follow VALUES ('echo','alpha');
-INSERT INTO follow VALUES ('echo','bravo');
-INSERT INTO follow VALUES ('echo','charlie');
-INSERT INTO follow VALUES ('echo','delta');
+INSERT INTO accessory VALUES ('003','#16D3F0');
+INSERT INTO accessory VALUES ('004','#FCBA03');
+INSERT INTO accessory VALUES ('005','#FF307C');
 
-INSERT INTO account_upgrade VALUES ('double like',200);
-INSERT INTO account_upgrade VALUES ('triple like',300);
-INSERT INTO account_upgrade VALUES ('double dislike',200);
-INSERT INTO account_upgrade VALUES ('badge',500);
-INSERT INTO account_upgrade VALUES ('star',1000);
-INSERT INTO account_upgrade VALUES ('heart',2000);
+INSERT INTO purchase VALUES ('alpha','003',NULL);
+INSERT INTO purchase VALUES ('alpha','001','2020-04-12');
+INSERT INTO purchase VALUES ('bravo','000','2020-04-16');
+INSERT INTO purchase VALUES ('charlie','004',NULL);
 
-INSERT INTO superpower VALUES ('double like',3);
-INSERT INTO superpower VALUES ('triple like',3);
-INSERT INTO superpower VALUES ('double dislike',1);
+INSERT INTO post VALUES ('00000000','alpha','Rant','Why do people do this? I don''t understand. Who does that? I don''t know what I''m talking about!','Main Street','Vancouver','BC','2020-03-12 09:24:31',0,1,0);
+INSERT INTO post VALUES ('00000001','alpha','Granola recipe','Mix oats, puffed rice, nuts, seeds, honey, and coconut oil. Bake at 350F for 40 minuts. Stir in dried fruit.',NULL,'Richmond','BC','2020-02-10 18:21:00',4,0,3);
+INSERT INTO post VALUES ('00000002','bravo','Good boy','My dog chased away a mole today. It would''ve ruined my garden :O',NULL,NULL,NULL,'2020-01-31 12:00:12',1,1,1);
+INSERT INTO post VALUES ('00000003','charlie','I made bread','Took all day but it was worth it!!',NULL,'Burnaby','BC','2020-01-08 13:21:44',5,0,2);
+INSERT INTO post VALUES ('00000004','echo','It''s too hot outside','aaaaaaaaaaaaaa I''m dying',NULL,NULL,NULL,'2019-08-20 15:51:02',0,0,0);
 
-INSERT INTO accessory VALUES ('badge','#16D3F0');
-INSERT INTO accessory VALUES ('star','#FCBA03');
-INSERT INTO accessory VALUES ('heart','#FF307C');
+INSERT INTO post_reaction VALUES ('echo','00000000',-1);
+INSERT INTO post_reaction VALUES ('bravo','00000001',2);
+INSERT INTO post_reaction VALUES ('charlie','00000001',1);
+INSERT INTO post_reaction VALUES ('delta','00000001',1);
+INSERT INTO post_reaction VALUES ('delta','00000002',1);
+INSERT INTO post_reaction VALUES ('charlie','00000002',-1);
+INSERT INTO post_reaction VALUES ('alpha','00000003',3);
+INSERT INTO post_reaction VALUES ('bravo','00000003',2);
 
-INSERT INTO purchase VALUES ('alpha','badge',1,NULL);
-INSERT INTO purchase VALUES ('alpha','triple like',1,'2020-04-12');
-INSERT INTO purchase VALUES ('bravo','double like',2,'2020-04-16');
-INSERT INTO purchase VALUES ('charlie','star',3,NULL);
+INSERT INTO comment VALUES ('0000','00000001','bravo','2020-02-12 16:21:22','My favrite!!!',0,2);
+INSERT INTO comment VALUES ('0001','00000001','bravo','2020-02-12 16:22:13','*favorite oops',0,0);
+INSERT INTO comment VALUES ('0002','00000001','delta','2020-02-21 20:27:03','So good',1,0);
+INSERT INTO comment VALUES ('0000','00000002','charlie','2020-02-03 13:51:02','Floof',0,1);
+INSERT INTO comment VALUES ('0000','00000003','delta','2020-02-24 08:12:32','Nice!',0,0);
+INSERT INTO comment VALUES ('0001','00000003','echo','2020-03-08 22:11:54','What kind?',3,0);
 
-INSERT INTO hashtag VALUES ('vancouver');
-INSERT INTO hashtag VALUES ('summer');
-INSERT INTO hashtag VALUES ('canucks');
-INSERT INTO hashtag VALUES ('food');
-INSERT INTO hashtag VALUES ('coffee');
-INSERT INTO hashtag VALUES ('baking');
-INSERT INTO hashtag VALUES ('cat');
-
-INSERT INTO post VALUES ('0000000000000000','alpha','Rant','2020-03-12 09:24:31',94,15,2,'Main Street','Vancouver','BC');
-INSERT INTO post VALUES ('0000000000000001','alpha','Granola recipe','2020-02-10 18:21:00',105,3,12,NULL,'Richmond','BC');
-INSERT INTO post VALUES ('0000000000000002','bravo','Good boy','2020-01-31 12:00:12',120,0,0,NULL,NULL,NULL);
-INSERT INTO post VALUES ('0000000000000003','charlie','I made bread','2020-01-08 13:21:44',5,0,0,NULL,'Burnaby','BC');
-INSERT INTO post VALUES ('0000000000000004','echo','It''s too hot outside','2019-08-20 15:51:02',0,0,0,NULL,NULL,NULL);
-
-INSERT INTO text_post VALUES ('0000000000000000','Why do people do this? What even is that? I don'' understand. Why doesn''t anything make sense? Who does that? No one listens to me. I don''t know what I''m talking about!');
-INSERT INTO text_post VALUES ('0000000000000001','2 cups rolled oats' + CHAR(13) + CHAR(10) + '2 cups puffed rice' + CHAR(13) + CHAR(10) + '1 cup chopped nuts'  + CHAR(13) + CHAR(10) + '1/2 cup honey'  + CHAR(13) + CHAR(10) + '1/2 cup coconut oil'  + CHAR(13) + CHAR(10) + 'Bake at 350F for 40 minutes'  + CHAR(13) + CHAR(10) + 'Stir in 2 cups dried fruit');
-INSERT INTO text_post VALUES ('0000000000000004','aaaaaaaaaaaaaa I''m dying');
-
-INSERT INTO photo_post VALUES ('0000000000000002','/picture-of-cat.jpg');
-INSERT INTO photo_post VALUES ('0000000000000003','/sourdough-bread.jpg');
-
-INSERT INTO post_hashtag VALUES ('0000000000000001','food');
-INSERT INTO post_hashtag VALUES ('0000000000000001','summer');
-INSERT INTO post_hashtag VALUES ('0000000000000002','cat');
-INSERT INTO post_hashtag VALUES ('0000000000000003','food');
-INSERT INTO post_hashtag VALUES ('0000000000000003','baking');
-INSERT INTO post_hashtag VALUES ('0000000000000004','vancouver');
-INSERT INTO post_hashtag VALUES ('0000000000000004','summer');
-
-INSERT INTO post_reaction VALUES ('echo','0000000000000000',-1,'2020-03-01 18:12:30');
-INSERT INTO post_reaction VALUES ('bravo','0000000000000001',1,'2020-02-23 12:22:00');
-INSERT INTO post_reaction VALUES ('charlie','0000000000000001',1,'2020-03-01 18:12:30');
-INSERT INTO post_reaction VALUES ('delta','0000000000000002',1,'2020-04-04 09:55:33');
-INSERT INTO post_reaction VALUES ('echo','0000000000000003',2,'2020-04-14 10:01:54');
-
-INSERT INTO comment VALUES ('0000','0000000000000001','bravo','2020-01-23 16:21:22','My favrite!!!',0,2);
-INSERT INTO comment VALUES ('0001','0000000000000001','bravo','2020-01-23 16:22:13','*favorite oops',0,0);
-INSERT INTO comment VALUES ('0002','0000000000000001','charlie','2020-02-01 20:27:03','So good',10,1);
-INSERT INTO comment VALUES ('0000','0000000000000002','delta','2020-02-11 13:51:02','Floof',20,5);
-
-INSERT INTO comment_reaction VALUES ('charlie','0002','0000000000000001',-1,'2020-01-11 14:02:51');
-INSERT INTO comment_reaction VALUES ('delta','0002','0000000000000001',1,'2020-02-06 01:10:20');
-INSERT INTO comment_reaction VALUES ('echo','0000','0000000000000002',1,'2020-03-01 18:12:30');
+INSERT INTO comment_reaction VALUES ('charlie','0000','00000001',-1);
+INSERT INTO comment_reaction VALUES ('delta','0000','00000001',-1);
+INSERT INTO comment_reaction VALUES ('echo','0002','00000001',1);
+INSERT INTO comment_reaction VALUES ('alpha','0000','00000002',-1);
+INSERT INTO comment_reaction VALUES ('alpha','0001','00000003',1);
+INSERT INTO comment_reaction VALUES ('bravo','0001','00000003',1);
+INSERT INTO comment_reaction VALUES ('delta','0001','00000003',1);
