@@ -1,6 +1,8 @@
 <?php
 use Psr\Container\ContainerInterface;
 
+require_once '../database/userQueries.php';
+
 class UserController {
   protected $container;
 
@@ -12,16 +14,22 @@ class UserController {
     $validParams = [];
     $validFields = ['username', 'email', 'password', 'name', 'city', 'state', 'accountType'];
     $requiredFields = ['username', 'email', 'password', 'accountType'];
-    $validator = $this->container->get('validator');
 
     try {
+      $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (Exception $e) {
-      return handleBadRequest($response, $e->getMessage());
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
     }
     
-    $data = $request->getParsedBody();
-    return responseOk($response, $data);
+    try {
+      $conn = $this->container->get('conn');
+      $data = $request->getParsedBody();
+      $result = insertUser($conn, $data);
+      return responseCreated($response, $result);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
   }
 
   public function login($request, $response, $args) {
