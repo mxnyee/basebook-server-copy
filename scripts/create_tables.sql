@@ -87,7 +87,7 @@ CREATE TABLE post (
   post_id CHAR(8),
   username VARCHAR(64) NOT NULL,
   title VARCHAR(64) NOT NULL,
-  text VARCHAR(64) NOT NULL,
+  text VARCHAR(1024) NOT NULL,
   location_name VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
