@@ -13,7 +13,10 @@ require_once '../validation/validator.php';
 foreach (glob('../controllers/*.php') as $filename) {
   require_once $filename;
 }
-require_once '../errorHandling/responseTypes.php';
+// Import error handler and custom exceptions
+foreach (glob('../errorHandling/*.php') as $filename) {
+  require_once $filename;
+}
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');

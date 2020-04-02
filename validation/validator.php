@@ -23,14 +23,14 @@ function checkExistence($data, $validData) {
   // Can't have an empty enum, so manually check $data when $validData is empty
   if (empty($validData)) {
     if (!empty($data)) {
-      throw new Exception("Invalid request: Extraneous parameters or data.");
+      throw new BadRequestException('Extraneous parameters or data.');
     } else {
       return;
     }
   }
 
   if (is_null($data)) {
-    throw new Exception("Invalid request: Data is null.");
+    throw new BadRequestException('Data is null.');
   }
   
   $array = array_keys($data);
@@ -44,7 +44,7 @@ function checkExistence($data, $validData) {
     foreach ($validator->getErrors() as $error) {
       $err .= sprintf("  [\"%s\"] %s\n", $array[$error['property'][1]], $error['message']);
     }
-    throw new Exception($err);
+    throw new BadRequestException($err);
   }
 }
 
@@ -63,6 +63,6 @@ function checkValues($schemaStorage, $data, $validData, $requiredData) {
     foreach ($validator->getErrors() as $error) {
       $err .= sprintf("[\"%s\"] %s", $error['property'], $error['message']);
     }
-    throw new Exception($err);
+    throw new BadRequestException($err);
   }
 }
