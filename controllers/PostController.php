@@ -13,6 +13,19 @@ class PostController {
   }
 
   public function getAllPosts($request, $response, $args) {
+    $validParams = ['username', 'title', 'locationName', 'city', 'state', 'timestamp', 'numLikes', 'numDislikes', 'numComments'];
+    $validFields = [];
+    $requiredFields = [];
+    $validator = $this->container->get('validator');
+
+    try {
+      validate($validator, $request, $validParams, $validFields, $requiredFields);
+    } catch (Exception $e) {
+      echo $e->getMessage();
+    }
+
+    $params = $request->getQueryParams();
+    $response->getBody()->write(var_export($params, true));
     return $response;
   }
 
