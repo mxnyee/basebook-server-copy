@@ -36,7 +36,7 @@ function insertUser($conn, $data) {
   return $data;
 }
 
-function checkForUser($conn, $data) {
+function checkUserPassword($conn, $data) {
   [
     'username' => $username,
     'password' => $password
@@ -101,8 +101,8 @@ function checkForUser($conn, $data) {
 
 function selectUser($conn, $username) {
   $query = '
-    SELECT email, name, city, a.state, country, num_coins, account_type
-    FROM account a LEFT JOIN country c ON a.state = c.state
+    SELECT email, name, city, state, country, num_coins, account_type
+    FROM account a LEFT JOIN country c USING(state)
     WHERE a.username = ?
   ';
   
@@ -168,7 +168,7 @@ function editUser($conn, $username, $data, $validFields) {
 
   $query = '
     SELECT country
-    FROM account a LEFT JOIN country c ON a.state = c.state
+    FROM account a LEFT JOIN country c USING(state)
     WHERE a.username = ?
   ';
   
@@ -199,11 +199,11 @@ function selectUserInventory($conn, $username) {
   selectUser($conn, $username);
 
   $query = '
-    SELECT au.item_id, item_name, description, expiry_date, color
+    SELECT item_id, item_name, description, expiry_date, color
     FROM purchase p
-    LEFT JOIN account_upgrade au ON p.item_id = au.item_id
-    LEFT JOIN superpower s ON p.item_id = s.item_id
-    LEFT JOIN accessory a ON p.item_id = a.item_id
+    JOIN account_upgrade au USING(item_id)
+    LEFT JOIN superpower s USING(item_id)
+    LEFT JOIN accessory a USING(item_id)
     WHERE p.username = ?
   ';
   
@@ -226,5 +226,59 @@ function selectUserInventory($conn, $username) {
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
 
+  return $arr;
+}
+
+function selectUserStats($conn, $username) {
+  selectUser($conn, $username);
+  $arr = [];
+
+  $query = '
+    SELECT COUNT(*) as num_posts
+    FROM post p
+    WHERE p.username = ?
+  ';
+  
+  $stmt = $conn->prepare($query);
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+    ) {
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $arr['numPosts'] = $row['num_posts'];
+    $result->free();
+    $stmt->close();
+  } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error looking for user: ' . $err);
+  }
+
+  $query = '
+    SELECT COUNT(*) as num_comments
+    FROM comment c
+    WHERE c.username = ?
+  ';
+  
+  $stmt = $conn->prepare($query);
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+    ) {
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $arr['numComments'] = $row['num_comments'];
+    $result->free();
+    $stmt->close();
+  } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error looking for user: ' . $err);
+  }
+
+  $arr = (object) $arr;
   return $arr;
 }

@@ -12,7 +12,7 @@ function buildEnum($validData) {
 
 function buildSchema($validData, $requiredData) {
   // Add properties to the schema by referencing an external file
-  $properties = new StdClass();
+  $properties = (object) [];
   foreach ($validData as $propertyName) {
     $properties->{$propertyName} = (object) ['$ref' => 'definitions.json#/' . $propertyName];
   }
