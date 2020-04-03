@@ -6,11 +6,13 @@ function insertUser($conn, $data) {
     'email' => $email,
     'password' => $password,
     'name' => $name,
-    'city' => $city,
-    'state' => $state,
     'accountType' => $accountType
   ] = $data;
+  $city = (array_key_exists('city', $data))? $data['city'] : null;
+  $state = (array_key_exists('state', $data))? $data['state'] : null;
   $numCoins = 0;
+
+  checkForCity($conn, $city, $state);
 
   $query = '
     INSERT INTO account(username, email, password, name, city, state, num_coins, account_type)
@@ -25,8 +27,8 @@ function insertUser($conn, $data) {
    ) {
     $stmt->close();
    } else {
-    $err = $stmt->error;
-    $stmt->close();
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
     throw new BadRequestException('Error inserting user: ' . $err);
   }
 
@@ -58,8 +60,8 @@ function checkForUser($conn, $data) {
     $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
   
@@ -85,8 +87,8 @@ function checkForUser($conn, $data) {
     $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
   

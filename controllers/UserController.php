@@ -2,6 +2,7 @@
 use Psr\Container\ContainerInterface;
 
 require_once '../database/userQueries.php';
+require_once '../database/locationQueries.php';
 
 class UserController {
   protected $container;

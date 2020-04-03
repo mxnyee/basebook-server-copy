@@ -4,7 +4,7 @@
 // Calls checkForCity().
 function checkForLocation($conn, $locationName, $city, $state) {
   checkForCity($conn, $city, $state);
-  if (is_null($locationName) || empty($locationName)) {
+  if (is_null($locationName)) {
     return;
   }
 
@@ -26,8 +26,8 @@ function checkForLocation($conn, $locationName, $city, $state) {
     $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for location: ' . $err);
   }
   
@@ -36,41 +36,28 @@ function checkForLocation($conn, $locationName, $city, $state) {
   }
   
   $query = '
-    SELECT 1
-    FROM account
-    WHERE username = ? and password = ?
+    INSERT INTO location
+    VALUES(?,?,?)
   ';
   
   $stmt = $conn->prepare($query);
   $numRows = 0;
   if (
     $stmt &&
-    $stmt->bind_param('ss', $username, $password) &&
+    $stmt->bind_param('sss', $locationName, $city, $state) &&
     $stmt->execute()
     ) {
-    $result = $stmt->get_result();
-    $numRows = $result->num_rows;
-    $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
-    throw new InternalServerErrorException('Error looking for user: ' . $err);
-  }
-  
-  if ($numRows == 0) {
-    throw new BadRequestException("Incorrect login information for $username.");
-  } else {
-    throw new BadRequestException("User $username not found.");
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error inserting location: ' . $err);
   }
 }
 
 // Check if a city exists. If not, insert it.
 function checkForCity($conn, $city, $state) {
-  if (is_null($state)) {
-    if (!is_null($city)) {
-      throw new BadRequestException('Cannot provide a city without a state.');
-    }
+  if (is_null($city)) {
     return;
   }
   
@@ -92,8 +79,8 @@ function checkForCity($conn, $city, $state) {
     $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for city: ' . $err);
   }
   
@@ -102,7 +89,7 @@ function checkForCity($conn, $city, $state) {
   }
   
   $query = '
-    INTSERT INTO city
+    INSERT INTO city
     VALUES(?,?)
   ';
   
@@ -110,22 +97,13 @@ function checkForCity($conn, $city, $state) {
   $numRows = 0;
   if (
     $stmt &&
-    $stmt->bind_param('ss', $username, $password) &&
+    $stmt->bind_param('ss', $city, $state) &&
     $stmt->execute()
     ) {
-    $result = $stmt->get_result();
-    $numRows = $result->num_rows;
-    $result->free();
     $stmt->close();
   } else {
-    $err = $stmt->error;
-    $stmt->close();
-    throw new InternalServerErrorException('Error looking for user: ' . $err);
-  }
-  
-  if ($numRows == 0) {
-    throw new BadRequestException("Incorrect login information for $username.");
-  } else {
-    throw new BadRequestException("User $username not found.");
+    $err = ($stmt)? $stmt->error : 'Bad query.';
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error inserting city: ' . $err);
   }
 }
