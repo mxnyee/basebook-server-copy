@@ -151,6 +151,25 @@ class UserController {
   }
 
   public function getUserLeaderboard($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+
+    try {
+      $validator = $this->container->get('validator');
+      validate($validator, $request, $validParams, $validFields, $requiredFields);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
+    
+    try {
+      $conn = $this->container->get('conn');
+      $result = selectUserLeaderboard($conn, $args['username'], 2);
+      return responseOk($response, $result);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMsg());
+    }
   }
 }

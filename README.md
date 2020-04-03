@@ -144,13 +144,13 @@ GET /user/{username}/leaderboard
 Response:
 ```
 {
-  "topNumPosts": [
+  "postRanking": [
     { "username": "jane", "numPosts": 34 },
     { "username": "john", "numPosts": 31 },
     { "username": "greg", "numPosts": 21 },
     { "username": "tom", "numPosts": 8 }
   ],
-  "topNumComments": [
+  "commentRanking": [
     { "username": "greg", "numPosts": 45 },
     { "username": "john", "numPosts": 20 },
     { "username": "jane", "numPosts": 4 },
