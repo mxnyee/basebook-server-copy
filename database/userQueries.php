@@ -93,7 +93,7 @@ function checkForUser($conn, $data) {
   }
   
   if ($numRows == 0) {
-    throw new BadRequestException('User ' . $username . ' not found.');
+    throw new NotFoundException('User ' . $username . ' not found.');
   } else {
     throw new BadRequestException('Incorrect login information for ' . $username . '.');
   }
@@ -108,7 +108,7 @@ function getUser($conn, $username) {
   
   $stmt = $conn->prepare($query);
   $numRows = 0;
-  $user = [];
+  $res = [];
   if (
     $stmt &&
     $stmt->bind_param('s', $username) &&
@@ -116,7 +116,7 @@ function getUser($conn, $username) {
     ) {
     $result = $stmt->get_result();
     $numRows = $result->num_rows;
-    $user = $result->fetch_assoc();
+    $res = $result->fetch_assoc();
     $result->free();
     $stmt->close();
   } else {
@@ -129,5 +129,68 @@ function getUser($conn, $username) {
     throw new NotFoundException('User ' . $username . ' not found.');
   }
 
-  return $user;
+  return $res;
+}
+
+function updateUser($conn, $username, $data, $validFields) {
+  $toUpdate = [];
+  foreach ($validFields as $field) {
+    if (array_key_exists($field, $data)) {
+      $toUpdate[$field] = $data[$field];
+    }
+  }
+  $numToUpdate = count($toUpdate);
+
+  $city = (array_key_exists('city', $data))? $data['city'] : null;
+  $state = (array_key_exists('state', $data))? $data['state'] : null;
+  checkForCity($conn, $city, $state);
+
+  getUser($conn, $username);
+
+  $query = 'UPDATE account SET username = \'' . $username . '\'';
+  foreach ($toUpdate as $field => $newValue) {
+    $query .= ', ' . $field . ' = \'' . $newValue . '\'';
+  }
+  $query .= ' WHERE username = ?';
+  
+  $stmt = $conn->prepare($query);
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+   ) {
+    $stmt->close();
+   } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new BadRequestException('Error updating user: ' . $err);
+  }
+
+  $query = '
+    SELECT country
+    FROM account a LEFT JOIN country c ON a.state = c.state
+    WHERE a.username = ?
+  ';
+  
+  $stmt = $conn->prepare($query);
+  $res = [];
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+    ) {
+    $result = $stmt->get_result();
+    $res = $result->fetch_assoc();
+    $result->free();
+    $stmt->close();
+  } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error looking for user: ' . $err);
+  }
+
+  if (array_key_exists('city', $toUpdate)) {
+    $data['country'] = $res['country'];
+  }
+  return $data;
 }

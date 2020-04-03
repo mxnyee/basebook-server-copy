@@ -52,6 +52,8 @@ class UserController {
       return responseNoContent($response);
     } catch (BadRequestException $e) {
       return handleBadRequest($response, $e->getMsg());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMsg());
     }
   }
 
@@ -74,11 +76,33 @@ class UserController {
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
       return handleBadRequest($response, $e->getMsg());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMsg());
     }
   }
 
   public function updateUser($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = ['username', 'password', 'name', 'city', 'state'];
+    $requiredFields = [];
+
+    try {
+      $validator = $this->container->get('validator');
+      validate($validator, $request, $validParams, $validFields, $requiredFields);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
+    
+    try {
+      $conn = $this->container->get('conn');
+      $data = $request->getParsedBody();
+      $result = updateUser($conn, $args['username'], $data, $validFields);
+      return responseOk($response, $result);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMsg());
+    }
   }
 
   public function getUserInventory($request, $response, $args) {

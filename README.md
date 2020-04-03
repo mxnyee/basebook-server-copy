@@ -90,7 +90,7 @@ Request:
 Response:
 ```
 {
-  "email": "johnny",
+  "username": "johnny",
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",
