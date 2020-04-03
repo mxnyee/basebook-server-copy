@@ -3,6 +3,13 @@
 // Common responses
 
 function json($response, $data) {
+  // Remove null values
+  foreach ($data as $key => $value) {
+    if (is_null($value)) {
+      unset($data[$key]);
+    }
+  }
+
   $response->getBody()->write(json_encode($data));
   return $response
     ->withHeader('Content-Type', 'application/json');

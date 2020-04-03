@@ -41,7 +41,7 @@ function validateParams($data, $validData) {
   if (!$validator->isValid()) {
     $err = '';
     foreach ($validator->getErrors() as $error) {
-      $err .= sprintf(" [\"%s\"] %s\n", $array[$error['property'][1]], $error['message']);
+      $err .= ' ["' . $array[$error['property'][1]] . '"] ' . $error['message'];
     }
     throw new BadRequestException($err);
   }
@@ -60,7 +60,7 @@ function validateBody($schemaStorage, $data, $validData, $requiredData) {
   if (!$validator->isValid()) {
     $err = '';
     foreach ($validator->getErrors() as $error) {
-      $err .= sprintf(" [\"%s\"] %s", $error['property'], $error['message']);
+      $err .= ' ["' . $error['property'] . '"] ' . $error['message'];
     }
     throw new BadRequestException($err);
   }

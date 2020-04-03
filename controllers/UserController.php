@@ -56,7 +56,25 @@ class UserController {
   }
 
   public function getUser($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+
+    try {
+      $validator = $this->container->get('validator');
+      validate($validator, $request, $validParams, $validFields, $requiredFields);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
+    
+    try {
+      $conn = $this->container->get('conn');
+      $data = $request->getParsedBody();
+      $result = getUser($conn, $args['username']);
+      return responseOk($response, $result);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
   }
 
   public function updateUser($request, $response, $args) {

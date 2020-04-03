@@ -27,7 +27,7 @@ function insertUser($conn, $data) {
    ) {
     $stmt->close();
    } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new BadRequestException('Error inserting user: ' . $err);
   }
@@ -60,7 +60,7 @@ function checkForUser($conn, $data) {
     $result->free();
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
@@ -87,14 +87,47 @@ function checkForUser($conn, $data) {
     $result->free();
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
   
   if ($numRows == 0) {
-    throw new BadRequestException("User $username not found.");
+    throw new BadRequestException('User ' . $username . ' not found.');
   } else {
-    throw new BadRequestException("Incorrect login information for $username.");
+    throw new BadRequestException('Incorrect login information for ' . $username . '.');
   }
+}
+
+function getUser($conn, $username) {
+  $query = '
+    SELECT email, name, city, a.state, country, num_coins, account_type
+    FROM account a LEFT JOIN country c ON a.state = c.state
+    WHERE a.username = ?
+  ';
+  
+  $stmt = $conn->prepare($query);
+  $numRows = 0;
+  $user = [];
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+    ) {
+    $result = $stmt->get_result();
+    $numRows = $result->num_rows;
+    $user = $result->fetch_assoc();
+    $result->free();
+    $stmt->close();
+  } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error looking for user: ' . $err);
+  }
+  
+  if ($numRows == 0) {
+    throw new NotFoundException('User ' . $username . ' not found.');
+  }
+
+  return $user;
 }

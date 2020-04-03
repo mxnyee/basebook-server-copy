@@ -26,7 +26,7 @@ function checkForLocation($conn, $locationName, $city, $state) {
     $result->free();
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for location: ' . $err);
   }
@@ -49,7 +49,7 @@ function checkForLocation($conn, $locationName, $city, $state) {
     ) {
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error inserting location: ' . $err);
   }
@@ -79,7 +79,7 @@ function checkForCity($conn, $city, $state) {
     $result->free();
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error looking for city: ' . $err);
   }
@@ -102,7 +102,7 @@ function checkForCity($conn, $city, $state) {
     ) {
     $stmt->close();
   } else {
-    $err = ($stmt)? $stmt->error : 'Bad query.';
+    $err = ($stmt)? $stmt->error : $conn->error;
     if ($stmt) $stmt->close();
     throw new InternalServerErrorException('Error inserting city: ' . $err);
   }

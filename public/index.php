@@ -46,7 +46,7 @@ $app->get('/', function (Request $request, Response $response) {
 $app->group('/user', function (RouteCollectorProxy $group) {
   $group->post('/signup', '\UserController:signup');
   $group->post('/login', '\UserController:login');
-  $group->get('/{username}', '\'UserController:getUser');
+  $group->get('/{username}', '\UserController:getUser');
   $group->patch('/{username}', '\UserController:editUser');
   $group->get('/{username}/inventory', '\UserController:getUserInventory');
   $group->get('/{username}/stats', '\UserController:getUserStats');
