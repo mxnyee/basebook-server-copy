@@ -14,7 +14,7 @@ function insertUser($conn, $data) {
 
   $query = '
     INSERT INTO account(username, email, password, name, city, state, num_coins, account_type)
-    VALUES(?,?,?,?,?,?,?,?);
+    VALUES(?,?,?,?,?,?,?,?)
   ';
   
   $stmt = $conn->prepare($query);

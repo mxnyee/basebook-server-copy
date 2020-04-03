@@ -67,6 +67,7 @@ Response:
   "name": "John Smith",
   "city": "Vancouver",
   "state": "BC",
+  "country": "CA",
   "numCoins": 645,
   "accountType": "Regular"
 }
@@ -83,7 +84,7 @@ Request:
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",
-  "state": "WA",
+  "state": "WA"
 }
 ```
 Response:
@@ -94,6 +95,7 @@ Response:
   "name": "Johnny Smith",
   "city": "Seattle",
   "state": "WA",
+  "country": "US",
 }
 ```
 
@@ -182,6 +184,7 @@ Response:
   "locationName": "Grounds for Coffee",
   "city": "Vancouver",
   "state": "BC",
+  "country": "CA",
   "timestamp": "2020-01-22 12:20:05",
   "numLikes": 0,
   "numDislikes": 0,
@@ -191,7 +194,7 @@ Response:
 
 ### Fetch a feed of posts and filter the details
 
-GET /post?username&locationName&city&state&timestamp&numLikes&numDislikes&numComments
+GET /post?username&locationName&city&state&country&timestamp&numLikes&numDislikes&numComments
 
 All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, and `text`.
 
@@ -207,6 +210,7 @@ Response:
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-22 12:20:05",
       "numLikes": 15,
       "numDislikes": 3,
@@ -219,6 +223,7 @@ Response:
       "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-10 15:51:40",
       "numLikes": 21,
       "numDislikes": 0,
@@ -230,7 +235,7 @@ Response:
 
 ### Search for posts by title and/or location
 
-GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}
+GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}&country={country}
 
 All query parameters are optional. If none are specified, all posts will be returned.
 
@@ -246,6 +251,7 @@ Response:
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-22 12:20:05",
       "numLikes": 15,
       "numDislikes": 3,
@@ -258,6 +264,7 @@ Response:
       "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-10 15:51:40",
       "numLikes": 21,
       "numDislikes": 0,
