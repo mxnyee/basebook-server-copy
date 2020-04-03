@@ -14,12 +14,11 @@ function validate($schemaStorage, $request, $validParams, $validFields, $require
   $params = $request->getQueryParams();
   $fields = $request->getParsedBody();
 
-  checkExistence($params, $validParams);
-  checkExistence($fields, $validFields);
-  checkValues($schemaStorage, $fields, $validFields, $requiredFields);
+  validateParams($params, $validParams);
+  validateBody($schemaStorage, $fields, $validFields, $requiredFields);
 }
 
-function checkExistence($data, $validData) {
+function validateParams($data, $validData) {
   // Can't have an empty enum, so manually check $data when $validData is empty
   if (empty($validData)) {
     if (!empty($data)) {
@@ -42,18 +41,18 @@ function checkExistence($data, $validData) {
   if (!$validator->isValid()) {
     $err = '';
     foreach ($validator->getErrors() as $error) {
-      $err .= sprintf("  [\"%s\"] %s\n", $array[$error['property'][1]], $error['message']);
+      $err .= sprintf(" [\"%s\"] %s\n", $array[$error['property'][1]], $error['message']);
     }
     throw new BadRequestException($err);
   }
 }
 
-function checkValues($schemaStorage, $data, $validData, $requiredData) {
+function validateBody($schemaStorage, $data, $validData, $requiredData) {
   $object = (object)$data;
   $schema = buildSchema($validData, $requiredData);
 
-  // The path to definitions.json relative to index.php
-  $schemaStorage->addSchema('../validation/definitions.json', $schema);
+  // The path to validation/ relative to index.php
+  $schemaStorage->addSchema('../validation/', $schema);
   $validator = new Validator( new Factory($schemaStorage) );
 
   $validator->coerce($object, $schema);
@@ -61,7 +60,7 @@ function checkValues($schemaStorage, $data, $validData, $requiredData) {
   if (!$validator->isValid()) {
     $err = '';
     foreach ($validator->getErrors() as $error) {
-      $err .= sprintf("[\"%s\"] %s", $error['property'], $error['message']);
+      $err .= sprintf(" [\"%s\"] %s", $error['property'], $error['message']);
     }
     throw new BadRequestException($err);
   }

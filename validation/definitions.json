@@ -33,8 +33,7 @@
     },
     "state": {
         "type": "string",
-        "minLength": 2,
-        "maxLength": 2
+        "enum": ["AB","BC","MB","NB","NL","NT","NS","NU","ON","PE","QC","SK","YT","AL","AK","AR","AZ","CA","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","LA","MA","MD","ME","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]
     },
     "title": {
         "type": "string",
@@ -45,9 +44,7 @@
         "maxLength": 1024
     },
     "itemId": {
-        "type": "string",
-        "pattern": "^\\w*$",
-        "minLength": 3,
-        "maxLength": 3
+        "type": "number",
+        "minimum": 0
     }
 }
