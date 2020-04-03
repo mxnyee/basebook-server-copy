@@ -33,7 +33,25 @@ class UserController {
   }
 
   public function login($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = ['username', 'password'];
+    $requiredFields = ['username', 'password'];
+
+    try {
+      $validator = $this->container->get('validator');
+      validate($validator, $request, $validParams, $validFields, $requiredFields);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
+    
+    try {
+      $conn = $this->container->get('conn');
+      $data = $request->getParsedBody();
+      checkForUser($conn, $data);
+      return responseNoContent($response);
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMsg());
+    }
   }
 
   public function getUser($request, $response, $args) {
