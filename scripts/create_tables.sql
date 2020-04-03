@@ -148,3 +148,15 @@ CREATE TABLE comment_reaction (
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
+
+CREATE VIEW num_posts(username, num_posts) AS
+  SELECT username, COUNT(post_id) as num_posts
+  FROM account a LEFT JOIN post p USING(username)
+  GROUP BY username
+  ORDER BY num_posts DESC, username ASC
+
+CREATE VIEW num_comments(username, num_comments) AS
+  SELECT username, COUNT(comment_id) as num_comments
+  FROM account a LEFT JOIN comment c USING(username)
+  GROUP BY username
+  ORDER BY num_comments DESC, username ASC
