@@ -99,7 +99,7 @@ function checkForUser($conn, $data) {
   }
 }
 
-function getUser($conn, $username) {
+function selectUser($conn, $username) {
   $query = '
     SELECT email, name, city, a.state, country, num_coins, account_type
     FROM account a LEFT JOIN country c ON a.state = c.state
@@ -108,7 +108,7 @@ function getUser($conn, $username) {
   
   $stmt = $conn->prepare($query);
   $numRows = 0;
-  $res = [];
+  $row = [];
   if (
     $stmt &&
     $stmt->bind_param('s', $username) &&
@@ -116,7 +116,7 @@ function getUser($conn, $username) {
     ) {
     $result = $stmt->get_result();
     $numRows = $result->num_rows;
-    $res = $result->fetch_assoc();
+    $row = $result->fetch_assoc();
     $result->free();
     $stmt->close();
   } else {
@@ -129,10 +129,10 @@ function getUser($conn, $username) {
     throw new NotFoundException('User ' . $username . ' not found.');
   }
 
-  return $res;
+  return $row;
 }
 
-function updateUser($conn, $username, $data, $validFields) {
+function editUser($conn, $username, $data, $validFields) {
   $toUpdate = [];
   foreach ($validFields as $field) {
     if (array_key_exists($field, $data)) {
@@ -145,7 +145,7 @@ function updateUser($conn, $username, $data, $validFields) {
   $state = (array_key_exists('state', $data))? $data['state'] : null;
   checkForCity($conn, $city, $state);
 
-  getUser($conn, $username);
+  selectUser($conn, $username);
 
   $query = 'UPDATE account SET username = \'' . $username . '\'';
   foreach ($toUpdate as $field => $newValue) {
@@ -173,14 +173,14 @@ function updateUser($conn, $username, $data, $validFields) {
   ';
   
   $stmt = $conn->prepare($query);
-  $res = [];
+  $row = [];
   if (
     $stmt &&
     $stmt->bind_param('s', $username) &&
     $stmt->execute()
     ) {
     $result = $stmt->get_result();
-    $res = $result->fetch_assoc();
+    $row = $result->fetch_assoc();
     $result->free();
     $stmt->close();
   } else {
@@ -190,7 +190,41 @@ function updateUser($conn, $username, $data, $validFields) {
   }
 
   if (array_key_exists('city', $toUpdate)) {
-    $data['country'] = $res['country'];
+    $data['country'] = $row['country'];
   }
   return $data;
+}
+
+function selectUserInventory($conn, $username) {
+  selectUser($conn, $username);
+
+  $query = '
+    SELECT au.item_id, item_name, description, expiry_date, color
+    FROM purchase p
+    LEFT JOIN account_upgrade au ON p.item_id = au.item_id
+    LEFT JOIN superpower s ON p.item_id = s.item_id
+    LEFT JOIN accessory a ON p.item_id = a.item_id
+    WHERE p.username = ?
+  ';
+  
+  $stmt = $conn->prepare($query);
+  $arr = [];
+  if (
+    $stmt &&
+    $stmt->bind_param('s', $username) &&
+    $stmt->execute()
+    ) {
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $arr[] = $row;
+    }
+    $result->free();
+    $stmt->close();
+  } else {
+    $err = ($stmt)? $stmt->error : $conn->error;
+    if ($stmt) $stmt->close();
+    throw new InternalServerErrorException('Error looking for user: ' . $err);
+  }
+
+  return $arr;
 }

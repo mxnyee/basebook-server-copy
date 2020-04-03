@@ -3,10 +3,16 @@
 // Common responses
 
 function json($response, $data) {
-  // Remove null values
-  foreach ($data as $key => $value) {
+  // Remove null values (2 nested levels deep)
+  foreach ($data as $key => &$value) {
     if (is_null($value)) {
       unset($data[$key]);
+    } else {
+      foreach ($value as $innerKey => $innerValue) {
+        if (is_null($innerValue)) {
+          unset($value[$innerKey]);
+        }
+      }
     }
   }
 
