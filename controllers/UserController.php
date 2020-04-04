@@ -166,17 +166,26 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [
+        'username' => $username
+      ] = $args;
 
-      $result = selectUserInventory($this->conn, $args['username']);
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserInventory($username);
+      $this->conn->endTransaction();
+
       return responseOk($response, $result);
 
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    } catch (InternalServerErrorException $e) {
-      return handleInternalServerError($response, $e->getMessage());
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
   }
 
@@ -189,22 +198,33 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [
+        'username' => $username
+      ] = $args;
 
-      $result = selectUserStats($this->conn, $args['username']);
+      $this->conn->beginTransaction();
+      $result = [];
+      $this->userStatementGroup->checkForUser($username);
+      $result['numPosts'] = $this->userStatementGroup->getUserNumPosts($username);
+      $result['numComments'] = $this->userStatementGroup->getUserNumComments($username);
+      $this->conn->endTransaction();
+
       return responseOk($response, $result);
 
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    } catch (InternalServerErrorException $e) {
-      return handleInternalServerError($response, $e->getMessage());
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
   }
 
 
-  public function getUserLeaderboard($request, $response, $args) {
+  public function getUserRanking($request, $response, $args) {
     $validParams = [];
     $validFields = [];
     $requiredFields = [];
@@ -212,17 +232,40 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [
+        'username' => $username
+      ] = $args;
+      $span = 2;  // Show the ranking of 5 users total (2 below and 2 above the current user)
+      $numRowsToGet = 2 * $span + 1;
+      
+      $this->conn->beginTransaction();
+      $result = [];
+      $this->userStatementGroup->checkForUser($username);
+      $totalNumRows = $this->userStatementGroup->getNumUsers();
 
-      $result = selectUserLeaderboard($this->conn, $args['username'], 2);
+      // By number of posts
+      $targetRowNum = $this->userStatementGroup->getUserRankByNumPosts($username) - 1;
+      $startingRowNum = max(0, min($targetRowNum - $span, $totalNumRows - $numRowsToGet));
+      $result['postRanking'] = $this->userStatementGroup->getRankingByNumPosts($startingRowNum, $numRowsToGet);
+
+      // By number of comments
+      $targetRowNum = $this->userStatementGroup->getUserRankByNumComments($username) - 1;
+      $startingRowNum = max(0, min($targetRowNum - $span, $totalNumRows - $numRowsToGet));
+      $result['commentRanking'] = $this->userStatementGroup->getRankingByNumComments($startingRowNum, $numRowsToGet);
+
+      $this->conn->endTransaction();
+
       return responseOk($response, $result);
 
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    } catch (InternalServerErrorException $e) {
-      return handleInternalServerError($response, $e->getMessage());
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
   }
 }
