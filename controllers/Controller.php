@@ -1,12 +1,11 @@
 <?php
-use Psr\Container\ContainerInterface;
 
 class Controller {
   protected $conn;
   protected $statements;
 
-  public function __construct(ContainerInterface $container, $queries) {
-    $this->conn = $container->get('conn');
+  public function __construct(DatabaseConnection $conn, $queries) {
+    $this->conn = $conn;
     $this->statements = [];
 
     try {
@@ -17,7 +16,6 @@ class Controller {
       }
     } catch (mysqli_sql_exception $e) {
       error_log($e->getMessage());
-      // TODO: maybe don't throw this
       throw $e;
     }
   }

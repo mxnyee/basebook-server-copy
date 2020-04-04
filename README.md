@@ -80,7 +80,7 @@ PATCH /user/{username}
 Request:
 ```
 {
-  "username": "johnny",
+  "email": "johnnysmith@example.com",
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",
@@ -90,7 +90,7 @@ Request:
 Response:
 ```
 {
-  "username": "johnny",
+  "email": "johnnysmith@example.com",
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",

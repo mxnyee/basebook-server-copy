@@ -1,5 +1,6 @@
 <?php
 use Psr\Container\ContainerInterface;
+require_once 'Router.php';
 
 class MarketRouter extends Router {
   protected $container;

@@ -1,5 +1,6 @@
 <?php
 use Psr\Container\ContainerInterface;
+require_once 'Router.php';
 
 class CommentRouter extends Router {
   protected $container;

@@ -1,4 +1,5 @@
 <?php
+
 use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -7,8 +8,8 @@ use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../database/connect.php';
-require_once '../validation/validator.php';
+require_once '../database/DatabaseConnection.php';
+require_once '../validation/Validator.php';
 foreach (glob('../routers/*.php') as $filename) { require_once $filename; }
 
 // Load environment variables
@@ -16,13 +17,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 $container = new Container();
-
-// Global database connection and validator object
-$conn = openConnection();
-$validator = createValidator();
-$container->set('conn', $conn);
-$container->set('validator', $validator);
-
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 $app->setBasePath(getenv('BASE_PATH'));

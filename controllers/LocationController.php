@@ -1,16 +1,16 @@
 <?php
-use Psr\Container\ContainerInterface;
 
+require_once 'Controller.php';
 require_once '../database/locationPreparedQueries.php';
 
 class LocationController extends Controller {
 
-  public function __construct(ContainerInterface $container) {
-    parent::__construct($container, LOCATION_PREPARED_QUERIES);
+  public function __construct(DatabaseConnection $conn) {
+    parent::__construct($conn, LOCATION_PREPARED_QUERIES);
   }
 
 
-  function checkForCity($city, $state) {
+  public function checkForCity($city, $state) {
     $exists = 0;
     if (is_null($city) || is_null($state)) {
       return;
@@ -26,12 +26,12 @@ class LocationController extends Controller {
       throw $e;
     }
     if (!$exists) {
-      insertCity($city, $state);
+      $this->insertCity($city, $state);
     }
   }
 
 
-  function insertCity($city, $state) {
+  public function insertCity($city, $state) {
     if (is_null($city) || is_null($state)) return;
     try {
       $stmt = $this->statements['insertCity'];
