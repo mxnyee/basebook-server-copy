@@ -5,10 +5,10 @@
 function json($response, $data) {
   // Remove null values (2 nested levels deep)
   if (is_iterable($data)) {
-    $data = (object) array_filter((array) $data);
+    $data = (object) array_filter((array) $data, function($v) { return !is_null($v); });
     foreach ($data as $key => &$value)
       if (is_iterable($value)) {
-        $value = (object) array_filter((array) $value);
+        $value = (object) array_filter((array) $value, function($v) { return !is_null($v); });
       }
   }
   
