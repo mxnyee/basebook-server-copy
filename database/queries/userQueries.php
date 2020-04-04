@@ -8,8 +8,8 @@ const USER_QUERIES = [
   ',
 
   'insertUser' => '
-    INSERT INTO Account
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO Account(username, email, password, name, city, state, accountType)
+    VALUES(?, ?, ?, ?, ?, ?, ?)
   ',
   
   'checkForUser' => '

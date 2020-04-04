@@ -22,11 +22,11 @@ class UserStatementGroup extends StatementGroup {
   }
   
 
-  public function insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType) {
+  public function insertUser($username, $email, $password, $name, $city, $state, $accountType) {
     $ret = [];
 
     $stmt = $this->statements['insertUser'];
-    $stmt->bind_param('ssssssss', $username, $email, $password, $name, $city, $state, $numCoins, $accountType);
+    $stmt->bind_param('sssssss', $username, $email, $password, $name, $city, $state, $accountType);
     $stmt->execute();
 
     $ret = [
@@ -36,8 +36,8 @@ class UserStatementGroup extends StatementGroup {
       'name' => $name,
       'city' => $city,
       'state' => $state,
-      'numCoins' => $numCoins,
-      'accountType' => $accountType
+      'accountType' => $accountType,
+      'numCoins' => 0
     ];
     if (!!$state) {
       $ret['country'] = $this->getUserProperty($username, 'country');
@@ -87,8 +87,8 @@ class UserStatementGroup extends StatementGroup {
 
     $query = '
       SELECT ' . $property . ' 
-      FROM account a LEFT JOIN country c USING(state)
-      WHERE a.username = ?
+      FROM Account LEFT JOIN Country USING(state)
+      WHERE username = ?
     ';
 
     $stmt = $this->conn->prepare($query);
@@ -117,14 +117,12 @@ class UserStatementGroup extends StatementGroup {
     $values = array_values($fields);
     $values[] = $username;
 
-    $prefix = 'UPDATE account SET username = ?';
-    $suffix = ' WHERE username = ?';
-
-    $query = $prefix;
+    // Build the query
+    $query = 'UPDATE Account SET username = ?';
     foreach ($fields as $field => $value) {
       $query .= ', ' . $field . ' = ?';
     }
-    $query .= $suffix;
+    $query .= ' WHERE username = ?';
 
     $stmt = $this->conn->prepare($query);
     $stmt->bind_param(str_repeat('s', $numFields + 2), $username, ...$values);
