@@ -48,51 +48,51 @@ const USER_QUERIES = [
 
   'getUserNumPosts' => '
     SELECT numPosts
-    FROM NumPosts
+    FROM NumPostsByUser
     WHERE username = ?
   ',
 
   'getUserNumComments' => '
     SELECT numComments
-    FROM NumComments
+    FROM NumCommentsByUser
     WHERE username = ?
   ',
 
   'getUserRankByNumPosts' => '
-    SELECT COUNT(username) as userRankByNumPosts
-    FROM NumPosts
+    SELECT COUNT(username) as userRankByNumPostsByUser
+    FROM NumPostsByUser
     WHERE numPosts > ALL (
-        SELECT numPosts FROM numPosts WHERE username = ?
+        SELECT numPosts FROM NumPostsByUser WHERE username = ?
       )
       or (username <= ?
         and numPosts = ALL (
-            SELECT numPosts FROM NumPosts WHERE username = ?
+            SELECT numPosts FROM NumPostsByUser WHERE username = ?
           )
       )
   ',
 
   'getRankingByNumPosts' => '
     SELECT username, numPosts
-    FROM NumPosts
+    FROM NumPostsByUser
     LIMIT ?, ?
   ',
 
   'getUserRankByNumComments' => '
-    SELECT COUNT(username) as userRankByNumComments
-    FROM NumComments
+    SELECT COUNT(username) as userRankByNumCommentsByUser
+    FROM NumCommentsByUser
     WHERE numComments > ALL (
-        SELECT numComments FROM NumComments WHERE username = ?
+        SELECT numComments FROM NumCommentsByUser WHERE username = ?
       )
       or (username <= ?
         and numComments = ALL (
-            SELECT numComments FROM NumComments WHERE username = ?
+            SELECT numComments FROM NumCommentsByUser WHERE username = ?
           )
       )
   ',
 
   'getRankingByNumComments' => '
     SELECT username, numComments
-    FROM NumComments
+    FROM NumCommentsByUser
     LIMIT ?, ?
   '
   

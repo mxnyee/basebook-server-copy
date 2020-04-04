@@ -124,11 +124,11 @@ INSERT INTO Purchase VALUES ('alpha',2,'2020-04-12');
 INSERT INTO Purchase VALUES ('bravo',1,'2020-04-16');
 INSERT INTO Purchase VALUES ('charlie',5,NULL);
 
-INSERT INTO Post VALUES (1,'alpha','Rant','Why do people do this? I don''t understand. Who does that? I don''t know what I''m talking about!','Main Street','Vancouver','BC','2020-03-12 09:24:31',0,1,0);
-INSERT INTO Post VALUES (2,'alpha','Granola recipe','Mix oats, puffed rice, nuts, seeds, honey, and coconut oil. Bake at 350F for 40 minuts. Stir in dried fruit.',NULL,'Richmond','BC','2020-02-10 18:21:00',4,0,3);
-INSERT INTO Post VALUES (3,'bravo','Good boy','My dog chased away a mole today. It would''ve ruined my garden :O',NULL,NULL,NULL,'2020-01-31 12:00:12',1,1,1);
-INSERT INTO Post VALUES (4,'charlie','I made bread','Took all day but it was worth it!!',NULL,'Burnaby','BC','2020-01-08 13:21:44',5,0,2);
-INSERT INTO Post VALUES (5,'echo','It''s too hot outside','aaaaaaaaaaaaaa I''m dying',NULL,NULL,NULL,'2019-08-20 15:51:02',0,0,0);
+INSERT INTO Post VALUES (1,'alpha','Rant','Why do people do this? I don''t understand. Who does that? I don''t know what I''m talking about!','Main Street','Vancouver','BC','2020-03-12 09:24:31');
+INSERT INTO Post VALUES (2,'alpha','Granola recipe','Mix oats, puffed rice, nuts, seeds, honey, and coconut oil. Bake at 350F for 40 minuts. Stir in dried fruit.',NULL,'Richmond','BC','2020-02-10 18:21:00');
+INSERT INTO Post VALUES (3,'bravo','Good boy','My dog chased away a mole today. It would''ve ruined my garden :O',NULL,NULL,NULL,'2020-01-31 12:00:12');
+INSERT INTO Post VALUES (4,'charlie','I made bread','Took all day but it was worth it!!',NULL,'Burnaby','BC','2020-01-08 13:21:44');
+INSERT INTO Post VALUES (5,'echo','It''s too hot outside','aaaaaaaaaaaaaa I''m dying',NULL,NULL,NULL,'2019-08-20 15:51:02');
 
 INSERT INTO PostReaction VALUES ('echo',1,-1);
 INSERT INTO PostReaction VALUES ('bravo',2,2);
@@ -139,12 +139,12 @@ INSERT INTO PostReaction VALUES ('charlie',3,-1);
 INSERT INTO PostReaction VALUES ('alpha',4,3);
 INSERT INTO PostReaction VALUES ('bravo',4,2);
 
-INSERT INTO Comment VALUES (1,2,'bravo','2020-02-12 16:21:22','My favrite!!!',0,2);
-INSERT INTO Comment VALUES (2,2,'bravo','2020-02-12 16:22:13','*favorite oops',0,0);
-INSERT INTO Comment VALUES (3,2,'delta','2020-02-21 20:27:03','So good',1,0);
-INSERT INTO Comment VALUES (1,3,'charlie','2020-02-03 13:51:02','Floof',0,1);
-INSERT INTO Comment VALUES (1,4,'delta','2020-02-24 08:12:32','Nice!',0,0);
-INSERT INTO Comment VALUES (2,4,'echo','2020-03-08 22:11:54','What kind?',3,0);
+INSERT INTO Comment VALUES (1,2,'bravo','2020-02-12 16:21:22','My favrite!!!');
+INSERT INTO Comment VALUES (2,2,'bravo','2020-02-12 16:22:13','*favorite oops');
+INSERT INTO Comment VALUES (3,2,'delta','2020-02-21 20:27:03','So good');
+INSERT INTO Comment VALUES (1,3,'charlie','2020-02-03 13:51:02','Floof');
+INSERT INTO Comment VALUES (1,4,'delta','2020-02-24 08:12:32','Nice!');
+INSERT INTO Comment VALUES (2,4,'echo','2020-03-08 22:11:54','What kind?');
 
 INSERT INTO CommentReaction VALUES ('charlie',1,2,-1);
 INSERT INTO CommentReaction VALUES ('delta',1,2,-1);
