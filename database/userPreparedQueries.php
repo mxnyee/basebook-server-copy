@@ -18,7 +18,7 @@ const USER_PREPARED_QUERIES = [
     WHERE username = ?
   ',
   
-  'checkForUserWithPassword' => '
+  'checkUserPassword' => '
     SELECT 1
     FROM account
     WHERE username = ? and password = ?
@@ -26,12 +26,6 @@ const USER_PREPARED_QUERIES = [
 
   'getAllUserInfo' => '
     SELECT email, name, city, state, country, num_coins, account_type
-    FROM account a LEFT JOIN country c USING(state)
-    WHERE a.username = ?
-  ',
-
-  'getUserProperty' => '
-    SELECT ?
     FROM account a LEFT JOIN country c USING(state)
     WHERE a.username = ?
   ',
