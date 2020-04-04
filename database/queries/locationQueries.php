@@ -2,25 +2,25 @@
 
 const LOCATION_QUERIES = [
 
-  'check_for_city' => '
-    SELECT 1
-    FROM city c
+  'checkForCity' => '
+    SELECT city, state
+    FROM City
     WHERE city = ? and state = ?
   ',
   
   'insertCity' => '
-    INSERT INTO city(city, state)
+    INSERT INTO City
     VALUES(?, ?)
   ',
 
-  'check_for_location' => '
-    SELECT 1
-    FROM location l
-    WHERE location_name = ? and city = ? and state = ?
+  'checkForLocation' => '
+    SELECT locationName, city, state
+    FROM Location
+    WHERE locationName = ? and city = ? and state = ?
   ',
   
-  'insert_location' => '
-    INSERT INTO location(location_name, city, state)
+  'insertLocation' => '
+    INSERT INTO Location
     VALUES(?, ?, ?)
   ',
   

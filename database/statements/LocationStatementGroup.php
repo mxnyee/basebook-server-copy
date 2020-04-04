@@ -16,7 +16,7 @@ class LocationStatementGroup extends StatementGroup {
       return;
     }
     try {
-      $stmt = $this->statements['check_for_city'];
+      $stmt = $this->statements['checkForCity'];
       $stmt->bind_param("ss", $city, $state);
       $stmt->execute();
       $result = $stmt->get_result();
@@ -34,7 +34,7 @@ class LocationStatementGroup extends StatementGroup {
   public function insertCity($city, $state) {
     if (is_null($city) || is_null($state)) return;
     try {
-      $stmt = $this->statements['insert_city'];
+      $stmt = $this->statements['insertCity'];
       $stmt->bind_param("ss", $city, $state);
       $stmt->execute();
     } catch(Exception $e) {

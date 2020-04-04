@@ -1,162 +1,164 @@
-CREATE TABLE country (
+CREATE TABLE Country (
   state CHAR(2),
   country CHAR(2) NOT NULL,
   PRIMARY KEY (state)
 );
 
-CREATE TABLE city (
+CREATE TABLE City (
   city VARCHAR(64),
   state CHAR(2),
   PRIMARY KEY (city, state),
-  FOREIGN KEY (state) REFERENCES country(state)
+  FOREIGN KEY (state) REFERENCES Country(state)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE location (
-  location_name VARCHAR(64),
+CREATE TABLE Location (
+  locationName VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
-  PRIMARY KEY (location_name, city, state),
-  FOREIGN KEY (city, state) REFERENCES city(city, state)
+  PRIMARY KEY (locationName, city, state),
+  FOREIGN KEY (city, state) REFERENCES City(city, state)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE permissions (
-  account_type VARCHAR(16),
-  can_see_stats BOOLEAN NOT NULL,
-  can_see_leaderboard BOOLEAN NOT NULL,
-  PRIMARY KEY (account_type)
+CREATE TABLE Permissions (
+  AccountType VARCHAR(16),
+  canSeeStats BOOLEAN NOT NULL,
+  canSeeLeaderboard BOOLEAN NOT NULL,
+  PRIMARY KEY (AccountType)
 );
 
-CREATE TABLE account (
+CREATE TABLE Account (
   username VARCHAR(64),
   email VARCHAR(256) NOT NULL UNIQUE,
   password VARCHAR(64) NOT NULL,
   name VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
-  num_coins INT NOT NULL DEFAULT 0,
-  account_type VARCHAR(16) NOT NULL DEFAULT 'Regular',
+  numCoins INT NOT NULL DEFAULT 0,
+  AccountType VARCHAR(16) NOT NULL DEFAULT 'Regular',
   PRIMARY KEY (username),
-  FOREIGN KEY (city, state) REFERENCES city(city, state)
+  FOREIGN KEY (city, state) REFERENCES City(city, state)
     ON UPDATE CASCADE,
-  FOREIGN KEY (account_type) REFERENCES permissions(account_type)
+  FOREIGN KEY (AccountType) REFERENCES Permissions(AccountType)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE account_upgrade (
-  item_id SMALLINT AUTO_INCREMENT,
-  item_name VARCHAR(16) NOT NULL UNIQUE,
+CREATE TABLE AccountUpgrade (
+  itemId SMALLINT AUTO_INCREMENT,
+  itemName VARCHAR(16) NOT NULL UNIQUE,
   description VARCHAR(64),
   price SMALLINT NOT NULL,
-  PRIMARY KEY (item_id)
+  PRIMARY KEY (itemId)
 );
 
-CREATE TABLE superpower (
-  item_id SMALLINT,
+CREATE TABLE Superpower (
+  itemId SMALLINT,
   duration TINYINT NOT NULL,
-  PRIMARY KEY (item_id),
-  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
+  PRIMARY KEY (itemId),
+  FOREIGN KEY (itemId) REFERENCES AccountUpgrade(itemId)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TABLE accessory (
-  item_id SMALLINT,
+CREATE TABLE Accessory (
+  itemId SMALLINT,
   color CHAR(7) NOT NULL DEFAULT '#00B7EB',
-  PRIMARY KEY (item_id),
-  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
+  PRIMARY KEY (itemId),
+  FOREIGN KEY (itemId) REFERENCES AccountUpgrade(itemId)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE purchase (
   username VARCHAR(64),
-  item_id SMALLINT,
-  expiry_date DATE,
-  PRIMARY KEY (username, item_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  itemId SMALLINT,
+  expiryDate DATE,
+  PRIMARY KEY (username, itemId),
+  FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (item_id) REFERENCES account_upgrade(item_id)
+  FOREIGN KEY (itemId) REFERENCES AccountUpgrade(itemId)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE post (
-  post_id SMALLINT AUTO_INCREMENT,
+  postId SMALLINT AUTO_INCREMENT,
   username VARCHAR(64) NOT NULL,
   title VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,
-  location_name VARCHAR(64),
+  locationName VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
   timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  num_likes INT NOT NULL DEFAULT 0,
-  num_dislikes INT NOT NULL DEFAULT 0,
-  num_comments INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (post_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  numLikes INT NOT NULL DEFAULT 0,
+  numDislikes INT NOT NULL DEFAULT 0,
+  numComments INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (postId),
+  FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (location_name, city, state) REFERENCES location(location_name, city, state)
+  FOREIGN KEY (locationName, city, state) REFERENCES Location(locationName, city, state)
     ON UPDATE CASCADE,
-  FOREIGN KEY (city, state) REFERENCES city(city, state)
+  FOREIGN KEY (city, state) REFERENCES City(city, state)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE post_reaction (
+CREATE TABLE PostReaction (
   username VARCHAR(64),
-  post_id SMALLINT,
+  postId SMALLINT,
   value TINYINT NOT NULL,
-  PRIMARY KEY (username, post_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  PRIMARY KEY (username, postId),
+  FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (post_id) REFERENCES post(post_id)
+  FOREIGN KEY (postId) REFERENCES Post(postId)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TABLE comment (
-  comment_id SMALLINT AUTO_INCREMENT,
-  post_id SMALLINT,
+CREATE TABLE Comment (
+  commentId SMALLINT AUTO_INCREMENT,
+  postId SMALLINT,
   username VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,
   timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  num_likes INT NOT NULL DEFAULT 0,
-  num_dislikes INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (comment_id, post_id),
-  FOREIGN KEY (post_id) REFERENCES post(post_id)
+  numLikes INT NOT NULL DEFAULT 0,
+  numDislikes INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (commentId, postId),
+  FOREIGN KEY (postId) REFERENCES Post(postId)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (username) REFERENCES account(username)
+  FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE TABLE comment_reaction (
+CREATE TABLE CommentReaction (
   username VARCHAR(64),
-  comment_id SMALLINT,
-  post_id SMALLINT,
+  commentId SMALLINT,
+  postId SMALLINT,
   value TINYINT NOT NULL,
-  PRIMARY KEY (username, comment_id, post_id),
-  FOREIGN KEY (username) REFERENCES account(username)
+  PRIMARY KEY (username, commentId, postId),
+  FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-  FOREIGN KEY (comment_id, post_id) REFERENCES comment(comment_id, post_id)
+  FOREIGN KEY (commentId, postId) REFERENCES Comment(commentId, postId)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
-CREATE VIEW num_posts(username, num_posts) AS
-  SELECT username, COUNT(post_id) as num_posts
-  FROM account a LEFT JOIN post p USING(username)
+CREATE VIEW NumPosts(username, numPosts) AS (
+  SELECT username, COUNT(postId) as numPosts
+  FROM Account LEFT JOIN Post USING(username)
   GROUP BY username
-  ORDER BY num_posts DESC, username ASC
+  ORDER BY numPosts DESC, username ASC
+);
 
-CREATE VIEW num_comments(username, num_comments) AS
-  SELECT username, COUNT(comment_id) as num_comments
-  FROM account a LEFT JOIN comment c USING(username)
+CREATE VIEW NumComments(username, numComments) AS (
+  SELECT username, COUNT(commentId) as numComments
+  FROM Account LEFT JOIN Comment USING(username)
   GROUP BY username
-  ORDER BY num_comments DESC, username ASC
+  ORDER BY numComments DESC, username ASC
+);

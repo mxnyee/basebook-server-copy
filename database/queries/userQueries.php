@@ -2,90 +2,90 @@
 
 const USER_QUERIES = [
 
-  'get_num_users' => '
-    SELECT COUNT(username) as num_users
-    FROM account a
+  'getNumUsers' => '
+    SELECT COUNT(username) as numUsers
+    FROM Account
   ',
 
   'insertUser' => '
-    INSERT INTO account(username, email, password, name, city, state, num_coins, account_type)
+    INSERT INTO Account
     VALUES(?, ?, ?, ?, ?, ?, ?, ?)
   ',
   
-  'check_for_user' => '
+  'checkForUser' => '
     SELECT username
-    FROM account
+    FROM Account
     WHERE username = ?
   ',
   
-  'check_user_password' => '
+  'checkUserPassword' => '
     SELECT username, password
-    FROM account
+    FROM Account
     WHERE username = ? and password = ?
   ',
 
-  'get_all_user_info' => '
-    SELECT email, name, city, state, country, num_coins, account_type
-    FROM account a LEFT JOIN country c USING(state)
-    WHERE a.username = ?
-  ',
-
-  'get_user_inventory' => '
-    SELECT item_id, item_name, description, expiry_date, color
-    FROM purchase p
-    JOIN account_upgrade au USING(item_id)
-    LEFT JOIN superpower s USING(item_id)
-    LEFT JOIN accessory a USING(item_id)
-    WHERE p.username = ?
-  ',
-
-  'get_user_num_posts' => '
-    SELECT num_posts
-    FROM num_posts np
+  'getAllUserInfo' => '
+    SELECT email, name, city, state, country, numCoins, accountType
+    FROM Account LEFT JOIN Country USING(state)
     WHERE username = ?
   ',
 
-  'get_user_num_comments' => '
-    SELECT num_comments
-    FROM num_comments nc
+  'getUserInventory' => '
+    SELECT itemId, itemName, description, expiryDate, color
+    FROM Purchase
+    JOIN AccountUpgrade USING(itemId)
+    LEFT JOIN Superpower USING(itemId)
+    LEFT JOIN Accessory USING(itemId)
     WHERE username = ?
   ',
 
-  'get_user_rank_by_num_posts' => '
-    SELECT COUNT(username) as user_rank_by_num_posts
-    FROM num_posts np
-    WHERE num_posts > ALL (
-        SELECT num_posts FROM num_posts WHERE username = ?
+  'getUserNumPosts' => '
+    SELECT numPosts
+    FROM NumPosts
+    WHERE username = ?
+  ',
+
+  'getUserNumComments' => '
+    SELECT numComments
+    FROM NumComments
+    WHERE username = ?
+  ',
+
+  'getUserRankByNumPosts' => '
+    SELECT COUNT(username) as userRankByNumPosts
+    FROM NumPosts
+    WHERE numPosts > ALL (
+        SELECT numPosts FROM numPosts WHERE username = ?
       )
       or (username <= ?
-        and num_posts = ALL (
-            SELECT num_posts FROM num_posts WHERE username = ?
+        and numPosts = ALL (
+            SELECT numPosts FROM NumPosts WHERE username = ?
           )
       )
   ',
 
-  'get_ranking_by_num_posts' => '
-    SELECT username, num_posts
-    FROM num_posts np
+  'getRankingByNumPosts' => '
+    SELECT username, numPosts
+    FROM NumPosts
     LIMIT ?, ?
   ',
 
-  'get_user_rank_by_num_comments' => '
-    SELECT COUNT(username) as user_rank_by_num_comments
-    FROM num_comments nc
-    WHERE num_comments > ALL (
-        SELECT num_comments FROM num_comments WHERE username = ?
+  'getUserRankByNumComments' => '
+    SELECT COUNT(username) as userRankByNumComments
+    FROM NumComments
+    WHERE numComments > ALL (
+        SELECT numComments FROM NumComments WHERE username = ?
       )
       or (username <= ?
-        and num_comments = ALL (
-            SELECT num_comments FROM num_comments WHERE username = ?
+        and numComments = ALL (
+            SELECT numComments FROM NumComments WHERE username = ?
           )
       )
   ',
 
-  'get_ranking_by_num_comments' => '
-    SELECT username, num_comments
-    FROM num_comments nc
+  'getRankingByNumComments' => '
+    SELECT username, numComments
+    FROM NumComments
     LIMIT ?, ?
   '
   
