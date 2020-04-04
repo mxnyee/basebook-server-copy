@@ -2,6 +2,7 @@
 use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Factory;
+use JsonSchema\Constraints\Constraint;
 
 require_once 'schemaBuilder.php';
 
@@ -10,14 +11,10 @@ function createValidator() {
   return $schemaStorage;
 }
 
-function validate($schemaStorage, $request, $validParams, $validFields, $requiredFields) {
-  $params = $request->getQueryParams();
-  $fields = $request->getParsedBody();
-  $method = $request->getMethod();
-
-  $useDependencies = !($method == 'PUT' || $method == 'PATCH');
+function validate($schemaStorage, $params, $body, $validParams, $validFields, $requiredFields, $useDependencies) {
   validateParams($params, $validParams);
-  validateBody($schemaStorage, $fields, $validFields, $requiredFields, $useDependencies);
+  validateBody($schemaStorage, $body, $validFields, $requiredFields, $useDependencies);
+  return fillMissingFields($body, $validFields);
 }
 
 function validateParams($data, $validData) {
@@ -42,7 +39,7 @@ function validateParams($data, $validData) {
   
   if (!$validator->isValid()) {
     $error = $validator->getErrors()[0];
-    $err = ' ["' . $array[$error['property'][1]] . '"] ' . $error['message'];
+    $err = ' [' . $array[$error['property'][1]] . '] ' . $error['message'];
     throw new BadRequestException($err);
   }
 }
@@ -59,7 +56,16 @@ function validateBody($schemaStorage, $data, $validData, $requiredData, $useDepe
   
   if (!$validator->isValid()) {
     $error = $validator->getErrors()[0];
-    $err = ' ["' . $error['property'] . '"] ' . $error['message'];
+    $err = ' [' . $error['property'] . '] ' . $error['message'];
     throw new BadRequestException($err);
   }
+}
+
+function fillMissingFields($body, $validFields) {
+  foreach($validFields as $field) {
+    if (!array_key_exists($field, $body)) {
+      $body[$field] = NULL;
+    }
+  }
+  return $body;
 }

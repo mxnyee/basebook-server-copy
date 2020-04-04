@@ -4,15 +4,14 @@
 
 function json($response, $data) {
   // Remove null values (2 nested levels deep)
-  foreach ($data as $key => &$value) {
-    if (is_null($value)) unset($data[$key]);
-    else if (is_iterable($value)) {
-      foreach ($value as $innerKey => $innerValue) {
-        if (is_null($innerValue)) unset($value[$innerKey]);
+  if (is_iterable($data)) {
+    $data = (object) array_filter((array) $data);
+    foreach ($data as $key => &$value)
+      if (is_iterable($value)) {
+        $value = (object) array_filter((array) $value);
       }
-    }
   }
-
+  
   $response->getBody()->write(json_encode($data));
   return $response
     ->withHeader('Content-Type', 'application/json');
@@ -23,7 +22,7 @@ function handleSuccess($response, $data) {
 }
 
 function handleError($response, $message) {
-  $errorMessage = ['error' => true, 'message' => $message];
+  $errorMessage = (object) ['error' => true, 'message' => $message];
   return json($response, $errorMessage);
 }
 
