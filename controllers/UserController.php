@@ -1,128 +1,228 @@
 <?php
 
 require_once 'Controller.php';
-require_once '../database/userPreparedQueries.php';
 
-class UserController extends Controller {
+class userController extends Controller {
+  private $userStatementGroup;
+  private $locationStatementGroup;
 
-  public function __construct(DatabaseConnection $conn) {
-    parent::__construct($conn, USER_PREPARED_QUERIES);
+  public function __construct(DatabaseConnection $conn, Validator $validator, UserStatementGroup $userStatementGroup, LocationStatementGroup $locationStatementGroup) {
+    parent::__construct($conn, $validator);
+    $this->userStatementGroup = $userStatementGroup;
+    $this->locationStatementGroup = $locationStatementGroup;
   }
 
 
-  public function insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType) {
-    $res = [];
+  public function signup($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['username', 'email', 'password', 'name', 'city', 'state', 'accountType'];
+    $requiredFields = ['username', 'email', 'password', 'accountType'];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
 
-    $stmt = $this->statements['insertUser'];
-    $stmt->bind_param('ssssssss', $username, $email, $password, $name, $city, $state, $numCoins, $accountType);
-    $stmt->execute();
+    try {
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [
+        'username' => $username,
+        'email' => $email,
+        'password' => $password,
+        'name' => $name,
+        'city' => $city,
+        'state' => $state,
+        'accountType' => $accountType
+      ] = $body;
+      $numCoins = 0;
 
-    $res = [ 
-      'username' => $username,
-      'email' => $email,
-      'password' => $password,
-      'name' => $name,
-      'city' => $city,
-      'state' => $state,
-      'numCoins' => $numCoins,
-      'accountType' => $accountType
-    ];
+      $this->conn->beginTransaction();
+      $this->locationStatementGroup->checkForCity($city, $state);
+      $result = $this->userStatementGroup->insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType);
+      $this->conn->endTransaction();
 
-    return $res;
-  }
+      return responseCreated($response, $result);
 
-  
-  public function checkForUser($username) {
-    $stmt = $this->statements['checkForUser'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows == 0) {
-      throw new NotFoundException('User ' . $username . ' not found.');
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
   }
 
-  
-  public function checkUserPassword($username, $password) {
-    $stmt = $this->statements['checkUserPassword'];
-    $stmt->bind_param('ss', $username, $password);
-    $stmt->execute();  
-    $result = $stmt->get_result();
-    if ($result->num_rows == 0) {
-      throw new BadRequestException('Incorrect login information for user ' . $username . '.');
+
+  public function login($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['username', 'password'];
+    $requiredFields = ['username', 'password'];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [
+        'username' => $username,
+        'password' => $password
+      ] = $body;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $this->userStatementGroup->checkUserPassword($username, $password);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
   }
 
 
-  public function getAllUserInfo($username) {
-    $ret = [];
-      
-    $stmt = $this->statements['getAllUserInfo'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $ret = $result->fetch_assoc();
+  public function getUser($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
 
-    return $ret;
-  }
+    try {
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [
+        'username' => $username
+      ] = $args;
 
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getAllUserInfo($username);
+      $this->conn->endTransaction();
 
-  public function getUserProperty($username, $property) {
-    $ret = [];
+      return responseOk($response, $result);
 
-    $query = '
-      SELECT ' . $property . ' 
-      FROM account a LEFT JOIN country c USING(state)
-      WHERE a.username = ?
-    ';
-      
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $ret = $result->fetch_assoc();
-
-    return $ret[$property];
-  }
-
-
-  public function updateUserInfo($username, $email, $password, $name, $city, $state) {
-    $ret = [];
-
-    $fields = [
-      'email' => $email,
-      'password' => $password,
-      'name' => $name,
-      'city' => $city,
-      'state' => $state
-    ];
-    $fields = array_filter($fields, function($v) { return !is_null($v); });
-    $numFields = count($fields);
-
-    $values = array_values($fields);
-    $values[] = $username;
-    
-    $prefix = 'UPDATE account SET username = ?';
-    $suffix = ' WHERE username = ?';
-
-    $query = $prefix;
-    foreach ($fields as $field => $value) {
-      $query .= ', ' . $field . ' = ?';
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
     }
-    $query .= $suffix;
-    
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param(str_repeat('s', $numFields + 2), $username, ...$values);
-    $stmt->execute();
-
-    $ret = $fields;
-    if (!!$state) {
-      $ret['country'] = $this->getUserProperty($username, 'country');
-    }
-
-    return $ret;
   }
 
 
+  public function updateUser($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['email', 'password', 'name', 'city', 'state'];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
 
+    try {
+      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [
+        'username' => $username
+      ] = $args;
+      [
+        'email' => $email,
+        'password' => $password,
+        'name' => $name,
+        'city' => $city,
+        'state' => $state
+      ] = $body;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      if (!!$city && !$state) $state = $this->userStatementGroup->getUserProperty($username, 'state');
+      $this->locationStatementGroup->checkForCity($city, $state);
+      $result = $this->userStatementGroup->updateUserInfo($username, $email, $password, $name, $city, $state);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
+    }
+  }
+
+
+  public function getUserInventory($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+
+      $result = selectUserInventory($this->conn, $args['username']);
+      return responseOk($response, $result);
+
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMessage());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMessage());
+    } catch (InternalServerErrorException $e) {
+      return handleInternalServerError($response, $e->getMessage());
+    }
+  }
+
+
+  public function getUserStats($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+
+      $result = selectUserStats($this->conn, $args['username']);
+      return responseOk($response, $result);
+
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMessage());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMessage());
+    } catch (InternalServerErrorException $e) {
+      return handleInternalServerError($response, $e->getMessage());
+    }
+  }
+
+
+  public function getUserLeaderboard($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $body = validate($this->validator, $params, $body, $validParams, $validFields, $requiredFields, true);
+
+      $result = selectUserLeaderboard($this->conn, $args['username'], 2);
+      return responseOk($response, $result);
+
+    } catch (BadRequestException $e) {
+      return handleBadRequest($response, $e->getMessage());
+    } catch (NotFoundException $e) {
+      return handleNotFound($response, $e->getMessage());
+    } catch (InternalServerErrorException $e) {
+      return handleInternalServerError($response, $e->getMessage());
+    }
+  }
 }

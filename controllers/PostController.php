@@ -1,8 +1,8 @@
 <?php
 use Psr\Container\ContainerInterface;
-require_once 'Router.php';
+require_once 'Controller.php';
 
-class PostRouter extends Router {
+class PostController extends Controller {
   protected $container;
 
   public function __construct(ContainerInterface $container) {

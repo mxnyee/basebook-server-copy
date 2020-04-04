@@ -1,9 +1,9 @@
 <?php
 
-require_once 'Controller.php';
-require_once '../database/locationPreparedQueries.php';
+require_once 'StatementGroup.php';
+require_once __DIR__ . '/../queries/locationPreparedQueries.php';
 
-class LocationController extends Controller {
+class LocationStatementGroup extends StatementGroup {
 
   public function __construct(DatabaseConnection $conn) {
     parent::__construct($conn, LOCATION_PREPARED_QUERIES);

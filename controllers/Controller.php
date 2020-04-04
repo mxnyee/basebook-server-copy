@@ -1,23 +1,15 @@
 <?php
 
+foreach (glob('../database/statements/*.php') as $filename) { require_once $filename; }
+foreach (glob('../errorHandling/*.php') as $filename) { require_once $filename; }
+
 class Controller {
   protected $conn;
-  protected $statements;
+  protected $validator;
 
-  public function __construct(DatabaseConnection $conn, $queries) {
+  public function __construct(DatabaseConnection $conn, Validator $validator) {
     $this->conn = $conn;
-    $this->statements = [];
-
-    try {
-      // Prepare queries for this controller class
-      foreach ($queries as $queryName => $queryString) {
-        $stmt = $this->conn->prepare($queryString);
-        $this->statements[$queryName] = $stmt;
-      }
-    } catch (mysqli_sql_exception $e) {
-      error_log($e->getMessage());
-      throw $e;
-    }
+    $this->validator = $validator;
   }
 
 }

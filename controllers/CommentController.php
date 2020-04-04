@@ -1,8 +1,8 @@
 <?php
 use Psr\Container\ContainerInterface;
-require_once 'Router.php';
+require_once 'Controller.php';
 
-class CommentRouter extends Router {
+class CommentController extends Controller {
   protected $container;
 
   public function __construct(ContainerInterface $container) {

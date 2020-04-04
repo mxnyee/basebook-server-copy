@@ -1,8 +1,8 @@
 <?php
 use Psr\Container\ContainerInterface;
-require_once 'Router.php';
+require_once 'Controller.php';
 
-class MarketRouter extends Router {
+class MarketController extends Controller {
   protected $container;
 
   public function __construct(ContainerInterface $container) {
