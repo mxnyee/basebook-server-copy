@@ -1,6 +1,6 @@
 <?php
 
-const USER_PREPARED_QUERIES = [
+const USER_QUERIES = [
 
   'get_num_users' => '
     SELECT COUNT(username) as num_users

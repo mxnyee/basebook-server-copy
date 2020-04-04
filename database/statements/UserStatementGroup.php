@@ -1,12 +1,12 @@
 <?php
 
 require_once 'StatementGroup.php';
-require_once __DIR__ . '/../queries/userPreparedQueries.php';
+require_once __DIR__ . '/../queries/userQueries.php';
 
 class UserStatementGroup extends StatementGroup {
 
   public function __construct(DatabaseConnection $conn) {
-    parent::__construct($conn, USER_PREPARED_QUERIES);
+    parent::__construct($conn, USER_QUERIES);
   }
 
 

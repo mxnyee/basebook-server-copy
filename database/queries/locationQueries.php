@@ -1,6 +1,6 @@
 <?php
 
-const LOCATION_PREPARED_QUERIES = [
+const LOCATION_QUERIES = [
 
   'check_for_city' => '
     SELECT 1

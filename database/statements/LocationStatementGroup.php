@@ -1,12 +1,12 @@
 <?php
 
 require_once 'StatementGroup.php';
-require_once __DIR__ . '/../queries/locationPreparedQueries.php';
+require_once __DIR__ . '/../queries/locationQueries.php';
 
 class LocationStatementGroup extends StatementGroup {
 
   public function __construct(DatabaseConnection $conn) {
-    parent::__construct($conn, LOCATION_PREPARED_QUERIES);
+    parent::__construct($conn, LOCATION_QUERIES);
   }
 
 
