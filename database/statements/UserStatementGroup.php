@@ -88,6 +88,8 @@ class UserStatementGroup extends StatementGroup {
     $query = '
       SELECT ' . $property . ' 
       FROM Account LEFT JOIN Country USING(state)
+      JOIN NumPostsByUser USING(username)
+      JOIN NumCommentsByUser USING(username)
       WHERE username = ?
     ';
 
@@ -164,32 +166,6 @@ class UserStatementGroup extends StatementGroup {
     }
 
     return $ret;
-  }
-
-  
-  public function getUserNumPosts($username) {
-    $ret = [];
-
-    $stmt = $this->statements['getUserNumPosts'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $ret = $result->fetch_assoc();
-
-    return $ret['numPosts'];
-  }
-
-  
-  public function getUserNumComments($username) {
-    $ret = [];
-
-    $stmt = $this->statements['getUserNumComments'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $ret = $result->fetch_assoc();
-
-    return $ret['numComments'];
   }
 
   

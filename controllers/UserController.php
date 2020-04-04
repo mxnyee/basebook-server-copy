@@ -31,11 +31,10 @@ class userController extends Controller {
         'state' => $state,
         'accountType' => $accountType
       ] = $body;
-      $numCoins = 0;
 
       $this->conn->beginTransaction();
       $this->locationStatementGroup->checkForCity($city, $state);
-      $result = $this->userStatementGroup->insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType);
+      $result = $this->userStatementGroup->insertUser($username, $email, $password, $name, $city, $state, $accountType);
       $this->conn->endTransaction();
 
       return responseCreated($response, $result);
@@ -207,8 +206,8 @@ class userController extends Controller {
       $this->conn->beginTransaction();
       $result = [];
       $this->userStatementGroup->checkForUser($username);
-      $result['numPosts'] = $this->userStatementGroup->getUserNumPosts($username);
-      $result['numComments'] = $this->userStatementGroup->getUserNumComments($username);
+      $result['numPosts'] = $this->userStatementGroup->getUserProperty($username, 'numPosts');
+      $result['numComments'] = $this->userStatementGroup->getUserProperty($username, 'numComments');
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
