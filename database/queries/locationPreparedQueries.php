@@ -2,7 +2,7 @@
 
 const LOCATION_PREPARED_QUERIES = [
 
-  'checkForCity' => '
+  'check_for_city' => '
     SELECT 1
     FROM city c
     WHERE city = ? and state = ?
@@ -13,13 +13,13 @@ const LOCATION_PREPARED_QUERIES = [
     VALUES(?, ?)
   ',
 
-  'checkForLocation' => '
+  'check_for_location' => '
     SELECT 1
     FROM location l
     WHERE location_name = ? and city = ? and state = ?
   ',
   
-  'insertLocation' => '
+  'insert_location' => '
     INSERT INTO location(location_name, city, state)
     VALUES(?, ?, ?)
   ',

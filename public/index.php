@@ -37,7 +37,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
   $group->patch('/{username}', \UserController::class . ':updateUser');
   $group->get('/{username}/inventory', \UserController::class . ':getUserInventory');
   $group->get('/{username}/stats', \UserController::class . ':getUserStats');
-  $group->get('/{username}/leaderboard', \UserController::class . ':getUserLeaderboard');
+  $group->get('/{username}/ranking', \UserController::class . ':getUserRanking');
 });
 
 // Post route

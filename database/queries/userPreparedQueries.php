@@ -2,8 +2,8 @@
 
 const USER_PREPARED_QUERIES = [
 
-  'getNumUsers' => '
-    SELECT 1
+  'get_num_users' => '
+    SELECT COUNT(username) as num_users
     FROM account a
   ',
 
@@ -12,25 +12,25 @@ const USER_PREPARED_QUERIES = [
     VALUES(?, ?, ?, ?, ?, ?, ?, ?)
   ',
   
-  'checkForUser' => '
-    SELECT 1
+  'check_for_user' => '
+    SELECT username
     FROM account
     WHERE username = ?
   ',
   
-  'checkUserPassword' => '
-    SELECT 1
+  'check_user_password' => '
+    SELECT username, password
     FROM account
     WHERE username = ? and password = ?
   ',
 
-  'getAllUserInfo' => '
+  'get_all_user_info' => '
     SELECT email, name, city, state, country, num_coins, account_type
     FROM account a LEFT JOIN country c USING(state)
     WHERE a.username = ?
   ',
 
-  'getUserInventory' => '
+  'get_user_inventory' => '
     SELECT item_id, item_name, description, expiry_date, color
     FROM purchase p
     JOIN account_upgrade au USING(item_id)
@@ -39,14 +39,20 @@ const USER_PREPARED_QUERIES = [
     WHERE p.username = ?
   ',
 
-  'getUserNumPosts' => '
+  'get_user_num_posts' => '
     SELECT num_posts
     FROM num_posts np
     WHERE username = ?
   ',
 
-  'getLeaderboardAboveUserByNumPosts' => '
-    SELECT username, num_posts
+  'get_user_num_comments' => '
+    SELECT num_comments
+    FROM num_comments nc
+    WHERE username = ?
+  ',
+
+  'get_user_rank_by_num_posts' => '
+    SELECT COUNT(username) as user_rank_by_num_posts
     FROM num_posts np
     WHERE num_posts > ALL (
         SELECT num_posts FROM num_posts WHERE username = ?
@@ -58,20 +64,14 @@ const USER_PREPARED_QUERIES = [
       )
   ',
 
-  'getLeaderboardAtUserByNumPosts' => '
+  'get_ranking_by_num_posts' => '
     SELECT username, num_posts
     FROM num_posts np
     LIMIT ?, ?
   ',
 
-  'getUserNumComments' => '
-    SELECT num_comments
-    FROM num_comments nc
-    WHERE username = ?
-  ',
-
-  'getLeaderboardAboveUserByNumComments' => '
-    SELECT username, num_comments
+  'get_user_rank_by_num_comments' => '
+    SELECT COUNT(username) as user_rank_by_num_comments
     FROM num_comments nc
     WHERE num_comments > ALL (
         SELECT num_comments FROM num_comments WHERE username = ?
@@ -83,7 +83,7 @@ const USER_PREPARED_QUERIES = [
       )
   ',
 
-  'getLeaderboardAtUserByNumComments' => '
+  'get_ranking_by_num_comments' => '
     SELECT username, num_comments
     FROM num_comments nc
     LIMIT ?, ?

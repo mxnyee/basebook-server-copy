@@ -137,9 +137,9 @@ Response:
 }
 ```
 
-### See the user leaderboard
+### See a user's ranking
 
-GET /user/{username}/leaderboard
+GET /user/{username}/ranking
 
 Response:
 ```

@@ -10,10 +10,22 @@ class UserStatementGroup extends StatementGroup {
   }
 
 
+  public function getNumUsers() {
+    $ret = [];
+
+    $stmt = $this->statements['get_num_users'];
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret['num_users'];
+  }
+  
+
   public function insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType) {
     $res = [];
 
-    $stmt = $this->statements['insertUser'];
+    $stmt = $this->statements['insert_user'];
     $stmt->bind_param('ssssssss', $username, $email, $password, $name, $city, $state, $numCoins, $accountType);
     $stmt->execute();
 
@@ -33,7 +45,7 @@ class UserStatementGroup extends StatementGroup {
 
   
   public function checkForUser($username) {
-    $stmt = $this->statements['checkForUser'];
+    $stmt = $this->statements['check_for_user'];
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -44,7 +56,7 @@ class UserStatementGroup extends StatementGroup {
 
   
   public function checkUserPassword($username, $password) {
-    $stmt = $this->statements['checkUserPassword'];
+    $stmt = $this->statements['check_user_password'];
     $stmt->bind_param('ss', $username, $password);
     $stmt->execute();  
     $result = $stmt->get_result();
@@ -56,8 +68,8 @@ class UserStatementGroup extends StatementGroup {
 
   public function getAllUserInfo($username) {
     $ret = [];
-      
-    $stmt = $this->statements['getAllUserInfo'];
+
+    $stmt = $this->statements['get_all_user_info'];
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -75,7 +87,7 @@ class UserStatementGroup extends StatementGroup {
       FROM account a LEFT JOIN country c USING(state)
       WHERE a.username = ?
     ';
-      
+
     $stmt = $this->conn->prepare($query);
     $stmt->bind_param('s', $username);
     $stmt->execute();
@@ -101,7 +113,7 @@ class UserStatementGroup extends StatementGroup {
 
     $values = array_values($fields);
     $values[] = $username;
-    
+
     $prefix = 'UPDATE account SET username = ?';
     $suffix = ' WHERE username = ?';
 
@@ -110,7 +122,7 @@ class UserStatementGroup extends StatementGroup {
       $query .= ', ' . $field . ' = ?';
     }
     $query .= $suffix;
-    
+
     $stmt = $this->conn->prepare($query);
     $stmt->bind_param(str_repeat('s', $numFields + 2), $username, ...$values);
     $stmt->execute();
@@ -123,6 +135,102 @@ class UserStatementGroup extends StatementGroup {
     return $ret;
   }
 
+  
+  public function getUserInventory($username) {
+    $ret = [];
+
+    $stmt = $this->statements['get_user_inventory'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
+  
+  public function getUserNumPosts($username) {
+    $ret = [];
+
+    $stmt = $this->statements['get_user_num_posts'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret['num_posts'];
+  }
+
+  
+  public function getUserNumComments($username) {
+    $ret = [];
+
+    $stmt = $this->statements['get_user_num_comments'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret['num_comments'];
+  }
+
+  
+  public function getUserRankByNumPosts($username) {
+    $ret = [];
+
+    $stmt = $this->statements['get_user_rank_by_num_posts'];
+    $stmt->bind_param('sss', $username, $username, $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret['user_rank_by_num_posts'];
+  }
+
+  
+  public function getRankingByNumPosts($offset, $limit) {
+    $ret = [];
+
+    $stmt = $this->statements['get_ranking_by_num_posts'];
+    $stmt->bind_param('ii', $offset, $limit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
+  
+  public function getUserRankByNumComments($username) {
+    $ret = [];
+
+    $stmt = $this->statements['get_user_rank_by_num_comments'];
+    $stmt->bind_param('sss', $username, $username, $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret['user_rank_by_num_comments'];
+  }
+
+  
+  public function getRankingByNumComments($offset, $limit) {
+    $ret = [];
+
+    $stmt = $this->statements['get_ranking_by_num_comments'];
+    $stmt->bind_param('ii', $offset, $limit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
 
 
 }
