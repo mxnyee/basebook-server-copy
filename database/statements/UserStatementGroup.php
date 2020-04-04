@@ -23,13 +23,13 @@ class UserStatementGroup extends StatementGroup {
   
 
   public function insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType) {
-    $res = [];
+    $ret = [];
 
     $stmt = $this->statements['insertUser'];
     $stmt->bind_param('ssssssss', $username, $email, $password, $name, $city, $state, $numCoins, $accountType);
     $stmt->execute();
 
-    $res = [ 
+    $ret = [
       'username' => $username,
       'email' => $email,
       'password' => $password,
@@ -39,8 +39,11 @@ class UserStatementGroup extends StatementGroup {
       'numCoins' => $numCoins,
       'accountType' => $accountType
     ];
-
-    return $res;
+    if (!!$state) {
+      $ret['country'] = $this->getUserProperty($username, 'country');
+    }
+    
+    return $ret;
   }
 
   
@@ -136,10 +139,25 @@ class UserStatementGroup extends StatementGroup {
   }
 
   
-  public function getUserInventory($username) {
+  public function getUserSuperpowers($username) {
     $ret = [];
 
-    $stmt = $this->statements['getUserInventory'];
+    $stmt = $this->statements['getUserSuperpowers'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
+  
+  public function getUserAccessories($username) {
+    $ret = [];
+
+    $stmt = $this->statements['getUserAccessories'];
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $result = $stmt->get_result();

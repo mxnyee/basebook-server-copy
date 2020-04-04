@@ -44,6 +44,22 @@ Request:
   "accountType": "Regular"
 }
 ```
+
+Response:
+```
+{
+  "username": "john",
+  "email": "johnsmith@example.com",
+  "password": "12345",
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+  "country": "CA",
+  "numCoins": 0,
+  "accountType": "Regular"
+}
+```
+
 ### Login as an existing user
 
 POST /user/login

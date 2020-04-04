@@ -173,7 +173,8 @@ class userController extends Controller {
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
-      $result = $this->userStatementGroup->getUserInventory($username);
+      $result['superpowers'] = $this->userStatementGroup->getUserSuperpowers($username);
+      $result['accessories'] = $this->userStatementGroup->getUserAccessories($username);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
