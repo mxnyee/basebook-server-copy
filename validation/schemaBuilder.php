@@ -24,12 +24,12 @@ function buildSchema($validData, $requiredData, $useDependencies) {
     'additionalProperties' => false
   ];
 
+  // Property dependencies
   if ($useDependencies) {
     $schema->{'dependencies'} = (object) [
         'locationName' => ['city', 'state'],
         'city' => ['state']
     ];
-    var_export($schema);
   }
 
   return $schema;

@@ -20,7 +20,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -29,7 +29,7 @@ class UserController {
       $result = insertUser($conn, $data);
       return responseCreated($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
   }
 
@@ -42,7 +42,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -51,9 +51,9 @@ class UserController {
       checkUserPassword($conn, $data);
       return responseNoContent($response);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 
@@ -66,7 +66,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -74,9 +74,9 @@ class UserController {
       $result = selectUser($conn, $args['username']);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 
@@ -89,7 +89,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -98,9 +98,9 @@ class UserController {
       $result = editUser($conn, $args['username'], $data, $validFields);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 
@@ -113,7 +113,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -121,9 +121,9 @@ class UserController {
       $result = selectUserInventory($conn, $args['username']);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 
@@ -136,7 +136,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -144,9 +144,9 @@ class UserController {
       $result = selectUserStats($conn, $args['username']);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 
@@ -159,7 +159,7 @@ class UserController {
       $validator = $this->container->get('validator');
       validate($validator, $request, $validParams, $validFields, $requiredFields);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     }
     
     try {
@@ -167,9 +167,9 @@ class UserController {
       $result = selectUserLeaderboard($conn, $args['username'], 2);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMsg());
+      return handleBadRequest($response, $e->getMessage());
     } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMsg());
+      return handleNotFound($response, $e->getMessage());
     }
   }
 }
