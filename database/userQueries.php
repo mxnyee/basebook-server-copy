@@ -142,7 +142,7 @@ function editUser($conn, $username, $data, $validFields) {
   $row = [];
   $city = (array_key_exists('city', $data))? $data['city'] : null;
   $state = (array_key_exists('state', $data))? $data['state'] : null;
-  checkForCity($conn, $city, $state);
+  if (!!$state) checkForCity($conn, $city, $state);
   selectUser($conn, $username);
 
   $query = 'UPDATE account SET username = \'' . $username . '\'';
@@ -165,7 +165,7 @@ function editUser($conn, $username, $data, $validFields) {
   }
 
   $query = '
-    SELECT country
+    SELECT state, country
     FROM account a LEFT JOIN country c USING(state)
     WHERE a.username = ?
   ';
@@ -186,7 +186,8 @@ function editUser($conn, $username, $data, $validFields) {
     throw new InternalServerErrorException('Error looking for user: ' . $err);
   }
 
-  if (array_key_exists('city', $toUpdate)) {
+  if (!!$city || !!$state) {
+    $data['state'] = $row['state'];
     $data['country'] = $row['country'];
   }
   return $data;

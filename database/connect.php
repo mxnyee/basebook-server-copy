@@ -6,7 +6,11 @@ function openConnection() {
   $dbpass = getenv('DB_PASS');
   $db_name = getenv('DB_NAME');
   
-  $conn = new mysqli($dbhost, $dbuser, $dbpass, $db_name) or die('Failed to connect to database: %s\n'. $conn->error);
+  $conn = new mysqli($dbhost, $dbuser, $dbpass, $db_name);
+  if ($conn->connect_error) {
+      exit('Failed to connect to database.');
+  }
+
   return $conn;
 }
 

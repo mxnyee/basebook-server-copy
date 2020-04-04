@@ -95,7 +95,7 @@ class UserController {
     try {
       $conn = $this->container->get('conn');
       $data = $request->getParsedBody();
-      $result = updateUser($conn, $args['username'], $data, $validFields);
+      $result = editUser($conn, $args['username'], $data, $validFields);
       return responseOk($response, $result);
     } catch (BadRequestException $e) {
       return handleBadRequest($response, $e->getMsg());

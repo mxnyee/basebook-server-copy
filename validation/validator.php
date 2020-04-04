@@ -13,9 +13,11 @@ function createValidator() {
 function validate($schemaStorage, $request, $validParams, $validFields, $requiredFields) {
   $params = $request->getQueryParams();
   $fields = $request->getParsedBody();
+  $method = $request->getMethod();
 
+  $useDependencies = !($method == 'PUT' || $method == 'PATCH');
   validateParams($params, $validParams);
-  validateBody($schemaStorage, $fields, $validFields, $requiredFields);
+  validateBody($schemaStorage, $fields, $validFields, $requiredFields, $useDependencies);
 }
 
 function validateParams($data, $validData) {
@@ -39,29 +41,25 @@ function validateParams($data, $validData) {
   $validator->validate($array, $enum);
   
   if (!$validator->isValid()) {
-    $err = '';
-    foreach ($validator->getErrors() as $error) {
-      $err .= ' ["' . $array[$error['property'][1]] . '"] ' . $error['message'];
-    }
+    $error = $validator->getErrors()[0];
+    $err = ' ["' . $array[$error['property'][1]] . '"] ' . $error['message'];
     throw new BadRequestException($err);
   }
 }
 
-function validateBody($schemaStorage, $data, $validData, $requiredData) {
+function validateBody($schemaStorage, $data, $validData, $requiredData, $useDependencies) {
   $object = (object)$data;
-  $schema = buildSchema($validData, $requiredData);
+  $schema = buildSchema($validData, $requiredData, $useDependencies);
 
-  // The path to validation/ relative to index.php
-  $schemaStorage->addSchema('../validation/', $schema);
+  // The path to validation/definitions.json relative to index.php
+  $schemaStorage->addSchema('../validation/definitions.json', $schema);
   $validator = new Validator( new Factory($schemaStorage) );
 
   $validator->coerce($object, $schema);
   
   if (!$validator->isValid()) {
-    $err = '';
-    foreach ($validator->getErrors() as $error) {
-      $err .= ' ["' . $error['property'] . '"] ' . $error['message'];
-    }
+    $error = $validator->getErrors()[0];
+    $err = ' ["' . $error['property'] . '"] ' . $error['message'];
     throw new BadRequestException($err);
   }
 }
