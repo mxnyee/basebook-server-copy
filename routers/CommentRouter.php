@@ -1,7 +1,7 @@
 <?php
 use Psr\Container\ContainerInterface;
 
-class CommentController {
+class CommentRouter extends Router {
   protected $container;
 
   public function __construct(ContainerInterface $container) {

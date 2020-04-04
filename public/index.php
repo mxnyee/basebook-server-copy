@@ -9,24 +9,17 @@ use Slim\Routing\RouteCollectorProxy;
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once '../database/connect.php';
 require_once '../validation/validator.php';
-// Import all controllers
-foreach (glob('../controllers/*.php') as $filename) {
-  require_once $filename;
-}
-// Import error handler and custom exceptions
-foreach (glob('../errorHandling/*.php') as $filename) {
-  require_once $filename;
-}
+foreach (glob('../routers/*.php') as $filename) { require_once $filename; }
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+$container = new Container();
+
 // Global database connection and validator object
 $conn = openConnection();
 $validator = createValidator();
-
-$container = new Container();
 $container->set('conn', $conn);
 $container->set('validator', $validator);
 
@@ -44,34 +37,34 @@ $app->get('/', function (Request $request, Response $response) {
 
 // User route
 $app->group('/user', function (RouteCollectorProxy $group) {
-  $group->post('/signup', '\UserController:signup');
-  $group->post('/login', '\UserController:login');
-  $group->get('/{username}', '\UserController:getUser');
-  $group->patch('/{username}', '\UserController:editUser');
-  $group->get('/{username}/inventory', '\UserController:getUserInventory');
-  $group->get('/{username}/stats', '\UserController:getUserStats');
-  $group->get('/{username}/leaderboard', '\UserController:getUserLeaderboard');
+  $group->post('/signup', \UserRouter::class . ':signup');
+  $group->post('/login', \UserRouter::class . ':login');
+  $group->get('/{username}', \UserRouter::class . ':getUser');
+  $group->patch('/{username}', \UserRouter::class . ':updateUser');
+  $group->get('/{username}/inventory', \UserRouter::class . ':getUserInventory');
+  $group->get('/{username}/stats', \UserRouter::class . ':getUserStats');
+  $group->get('/{username}/leaderboard', \UserRouter::class . ':getUserLeaderboard');
 });
 
 // Post route
 $app->group('/post', function (RouteCollectorProxy $group) {
   // Posts
-  $group->post('', '\PostController:createPost');
-  $group->get('', '\PostController:getAllPosts');
-  $group->get('/search', '\PostController:searchPosts');
-  $group->post('/{postId}/reaction', '\PostController:addPostReaction');
-  $group->delete('/{postId}/reaction/{username}', '\PostController:removePostReaction');
+  $group->post('', \PostRouter::class . ':createPost');
+  $group->get('', \PostRouter::class . ':getFilteredPosts');
+  $group->get('/search', \PostRouter::class . ':searchPosts');
+  $group->post('/{postId}/reaction', \PostRouter::class . ':addPostReaction');
+  $group->delete('/{postId}/reaction/{username}', \PostRouter::class . ':removePostReaction');
   // Comments
-  $group->post('/{postId}/comment', '\CommentController:createComment');
-  $group->get('/{postId}/comment', '\CommentController:getAllCommentsOnPost');
-  $group->post('/{postId}/comment/{commentId}/reaction', '\CommentController:addCommentReaction');
-  $group->delete('/{postId}/comment/{commentId}/reaction/{username}', '\CommentController:removeCommentReaction');
+  $group->post('/{postId}/comment', \CommentRouter::class . ':createComment');
+  $group->get('/{postId}/comment', \CommentRouter::class . ':getFilteredComments');
+  $group->post('/{postId}/comment/{commentId}/reaction', \CommentRouter::class . ':addCommentReaction');
+  $group->delete('/{postId}/comment/{commentId}/reaction/{username}', \CommentRouter::class . ':removeCommentReaction');
 });
 
 // Market route
 $app->group('/market', function (RouteCollectorProxy $group) {
-  $group->get('', '\MarketController:getAllItems');
-  $group->post('/purchase', '\MarketController:purchaseItem');
+  $group->get('', \MarketRouter::class . ':getAllItems');
+  $group->post('/purchase', \MarketRouter::class . ':purchaseItem');
 });
 
 // For testing!!

@@ -1,175 +1,84 @@
 <?php
 use Psr\Container\ContainerInterface;
 
-require_once '../database/userQueries.php';
-require_once '../database/locationQueries.php';
+require_once '../database/userPreparedQueries.php';
 
-class UserController {
-  protected $container;
+class UserController extends Controller {
+  private $locationController;
 
-  public function __construct(ContainerInterface $container) {
-    $this->container = $container;
+  public function __construct(ContainerInterface $container, LocationController $locationController) {
+    parent::__construct($container, USER_PREPARED_QUERIES);
+    $this->locationController = $locationController;
   }
 
-  public function signup($request, $response, $args) {
-    $validParams = [];
-    $validFields = ['username', 'email', 'password', 'name', 'city', 'state', 'accountType'];
-    $requiredFields = ['username', 'email', 'password', 'accountType'];
+
+  function insertUser($username, $email, $password, $name, $city, $state, $numCoins, $accountType) {
+    $res = [];
 
     try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
+      $this->conn->autocommit(FALSE);
+      $this->locationController->checkForCity($city, $state);
+      
+      $stmt = $this->statements['insertUser'];
+      $stmt->bind_param('ssssssss', $username, $email, $password, $name, $city, $state, $numCoins, $accountType);
+      $stmt->execute();
+
+      $this->conn->autocommit(TRUE);
+    } catch(Exception $e) {
+      $this->conn->rollback();
+      throw $e;
     }
+
+    $res = [ 
+      'username' => $username,
+      'email' => $email,
+      'password' => $password,
+      'name' => $name,
+      'city' => $city,
+      'state' => $state,
+      'numCoins' => $numCoins,
+      'accountType' => $accountType
+    ];
     
-    try {
-      $conn = $this->container->get('conn');
-      $data = $request->getParsedBody();
-      $result = insertUser($conn, $data);
-      return responseCreated($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
+    return $res;
   }
 
-  public function login($request, $response, $args) {
-    $validParams = [];
-    $validFields = ['username', 'password'];
-    $requiredFields = ['username', 'password'];
+
+  function getUser($username) {
+    $ret = [];
 
     try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
+      $this->conn->autocommit(FALSE);
+      checkForUser($username);
+      
+      $stmt = $this->statements['getAllUserInfo'];
+      $stmt->bind_param("s", $username);
+      $stmt->execute();  
+      $ret[] = $stmt->get_result()->fetch_assoc();
+    } catch(Exception $e) {
+      $this->conn->rollback();
+      throw $e;
+    } finally {
+      $this->conn->autocommit(TRUE);
     }
+
+    return $ret;
     
-    try {
-      $conn = $this->container->get('conn');
-      $data = $request->getParsedBody();
-      checkUserPassword($conn, $data);
-      return responseNoContent($response);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
+    // if (
+    //   $stmt &&
+    //   $stmt->bind_param('s', $username) &&
+    //   $stmt->execute()
+    //   ) {
+    //   $result = $stmt->get_result();
+    //   $numRows = $result->num_rows;
+    //   $row = $result->fetch_assoc();
+    //   $result->free();
+    //   $stmt->close();
+    // } else {
+    //   $err = ($stmt)? $stmt->error : $conn->error;
+    //   if ($stmt) $stmt->close();
+    //   throw new InternalServerErrorException('Error looking for user: ' . $err);
+    // }
   }
 
-  public function getUser($request, $response, $args) {
-    $validParams = [];
-    $validFields = [];
-    $requiredFields = [];
-
-    try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
-    
-    try {
-      $conn = $this->container->get('conn');
-      $result = selectUser($conn, $args['username']);
-      return responseOk($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
-  }
-
-  public function editUser($request, $response, $args) {
-    $validParams = [];
-    $validFields = ['username', 'password', 'name', 'city', 'state'];
-    $requiredFields = [];
-
-    try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
-    
-    try {
-      $conn = $this->container->get('conn');
-      $data = $request->getParsedBody();
-      $result = editUser($conn, $args['username'], $data, $validFields);
-      return responseOk($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
-  }
-
-  public function getUserInventory($request, $response, $args) {
-    $validParams = [];
-    $validFields = [];
-    $requiredFields = [];
-
-    try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
-    
-    try {
-      $conn = $this->container->get('conn');
-      $result = selectUserInventory($conn, $args['username']);
-      return responseOk($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
-  }
-
-  public function getUserStats($request, $response, $args) {
-    $validParams = [];
-    $validFields = [];
-    $requiredFields = [];
-
-    try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
-    
-    try {
-      $conn = $this->container->get('conn');
-      $result = selectUserStats($conn, $args['username']);
-      return responseOk($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
-  }
-
-  public function getUserLeaderboard($request, $response, $args) {
-    $validParams = [];
-    $validFields = [];
-    $requiredFields = [];
-
-    try {
-      $validator = $this->container->get('validator');
-      validate($validator, $request, $validParams, $validFields, $requiredFields);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    }
-    
-    try {
-      $conn = $this->container->get('conn');
-      $result = selectUserLeaderboard($conn, $args['username'], 2);
-      return responseOk($response, $result);
-    } catch (BadRequestException $e) {
-      return handleBadRequest($response, $e->getMessage());
-    } catch (NotFoundException $e) {
-      return handleNotFound($response, $e->getMessage());
-    }
-  }
 }
