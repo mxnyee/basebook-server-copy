@@ -47,6 +47,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -77,6 +78,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -107,6 +109,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -141,6 +144,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -172,6 +176,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -194,6 +199,7 @@ class userController extends Controller {
       $this->conn->beginTransaction();
       $result = [];
       $this->userStatementGroup->checkForUser($username);
+      $this->userStatementGroup->checkUserPermissions($username, 'canSeeStats');
       $result['numPosts'] = $this->userStatementGroup->getUserProperty($username, 'numPosts');
       $result['numComments'] = $this->userStatementGroup->getUserProperty($username, 'numComments');
       $this->conn->endTransaction();
@@ -204,6 +210,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -228,6 +235,7 @@ class userController extends Controller {
       $this->conn->beginTransaction();
       $result = [];
       $this->userStatementGroup->checkForUser($username);
+      $this->userStatementGroup->checkUserPermissions($username, 'canSeeRanking');
       $totalNumRows = $this->userStatementGroup->getNumUsers();
 
       // By number of posts
@@ -248,6 +256,7 @@ class userController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;

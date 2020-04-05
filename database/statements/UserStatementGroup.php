@@ -64,7 +64,7 @@ class UserStatementGroup extends StatementGroup {
     $stmt->execute();  
     $result = $stmt->get_result();
     if ($result->num_rows == 0) {
-      throw new BadRequestException('Incorrect login information for user ' . $username . '.');
+      throw new NotFoundException('Incorrect login information for user ' . $username . '.');
     }
   }
 
@@ -186,4 +186,14 @@ class UserStatementGroup extends StatementGroup {
   }
 
 
+  public function checkUserPermissions($username, $permissions) {
+      $stmt = $this->statements['checkUserPermissions'];
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $ret = $result->fetch_assoc();
+      if ($ret[$permissions] == false) {
+        throw new ForbiddenException('Upgrade your account to see this info.');
+      }
+    }
 }

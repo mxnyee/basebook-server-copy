@@ -61,6 +61,11 @@ function handleBadRequest($response, $message) {
     ->withStatus(400);
 }
 
+function handleForbidden($response, $message) {
+  return handleError($response, $message)
+    ->withStatus(403);
+}
+
 function handleNotFound($response, $message) {
   return handleError($response, $message)
     ->withStatus(404);

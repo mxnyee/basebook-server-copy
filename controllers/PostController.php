@@ -46,6 +46,7 @@ class PostController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -74,6 +75,7 @@ class PostController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -102,6 +104,7 @@ class PostController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -133,6 +136,7 @@ class PostController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;
@@ -162,6 +166,7 @@ class PostController extends Controller {
       $this->conn->rollbackTransaction();
       switch (get_class($e)) {
         case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
         case 'NotFoundException': return handleNotFound($response, $e->getMessage());
         case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
         default: throw $e;

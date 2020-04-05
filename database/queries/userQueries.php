@@ -66,6 +66,12 @@ const USER_QUERIES = [
     SELECT username, numComments
     FROM NumCommentsByUser
     LIMIT ?, ?
+  ',
+
+  'checkUserPermissions' => '
+    SELECT *
+    FROM Account JOIN Permissions USING(accountType)
+    WHERE username = ?
   '
   
 ];
