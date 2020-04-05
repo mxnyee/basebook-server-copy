@@ -92,6 +92,30 @@ class CommentStatementGroup extends StatementGroup {
   }
 
 
+  public function editComment($commentId, $postId, $fields) {
+    $ret = [];
+
+    $numFields = count($fields);
+    $values = array_values($fields);
+    $values[] = $commentId;
+    $values[] = $postId;
+
+    // Build the query
+    $query = 'UPDATE Comment SET commentId = ?';
+    foreach ($fields as $field => $value) {
+      $query .= ', ' . $field . ' = ?';
+    }
+    $query .= ' WHERE commentId = ? AND postId = ?';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('i' . str_repeat('s', $numFields) . 'ii', $commentId, ...$values);
+    $stmt->execute();
+
+    $ret = $fields;
+    return $ret;
+  }
+
+
   public function deleteComment($commentId, $postId) {
     $stmt = $this->statements['deleteComment'];
     $stmt->bind_param('ii', $commentId, $postId);

@@ -110,13 +110,17 @@ class userController extends Controller {
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
       [ 'username' => $username ] = $args;
-      $city = (array_key_exists('city', $body))? $body['city'] : null;
-      $state = (array_key_exists('state', $body))? $body['state'] : null;
+      $city = (isset($body['city']))? $body['city'] : null;
+      $state = (isset($body['state']))? $body['state'] : null;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
+      if (!!$state && !$city) $city = $this->userStatementGroup->getUserProperty($username, 'city');
       if (!!$city && !$state) $state = $this->userStatementGroup->getUserProperty($username, 'state');
       $this->locationStatementGroup->checkForCity($city, $state);
+
+      if (isset($body['city'])) $body['city'] = $city;
+      if (isset($body['state'])) $body['state'] = $state;
       $result = $this->userStatementGroup->updateUserInfo($username, $body);
       $this->conn->endTransaction();
 

@@ -19,7 +19,7 @@ class Validator {
   public function validate($params, &$body, $validParams, $validFields, $requiredFields, $useDependencies) {
     $this->validateParams($params, $validParams);
     $this->validateBody($body, $validFields, $requiredFields, $useDependencies);
-    $this->fillMissingData($body, $validFields);
+    if ($useDependencies) $this->fillMissingData($body, $validFields);
   }
 
 
@@ -51,6 +51,10 @@ class Validator {
 
 
   private function validateBody($data, $validData, $requiredData, $useDependencies) {
+    if (is_null($data)) {
+      throw new BadRequestException('Data is null.');
+    }
+    
     $object = (object)$data;
     $schema = buildSchema($validData, $requiredData, $useDependencies);
 

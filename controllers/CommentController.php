@@ -69,6 +69,32 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+  
+
+  public function editComment($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['text'];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [ 'postId' => $postId, 'commentId' => $commentId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->commentStatementGroup->checkForComment($commentId, $postId);
+      $result = $this->commentStatementGroup->editComment($commentId, $postId, $body);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
 
 
   public function deleteComment($request, $response, $args) {

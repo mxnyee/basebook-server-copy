@@ -403,6 +403,32 @@ Response:
 ]
 ```
 
+### Edit a post
+
+PATCH /post/{postId}
+
+Request:
+```
+{
+  "title": "Traffic today",
+  "text": "The bridge is backed up, be warned",
+  "locationName": "Lions Gate Bridge",
+  "city": "Vancouver",
+  "state": "BC"
+}
+```
+Response:
+```
+{
+  "title": "Traffic today",
+  "text": "The bridge is backed up, be warned",
+  "locationName": "Lions Gate Bridge",
+  "city": "Vancouver",
+  "state": "BC",
+  "country': "CA"
+}
+```
+
 ## Delete a post
 
 DELETE /post/{postId}
@@ -493,6 +519,23 @@ Response:
     "numDislikes": 3
   },
 ]
+```
+
+### Edit a comment
+
+PATCH /post/{postId}/comment/{commentId}
+
+Request:
+```
+{
+  "text": "I had the same problem this morning..."
+}
+```
+Response:
+```
+{
+  "text": "I had the same problem this morning..."
+}
 ```
 
 ## Delete a comment

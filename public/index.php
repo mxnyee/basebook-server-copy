@@ -49,12 +49,14 @@ $app->group('/post', function (RouteCollectorProxy $group) {
   $group->post('', \PostController::class . ':createPost');
   $group->get('', \PostController::class . ':getFilteredPosts');
   $group->get('/search', \PostController::class . ':searchPosts');
+  $group->patch('/{postId}', \PostController::class . ':editPost');
   $group->delete('/{postId}', \PostController::class . ':deletePost');
   $group->post('/{postId}/reaction', \PostController::class . ':addPostReaction');
   $group->delete('/{postId}/reaction/{username}', \PostController::class . ':removePostReaction');
   // Comments
   $group->post('/{postId}/comment', \CommentController::class . ':createComment');
   $group->get('/{postId}/comment', \CommentController::class . ':getFilteredComments');
+  $group->patch('/{postId}/comment/{commentId}', \CommentController::class . ':editComment');
   $group->delete('/{postId}/comment/{commentId}', \CommentController::class . ':deleteComment');
   $group->post('/{postId}/comment/{commentId}/reaction', \CommentController::class . ':addCommentReaction');
   $group->delete('/{postId}/comment/{commentId}/reaction/{username}', \CommentController::class . ':removeCommentReaction');
