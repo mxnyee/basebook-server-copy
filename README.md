@@ -193,7 +193,7 @@ Request:
 Response:
 ```
 {
-  "postId": "12345678",
+  "postId": 45,
   "username": "john",
   "title": "The best cinnamon buns",
   "text": "Visited the bakery today. Delicious! Their coffee is good too.",
@@ -219,7 +219,7 @@ Response:
 {
   "result": [
     {
-      "postId": "12345678",
+      "postId": 45,
       "username": "john",
       "title": "The best cinnamon buns",
       "text": "Visited the bakery today. Delicious! Their coffee is good too.",
@@ -233,7 +233,7 @@ Response:
       "numComments": 6
     },
     {
-      "postId": "23456789",
+      "postId": 14,
       "username": "jane",
       "title": "My new puppy",
       "text": "Golden retriever :D reminds me of my childhood buddy",
@@ -260,7 +260,7 @@ Response:
 {
   "result": [
     {
-      "postId": "12345678",
+      "postId": 45,
       "username": "john",
       "title": "The best cinnamon buns",
       "text": "Visited the bakery today. Delicious! Their coffee is good too.",
@@ -274,7 +274,7 @@ Response:
       "numComments": 6
     },
     {
-      "postId": "23456789",
+      "postId": 14,
       "username": "jane",
       "title": "My new puppy",
       "text": "Golden retriever :D reminds me of my childhood buddy",
@@ -305,7 +305,7 @@ Response:
 ```
 {
   "username": "jane",
-  "postId": "12345678",
+  "postId": 3,
   "value": 1
 }
 ```
@@ -329,7 +329,7 @@ Request:
 Response:
 ```
 {
-  "commentId": "1111",
+  "commentId": 107,
   "username": "jane",
   "text": "Looks fun!",
   "timestamp": "2020-03-30 19:12:10",
@@ -349,7 +349,7 @@ Response:
 {
   "result": [
     {
-      "commentId": "1111",
+      "commentId": 107,
       "username": "jane",
       "text": "Looks fun!",
       "timestamp": "2020-03-30 19:12:10",
@@ -357,7 +357,7 @@ Response:
       "numDislikes": 0
     },
     {
-      "commentId": "2222",
+      "commentId": 35,
       "username": "tom",
       "text": "Let's go again next time",
       "timestamp": "2020-02-26 21:10:32",
@@ -365,7 +365,7 @@ Response:
       "numDislikes": 0
     },
     {
-      "commentId": "3333",
+      "commentId": 70,
       "username": "greg",
       "text": "woah",
       "timestamp": "2020-02-23 01:03:18",
@@ -391,8 +391,8 @@ Response:
 ```
 {
   "username": "jane",
-  "commentId": "3333",
-  "postId": "12345678",
+  "commentId": 70,
+  "postId": 35,
   "value": -1
 }
 ```
@@ -410,14 +410,14 @@ Response:
 {
   "superpowers": [
     {
-      "itemId": "111",
+      "itemId": 2,
       "itemName": "Double Like",
       "description": "Gives 2 coins every time you like a post or comment.",
       "price": 200,
       "duration": 3
     },
     {
-      "itemId": "222",
+      "itemId": 6,
       "itemName": "Triple Like",
       "description": "Gives 3 coins every time you like a post or comment.",
       "price": 400,
@@ -426,7 +426,7 @@ Response:
   ],
   "accessories": [
     {
-      "itemId": "333",
+      "itemId": 40,
       "itemName": "Badge",
       "description": "A shiny badge to put on your profile.",
       "price": 500
@@ -443,14 +443,14 @@ Request:
 ```
 {
   "username": "john",
-  "itemId": "111"
+  "itemId": 3
 }
 ```
 Response:
 ```
 {
   "username": "john",
-  "itemId": "111",
+  "itemId": 3,
   "expiryDate": "2020-04-10"
 }
 ```
