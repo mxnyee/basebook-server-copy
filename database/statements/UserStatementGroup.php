@@ -103,19 +103,10 @@ class UserStatementGroup extends StatementGroup {
   }
 
 
-  public function updateUserInfo($username, $email, $password, $name, $city, $state) {
+  public function updateUserInfo($username, $fields) {
     $ret = [];
 
-    $fields = [
-      'email' => $email,
-      'password' => $password,
-      'name' => $name,
-      'city' => $city,
-      'state' => $state
-    ];
-    $fields = array_filter($fields, function($v) { return !is_null($v); });
     $numFields = count($fields);
-
     $values = array_values($fields);
     $values[] = $username;
 
@@ -131,7 +122,7 @@ class UserStatementGroup extends StatementGroup {
     $stmt->execute();
 
     $ret = $fields;
-    if (!!$state) {
+    if (array_key_exists('state', $fields)) {
       $ret['country'] = $this->getUserProperty($username, 'country');
     }
 

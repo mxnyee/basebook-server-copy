@@ -128,19 +128,14 @@ class userController extends Controller {
       [
         'username' => $username
       ] = $args;
-      [
-        'email' => $email,
-        'password' => $password,
-        'name' => $name,
-        'city' => $city,
-        'state' => $state
-      ] = $body;
+      $city = (array_key_exists('city', $body))? $body['city'] : null;
+      $state = (array_key_exists('state', $body))? $body['state'] : null;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
       if (!!$city && !$state) $state = $this->userStatementGroup->getUserProperty($username, 'state');
       $this->locationStatementGroup->checkForCity($city, $state);
-      $result = $this->userStatementGroup->updateUserInfo($username, $email, $password, $name, $city, $state);
+      $result = $this->userStatementGroup->updateUserInfo($username, $body);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
