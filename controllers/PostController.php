@@ -20,7 +20,7 @@ class PostController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username,
         'title' => $title,
@@ -58,7 +58,7 @@ class PostController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
 
       $this->conn->beginTransaction();
       $result = $this->postStatementGroup->getFilteredPosts($params);
@@ -77,8 +77,32 @@ class PostController extends Controller {
     }
   }
 
+
   public function searchPosts($request, $response, $args) {
-    return $response;
+    $validParams = ['username', 'title', 'locationName', 'city', 'state', 'country'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+
+      $this->conn->beginTransaction();
+      // $result = $this->postStatementGroup->searchPosts($params);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
+    }
   }
 
   public function addPostReaction($request, $response, $args) {

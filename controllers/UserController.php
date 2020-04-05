@@ -21,7 +21,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username,
         'email' => $email,
@@ -59,7 +59,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username,
         'password' => $password
@@ -92,7 +92,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username
       ] = $args;
@@ -124,7 +124,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
       [
         'username' => $username
       ] = $args;
@@ -165,7 +165,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username
       ] = $args;
@@ -198,7 +198,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username
       ] = $args;
@@ -232,7 +232,7 @@ class userController extends Controller {
     $body = $request->getParsedBody();
 
     try {
-      $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
       [
         'username' => $username
       ] = $args;

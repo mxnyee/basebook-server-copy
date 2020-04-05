@@ -16,10 +16,11 @@ class Validator {
   }
   
 
-  public function validate($params, $body, $validParams, $validFields, $requiredFields, $useDependencies) {
+  public function validate(&$params, &$body, $validParams, $validFields, $requiredFields, $useDependencies) {
     $this->validateParams($params, $validParams);
     $this->validateBody($body, $validFields, $requiredFields, $useDependencies);
-    return $this->fillMissingFields($body, $validFields);
+    $this->fillMissingData($body, $validFields);
+    $this->fillMissingData($params, $validParams);
   }
 
 
@@ -68,13 +69,12 @@ class Validator {
   }
 
 
-  private function fillMissingFields($body, $validFields) {
-    foreach($validFields as $field) {
-      if (!array_key_exists($field, $body)) {
-        $body[$field] = NULL;
+  private function fillMissingData(&$data, $validData) {
+    foreach($validData as $key) {
+      if (!array_key_exists($key, $data)) {
+        $data[$key] = NULL;
       }
     }
-    return $body;
   }
 
 }
