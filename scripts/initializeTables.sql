@@ -126,14 +126,14 @@ INSERT INTO Post VALUES (3, 'bravo', 'Good boy', 'My dog chased away a mole toda
 INSERT INTO Post VALUES (4, 'charlie', 'I made bread', 'Took all day but it was worth it!!', NULL, 'Burnaby', 'BC', '2020-01-08 13:21:44');
 INSERT INTO Post VALUES (5, 'echo', 'It''s too hot outside', 'aaaaaaaaaaaaaa I''m dying', NULL, NULL, NULL, '2019-08-20 15:51:02');
 
-INSERT INTO PostReaction VALUES ('echo', 1, -1);
-INSERT INTO PostReaction VALUES ('bravo', 2, 2);
-INSERT INTO PostReaction VALUES ('charlie', 2, 1);
-INSERT INTO PostReaction VALUES ('delta', 2, 1);
-INSERT INTO PostReaction VALUES ('delta', 3, 1);
-INSERT INTO PostReaction VALUES ('charlie', 3, -1);
-INSERT INTO PostReaction VALUES ('alpha', 4, 3);
-INSERT INTO PostReaction VALUES ('bravo', 4, 2);
+INSERT INTO PostReaction VALUES ('echo', 1, -1, '2020-04-10 14:42:02');
+INSERT INTO PostReaction VALUES ('bravo', 2, 2, '2020-02-17 10:51:54');
+INSERT INTO PostReaction VALUES ('charlie', 2, 1, '2020-02-15 07:31:32');
+INSERT INTO PostReaction VALUES ('delta', 2, 1, '2020-02-14 21:02:27');
+INSERT INTO PostReaction VALUES ('delta', 3, 1, '2020-02-20 12:41:36');
+INSERT INTO PostReaction VALUES ('charlie', 3, -1, '2020-03-10 09:13:55');
+INSERT INTO PostReaction VALUES ('alpha', 4, 3, '2020-01-18 23:13:01');
+INSERT INTO PostReaction VALUES ('bravo', 4, 2, '2020-01-10 15:13:56');
 
 INSERT INTO Comment VALUES (1, 2, 'bravo', 'My favrite!!!', '2020-02-12 16:21:22');
 INSERT INTO Comment VALUES (2, 2, 'bravo', '*favorite oops', '2020-02-12 16:22:13');
@@ -142,10 +142,10 @@ INSERT INTO Comment VALUES (1, 3, 'charlie', 'Floof', '2020-02-03 13:51:02');
 INSERT INTO Comment VALUES (1, 4, 'delta', 'Nice!', '2020-02-24 08:12:32');
 INSERT INTO Comment VALUES (2, 4, 'echo', 'What kind?', '2020-03-08 22:11:54');
 
-INSERT INTO CommentReaction VALUES ('charlie', 1, 2, -1);
-INSERT INTO CommentReaction VALUES ('delta', 1, 2, -1);
-INSERT INTO CommentReaction VALUES ('echo', 3, 2, 1);
-INSERT INTO CommentReaction VALUES ('alpha', 1, 3, -1);
-INSERT INTO CommentReaction VALUES ('alpha', 2, 4, 1);
-INSERT INTO CommentReaction VALUES ('bravo', 2, 4, 1);
-INSERT INTO CommentReaction VALUES ('delta', 2, 4, 1);
+INSERT INTO CommentReaction VALUES ('charlie', 1, 2, -1, '2020-02-15 06:32:25');
+INSERT INTO CommentReaction VALUES ('delta', 1, 2, -1, '2020-02-14 01:12:51');
+INSERT INTO CommentReaction VALUES ('echo', 3, 2, 1, '2020-02-26 10:42:40');
+INSERT INTO CommentReaction VALUES ('alpha', 1, 3, -1, '2020-02-28 14:33:12');
+INSERT INTO CommentReaction VALUES ('alpha', 2, 4, 1, '2020-03-08 22:45:00');
+INSERT INTO CommentReaction VALUES ('bravo', 2, 4, 1, '2020-03-12 15:12:10');
+INSERT INTO CommentReaction VALUES ('delta', 2, 4, 1, '2020-03-14 10:51:28');

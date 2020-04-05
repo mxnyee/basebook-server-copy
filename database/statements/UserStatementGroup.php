@@ -139,9 +139,10 @@ class UserStatementGroup extends StatementGroup {
       
       // Build the query
       $query = '
-      SELECT *
-      FROM ' . $param . '
-      WHERE username = ?
+        SELECT *
+        FROM ' . $param . '
+        WHERE username = ?
+        ORDER BY timestamp DESC
       ';
       
       $stmt = $this->conn->prepare($query);
@@ -168,6 +169,7 @@ class UserStatementGroup extends StatementGroup {
       SELECT X.*
       FROM Post P JOIN ' . $param . ' X USING(postId)
       WHERE P.username = ?
+      ORDER BY timestamp DESC
       ';
       
       $stmt = $this->conn->prepare($query);
@@ -222,13 +224,16 @@ class UserStatementGroup extends StatementGroup {
   
   public function getRankingByNumPosts($offset, $limit) {
     $ret = [];
+    $rank = $offset + 1;
 
     $stmt = $this->statements['getRankingByNumPosts'];
     $stmt->bind_param('ii', $offset, $limit);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
+      $row['rank'] = $rank;
       $ret[] = $row;
+      $rank++;
     }
 
     return $ret;
@@ -250,13 +255,16 @@ class UserStatementGroup extends StatementGroup {
   
   public function getRankingByNumComments($offset, $limit) {
     $ret = [];
+    $rank = $offset + 1;
 
     $stmt = $this->statements['getRankingByNumComments'];
     $stmt->bind_param('ii', $offset, $limit);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
+      $row['rank'] = $rank;
       $ret[] = $row;
+      $rank++;
     }
 
     return $ret;

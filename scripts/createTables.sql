@@ -100,6 +100,7 @@ CREATE TABLE PostReaction (
   username VARCHAR(64),
   postId SMALLINT,
   value TINYINT NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username, postId),
   FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
@@ -129,6 +130,7 @@ CREATE TABLE CommentReaction (
   commentId SMALLINT,
   postId SMALLINT,
   value TINYINT NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username, commentId, postId),
   FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE

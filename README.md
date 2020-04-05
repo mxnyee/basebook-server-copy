@@ -30,7 +30,9 @@
 
 ### Create a new user
 
-POST /user/signup
+`POST /user/signup`
+
+Properties `name`, `city`, and `state` are optional. The propery `accountType` should be one of "Regular", "Premium", "Deluxe".
 
 Request:
 ```
@@ -62,7 +64,7 @@ Response:
 
 ### Login as an existing user
 
-POST /user/login
+`POST /user/login`
 
 Request:
 ```
@@ -74,7 +76,7 @@ Request:
 
 ### Get a user's profile information
 
-GET /user/{username}
+`GET /user/{username}`
 
 Response:
 ```
@@ -91,7 +93,9 @@ Response:
 
 ### Edit a user's profile information
 
-PATCH /user/{username}
+`PATCH /user/{username}`
+
+All properties are optional.
 
 Request:
 ```
@@ -117,7 +121,9 @@ Response:
 
 ### See a user's inventory
 
-GET /user/{username}/inventory
+`GET /user/{username}/inventory`
+
+Returns all items this user purchased from the market. Sorted by `itemName`.
 
 Response:
 ```
@@ -143,7 +149,9 @@ Response:
 
 ### See a user's activity
 
-GET /user/{username}/activity?post&comment&postReaction&commentReaction
+`GET /user/{username}/activity?post&comment&postReaction&commentReaction`
+
+Returns all posts, comments, and/or reactions made by this user. Sorted by most recent.
 
 All query parameters are optional. If none are specified, no results will be returned.
 
@@ -201,7 +209,9 @@ Response:
 
 ### See a user's inbox
 
-GET /user/{username}/inbox?comment&postReaction
+`GET /user/{username}/inbox?comment&postReaction`
+
+Returns all comments and/or reactions made on any of this user's posts. Sorted by most recent.
 
 All query parameters are optional. If none are specified, no results will be returned.
 
@@ -241,7 +251,11 @@ Response:
 
 ### See a user's stats
 
-GET /user/{username}/stats
+`GET /user/{username}/stats`
+
+Returns the total number of posts and comments made by this user.
+
+Returns an error if the user does not have permissions `canSeeStats`.
 
 Response:
 ```
@@ -253,7 +267,11 @@ Response:
 
 ### See a user's top fans
 
-GET /user/{username}/top-fans
+`GET /user/{username}/top-fans`
+
+Returns the users that have commented on all of this user's posts. Also returns the users that have reacted to all of this user's posts.  
+
+Returns an error if the user does not have permissions `canSeeTopFans`.
 
 Response:
 ```
@@ -272,29 +290,37 @@ Response:
 
 ### See a user's ranking
 
-GET /user/{username}/ranking
+`GET /user/{username}/ranking`
+
+Returns the user's rank by number of posts and comments. Also shows the users who are adjacent to the user in ranking. 
+
+Returns an error if the user does not have permissions `canSeeRanking`.
 
 Response:
 ```
 {
   "postRanking": [
-    { "username": "jane", "numPosts": 34 },
-    { "username": "john", "numPosts": 31 },
-    { "username": "greg", "numPosts": 21 },
-    { "username": "fred", "numPosts": 8 }
+    { "rank": 1, "username": "jane", "numPosts": 34 },
+    { "rank": 2, "username": "john", "numPosts": 31 },
+    { "rank": 3, "username": "steve", "numPosts": 26 },
+    { "rank": 4, "username": "greg", "numPosts": 21 },
+    { "rank": 5, "username": "fred", "numPosts": 8 }
   ],
   "commentRanking": [
-    { "username": "greg", "numPosts": 45 },
-    { "username": "john", "numPosts": 20 },
-    { "username": "jane", "numPosts": 4 },
-    { "username": "fred", "numPosts": 0 }
+    { "rank": 3, "username": "greg", "numComments": 45 },
+    { "rank": 4, "username": "jane", "numComments": 20 },
+    { "rank": 5, "username": "john", "numComments": 4 },
+    { "rank": 6, "username": "fred", "numComments": 0 }
+    { "rank": 7, "username": "steve", "numComments": 0 }
   ]
 }
 ```
 
 ### Create a new post
 
-POST /post
+`POST /post`
+
+Properties `locationName`, `city`, and `state` are optional.
 
 Request:
 ```
@@ -325,11 +351,13 @@ Response:
 }
 ```
 
-### Fetch a feed of posts and filter the details
+### Fetch all posts and filter the details
 
-GET /post?username&locationName&city&state&country&numLikes&numDislikes&numComments
+`GET /post?username&locationName&city&state&country&numLikes&numDislikes&numComments`
 
-All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, `text`, and `timestamp`.
+Sorted by most recent.
+
+All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, `text`, and `timestamp`. 
 
 Response:
 ```
@@ -366,7 +394,9 @@ Response:
 
 ### Search for posts
 
-GET /post/search?username={username}&title={title}&locationName={locationName}&city={city}&state={state}&country={country}
+`GET /post/search?username={username}&title={title}&locationName={locationName}&city={city}&state={state}&country={country}`
+
+Sorted by most recent.
 
 All query parameters are optional. If none are specified, all posts will be returned.
 
@@ -405,7 +435,9 @@ Response:
 
 ### Edit a post
 
-PATCH /post/{postId}
+`PATCH /post/{postId}`
+
+All properties are optional.
 
 Request:
 ```
@@ -431,11 +463,17 @@ Response:
 
 ## Delete a post
 
-DELETE /post/{postId}
+`DELETE /post/{postId}`
 
 ### React to a post
 
-POST /post/{postId}/reaction
+`POST /post/{postId}/reaction`
+
+The property `reactionType` should be one of "like", "dislike".
+- Adding a positive reaction ("like") removes coins from the sender and gives them to the receiver.
+- Adding a negative reaction ("dislike") removes coins from the receiver. The sender does not gain coins.
+
+ Returns an error if the sender does not have enough coins.
 
 Request:
 ```
@@ -455,12 +493,15 @@ Response:
 
 ### Undo a reaction to a post
 
-DELETE /post/{postId}/reaction/{username}
+`DELETE /post/{postId}/reaction/{username}`
+
+- Removing a positive reaction ("like") removes coins from the receiver. The sender's coins are unaffected.
+- Removing a negative reaction ("dislike") gives coins to the receiver. The sender's coins are unaffected.
 
 
 ### Create a new comment on a post
 
-POST /post/{postId}/comment
+`POST /post/{postId}/comment`
 
 Request:
 ```
@@ -484,31 +525,15 @@ Response:
 
 ### Get the comments on a post and filter the details
 
-GET /post/{postId}/comment?username&numLikes&numDislikes
+`GET /post/{postId}/comment?username&numLikes&numDislikes`
+
+Sorted by oldest.
 
 All query parameters are optional. If none are specified, each comment will only contain `commentId`, `text`, and `timestamp`.
 
 Response:
 ```
 [
-  {
-    "commentId": 107,
-    "postId": 11,
-    "username": "jane",
-    "text": "Looks fun!",
-    "timestamp": "2020-03-30 19:12:10",
-    "numLikes": 0,
-    "numDislikes": 0
-  },
-  {
-    "commentId": 35,
-    "postId": 11,
-    "username": "fred",
-    "text": "Let's go again next time",
-    "timestamp": "2020-02-26 21:10:32",
-    "numLikes": 2,
-    "numDislikes": 0
-  },
   {
     "commentId": 70,
     "postId": 11,
@@ -518,12 +543,32 @@ Response:
     "numLikes": 0,
     "numDislikes": 3
   },
+  {
+    "commentId": 35,
+    "postId": 11,
+    "username": "fred",
+    "text": "Let's go again next time",
+    "timestamp": "2020-03-06 21:10:32",
+    "numLikes": 2,
+    "numDislikes": 0
+  },
+  {
+    "commentId": 107,
+    "postId": 11,
+    "username": "jane",
+    "text": "Looks fun!",
+    "timestamp": "2020-03-30 19:12:10",
+    "numLikes": 0,
+    "numDislikes": 0
+  }
 ]
 ```
 
 ### Edit a comment
 
-PATCH /post/{postId}/comment/{commentId}
+`PATCH /post/{postId}/comment/{commentId}`
+
+All properties are optional.
 
 Request:
 ```
@@ -540,11 +585,17 @@ Response:
 
 ## Delete a comment
 
-DELETE /post/{postId}/comment/{commentId}
+`DELETE /post/{postId}/comment/{commentId}`
 
 ### React to a comment
 
-POST /post/{postId}/comment/{commentId}/reaction
+`POST /post/{postId}/comment/{commentId}/reaction`
+
+The property `reactionType` should be one of "like", "dislike".
+- Adding a positive reaction ("like") removes coins from the sender and gives them to the receiver.
+- Adding a negative reaction ("dislike") removes coins from the receiver. The sender does not gain coins.
+
+Returns an error if the sender does not have enough coins.
 
 Request:
 ```
@@ -565,11 +616,14 @@ Response:
 
 ### Undo a reaction to a comment
 
-DELETE /post/{postId}/comment/{commentId}/reaction/{username}
+`DELETE /post/{postId}/comment/{commentId}/reaction/{username}`
 
-### See all items available in the market and sort
+- Removing a positive reaction ("like") removes coins from the receiver. The sender's coins are unaffected.
+- Removing a negative reaction ("dislike") gives coins to the receiver. The sender's coins are unaffected.
 
-GET /market?price&itemId
+### See all items available in the market and sort them
+
+`GET /market?price&itemId`
 
 All query parameters are optional. Order matters. If none are specified, items will by sorted by `itemId`.
 
@@ -611,7 +665,9 @@ Response:
 
 ### Purchase an item from the market
 
-POST /market/purchase
+`POST /market/purchase`
+
+Removes coins from the user. Returns an error if the user does not have enough coins.
 
 Request:
 ```

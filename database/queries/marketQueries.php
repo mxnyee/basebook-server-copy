@@ -24,7 +24,7 @@ const MARKET_QUERIES = [
     JOIN AccountUpgrade USING(itemId)
     JOIN Superpower USING(itemId)
     WHERE username = ?
-    ORDER BY itemName DESC
+    ORDER BY itemName ASC
   ',
 
   'getUserAccessories' => '
@@ -34,7 +34,7 @@ const MARKET_QUERIES = [
       SELECT itemId
       FROM Superpower
     )
-    ORDER BY itemName DESC
+    ORDER BY itemName ASC
   '
 
 ];
