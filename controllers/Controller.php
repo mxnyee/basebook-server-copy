@@ -1,7 +1,7 @@
 <?php
 
+require_once '../errorHandling/errorHandler.php';
 foreach (glob('../database/statements/*.php') as $filename) { require_once $filename; }
-foreach (glob('../errorHandling/*.php') as $filename) { require_once $filename; }
 
 class Controller {
   protected $conn;

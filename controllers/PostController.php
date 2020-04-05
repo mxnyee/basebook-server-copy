@@ -44,13 +44,7 @@ class PostController extends Controller {
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();
-      switch (get_class($e)) {
-        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
-        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
-        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
-        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
-        default: throw $e;
-      }
+      return handleThrown($response, $e);
     }
   }
 
@@ -73,13 +67,7 @@ class PostController extends Controller {
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();
-      switch (get_class($e)) {
-        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
-        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
-        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
-        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
-        default: throw $e;
-      }
+      return handleThrown($response, $e);
     }
   }
 
@@ -102,13 +90,7 @@ class PostController extends Controller {
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();
-      switch (get_class($e)) {
-        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
-        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
-        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
-        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
-        default: throw $e;
-      }
+      return handleThrown($response, $e);
     }
   }
 
@@ -134,13 +116,7 @@ class PostController extends Controller {
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();
-      switch (get_class($e)) {
-        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
-        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
-        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
-        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
-        default: throw $e;
-      }
+      return handleThrown($response, $e);
     }
   }
 
@@ -164,13 +140,7 @@ class PostController extends Controller {
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();
-      switch (get_class($e)) {
-        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
-        case 'ForbiddenException': return handleForbidden($response, $e->getMessage());
-        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
-        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
-        default: throw $e;
-      }
+      return handleThrown($response, $e);
     }
   }
 }
