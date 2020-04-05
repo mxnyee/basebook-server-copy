@@ -159,7 +159,7 @@ CREATE VIEW NumCommentsByUser(username, numComments) AS (
 );
 
 CREATE VIEW NumLikesOnPost(postId, numLikes) AS (
-  SELECT postId, SUM(LEAST(COALESCE(value, 0), 0)) AS numLikes
+  SELECT postId, SUM(GREATEST(COALESCE(value, 0), 0)) AS numLikes
   FROM Post LEFT JOIN PostReaction USING(postId)
   GROUP BY postId
   ORDER BY numLikes DESC
@@ -180,7 +180,7 @@ CREATE VIEW NumCommentsOnPost(postId, numComments) AS (
 );
 
 CREATE VIEW NumLikesOnComment(commentId, postId, numLikes) AS (
-  SELECT commentId, postId, SUM(LEAST(COALESCE(value, 0), 0)) AS numLikes
+  SELECT commentId, postId, SUM(GREATEST(COALESCE(value, 0), 0)) AS numLikes
   FROM Comment LEFT JOIN CommentReaction USING(commentId, postId)
   GROUP BY commentId, postId
   ORDER BY numLikes DESC
