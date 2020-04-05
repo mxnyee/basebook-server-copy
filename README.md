@@ -19,12 +19,11 @@
 
 ### Setting up Basebook
 
-10. In the XAMPP installation folder, navigate to htdocs/
-11. `git clone https://github.com/mxnyee/basebook-server` into that folder
-12. Run `composer install`
-13. Copy `.env.example` into a new file named `.env` and edit the variables to match your setup
-14. Make sure the XAMPP Apache and MySQL servers are running
-15. Visit http://localhost or, if you defined the `BASE_PATH` environment variable in your `.env` file, `http://localhost/BASE_PATH`
+10. `git clone https://github.com/mxnyee/basebook-server`
+11. Run `composer install`
+12. Copy `.env.example` into a new file named `.env` and edit the variables to match your setup. Set `BASE_PATH` to the root directory of your basebook-server project (relative to the document root of your webserver, which is usually www/ or htdocs/).
+13. Use the SQL scripts unders the scripts/ folder to initialize your database
+14. Visit `http://localhost/BASE_PATH` to see "Hello, World!"
 
 ## API
 
