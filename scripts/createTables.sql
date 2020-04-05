@@ -110,7 +110,7 @@ CREATE TABLE PostReaction (
 );
 
 CREATE TABLE Comment (
-  commentId SMALLINT AUTO_INCREMENT,
+  commentId SMALLINT,
   postId SMALLINT,
   username VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,

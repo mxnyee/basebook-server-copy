@@ -3,8 +3,8 @@
 const COMMENT_QUERIES = [
 
   'insertComment' => '
-    INSERT INTO Comment(postId, username, text)
-    VALUES(?, ?, ?)
+    INSERT INTO Comment(commentId, postId, username, text)
+    VALUES(?, ?, ?, ?)
   ',
 
   'checkForComment' => '

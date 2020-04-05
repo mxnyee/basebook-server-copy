@@ -10,14 +10,13 @@ class CommentStatementGroup extends StatementGroup {
   }
 
 
-  public function insertComment($postId, $username, $text) {
+  public function insertComment($commentId, $postId, $username, $text) {
     $ret = [];
     $postId = intval($postId);
 
     $stmt = $this->statements['insertComment'];
-    $stmt->bind_param('iss', $postId, $username, $text);
+    $stmt->bind_param('iiss', $commentId, $postId, $username, $text);
     $stmt->execute();
-    $commentId = $stmt->insert_id;
 
     $ret = [
       'commentId' => $commentId,

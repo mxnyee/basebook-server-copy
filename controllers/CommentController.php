@@ -34,7 +34,8 @@ class CommentController extends Controller {
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
-      $result = $this->commentStatementGroup->insertComment($postId, $username, $text);
+      $commentId = $this->postStatementGroup->getPostProperty($postId, 'numComments') + 1;
+      $result = $this->commentStatementGroup->insertComment($commentId, $postId, $username, $text);
       $this->conn->endTransaction();
 
       return responseCreated($response, $result);
