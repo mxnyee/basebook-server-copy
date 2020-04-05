@@ -16,11 +16,10 @@ class Validator {
   }
   
 
-  public function validate(&$params, &$body, $validParams, $validFields, $requiredFields, $useDependencies) {
+  public function validate($params, &$body, $validParams, $validFields, $requiredFields, $useDependencies) {
     $this->validateParams($params, $validParams);
     $this->validateBody($body, $validFields, $requiredFields, $useDependencies);
     $this->fillMissingData($body, $validFields);
-    $this->fillMissingData($params, $validParams);
   }
 
 
