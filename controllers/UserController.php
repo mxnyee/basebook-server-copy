@@ -129,6 +129,31 @@ class userController extends Controller {
   }
 
 
+  public function getUserInbox($request, $response, $args) {
+    $validParams = ['comment', 'postReaction'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserInbox($username, $params);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
   public function getUserInventory($request, $response, $args) {
     $validParams = [];
     $validFields = [];

@@ -115,7 +115,48 @@ Response:
 }
 ```
 
-### Get a user's inventory
+### See a user's inbox
+
+GET /user/{username}/inbox?comment&postReaction
+
+All query parameters are optional. If none are specified, no results will be returned.
+
+Response:
+```
+{
+  "comment": [
+    {
+      "commentId": 3, 
+      "postId": 9,
+      "username": "jane",
+      "text": "Cute kid",
+      "timestamp": "2020-01-30 12:40:15",
+      "numLikes": 4,
+      "numDislikes": 0
+    }
+  ],
+  "postReaction:" [
+    {
+      "postId": 31,
+      "username": "fred",
+      "value": 2
+    },
+    {
+      "postId": 41,
+      "username": "jane",
+      "value": -1
+    },
+    {
+      "postId": 51,
+      "username": "greg",
+      "value": 1
+    }
+  ]
+  ]
+}
+```
+
+### See a user's inventory
 
 GET /user/{username}/inventory
 
@@ -164,13 +205,13 @@ Response:
     { "username": "jane", "numPosts": 34 },
     { "username": "john", "numPosts": 31 },
     { "username": "greg", "numPosts": 21 },
-    { "username": "tom", "numPosts": 8 }
+    { "username": "fred", "numPosts": 8 }
   ],
   "commentRanking": [
     { "username": "greg", "numPosts": 45 },
     { "username": "john", "numPosts": 20 },
     { "username": "jane", "numPosts": 4 },
-    { "username": "tom", "numPosts": 0 }
+    { "username": "fred", "numPosts": 0 }
   ]
 }
 ```
@@ -216,37 +257,35 @@ All query parameters are optional. If none are specified, each post will only co
 
 Response:
 ```
-{
-  "result": [
-    {
-      "postId": 45,
-      "username": "john",
-      "title": "The best cinnamon buns",
-      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
-      "locationName": "Grounds for Coffee",
-      "city": "Vancouver",
-      "state": "BC",
-      "country": "CA",
-      "timestamp": "2020-01-22 12:20:05",
-      "numLikes": 15,
-      "numDislikes": 3,
-      "numComments": 6
-    },
-    {
-      "postId": 14,
-      "username": "jane",
-      "title": "My new puppy",
-      "text": "Golden retriever :D reminds me of my childhood buddy",
-      "city": "Richmond",
-      "state": "BC",
-      "country": "CA",
-      "timestamp": "2020-01-10 15:51:40",
-      "numLikes": 21,
-      "numDislikes": 0,
-      "numComments": 2
-    }
-  ]
-}
+[
+  {
+    "postId": 45,
+    "username": "john",
+    "title": "The best cinnamon buns",
+    "text": "Visited the bakery today. Delicious! Their coffee is good too.",
+    "locationName": "Grounds for Coffee",
+    "city": "Vancouver",
+    "state": "BC",
+    "country": "CA",
+    "timestamp": "2020-01-22 12:20:05",
+    "numLikes": 15,
+    "numDislikes": 3,
+    "numComments": 6
+  },
+  {
+    "postId": 14,
+    "username": "jane",
+    "title": "My new puppy",
+    "text": "Golden retriever :D reminds me of my childhood buddy",
+    "city": "Richmond",
+    "state": "BC",
+    "country": "CA",
+    "timestamp": "2020-01-10 15:51:40",
+    "numLikes": 21,
+    "numDislikes": 0,
+    "numComments": 2
+  }
+]
 ```
 
 ### Search for posts
@@ -257,37 +296,35 @@ All query parameters are optional. If none are specified, all posts will be retu
 
 Response:
 ```
-{
-  "result": [
-    {
-      "postId": 45,
-      "username": "john",
-      "title": "The best cinnamon buns",
-      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
-      "locationName": "Grounds for Coffee",
-      "city": "Vancouver",
-      "state": "BC",
-      "country": "CA",
-      "timestamp": "2020-01-22 12:20:05",
-      "numLikes": 15,
-      "numDislikes": 3,
-      "numComments": 6
-    },
-    {
-      "postId": 14,
-      "username": "jane",
-      "title": "My new puppy",
-      "text": "Golden retriever :D reminds me of my childhood buddy",
-      "city": "Richmond",
-      "state": "BC",
-      "country": "CA",
-      "timestamp": "2020-01-10 15:51:40",
-      "numLikes": 21,
-      "numDislikes": 0,
-      "numComments": 2
-    }
-  ]
-}
+[
+  {
+    "postId": 45,
+    "username": "john",
+    "title": "The best cinnamon buns",
+    "text": "Visited the bakery today. Delicious! Their coffee is good too.",
+    "locationName": "Grounds for Coffee",
+    "city": "Vancouver",
+    "state": "BC",
+    "country": "CA",
+    "timestamp": "2020-01-22 12:20:05",
+    "numLikes": 15,
+    "numDislikes": 3,
+    "numComments": 6
+  },
+  {
+    "postId": 14,
+    "username": "jane",
+    "title": "My new puppy",
+    "text": "Golden retriever :D reminds me of my childhood buddy",
+    "city": "Richmond",
+    "state": "BC",
+    "country": "CA",
+    "timestamp": "2020-01-10 15:51:40",
+    "numLikes": 21,
+    "numDislikes": 0,
+    "numComments": 2
+  }
+]
 ```
 
 ## Delete a post
@@ -351,34 +388,35 @@ All query parameters are optional. If none are specified, each comment will only
 
 Response:
 ```
-{
-  "result": [
-    {
-      "commentId": 107,
-      "username": "jane",
-      "text": "Looks fun!",
-      "timestamp": "2020-03-30 19:12:10",
-      "numLikes": 0,
-      "numDislikes": 0
-    },
-    {
-      "commentId": 35,
-      "username": "tom",
-      "text": "Let's go again next time",
-      "timestamp": "2020-02-26 21:10:32",
-      "numLikes": 2,
-      "numDislikes": 0
-    },
-    {
-      "commentId": 70,
-      "username": "greg",
-      "text": "woah",
-      "timestamp": "2020-02-23 01:03:18",
-      "numLikes": 0,
-      "numDislikes": 3
-    },
-  ]
-}
+[
+  {
+    "commentId": 107,
+    "postId": 11,
+    "username": "jane",
+    "text": "Looks fun!",
+    "timestamp": "2020-03-30 19:12:10",
+    "numLikes": 0,
+    "numDislikes": 0
+  },
+  {
+    "commentId": 35,
+    "postId": 11,
+    "username": "fred",
+    "text": "Let's go again next time",
+    "timestamp": "2020-02-26 21:10:32",
+    "numLikes": 2,
+    "numDislikes": 0
+  },
+  {
+    "commentId": 70,
+    "postId": 11,
+    "username": "greg",
+    "text": "woah",
+    "timestamp": "2020-02-23 01:03:18",
+    "numLikes": 0,
+    "numDislikes": 3
+  },
+]
 ```
 
 ## Delete a comment

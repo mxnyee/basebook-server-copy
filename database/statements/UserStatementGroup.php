@@ -85,6 +85,7 @@ class UserStatementGroup extends StatementGroup {
   public function getUserProperty($username, $property) {
     $ret = [];
 
+    // Build the query
     $query = '
       SELECT ' . $property . ' 
       FROM Account LEFT JOIN Country USING(state)
@@ -124,6 +125,32 @@ class UserStatementGroup extends StatementGroup {
     $ret = $fields;
     if (array_key_exists('state', $fields)) {
       $ret['country'] = $this->getUserProperty($username, 'country');
+    }
+
+    return $ret;
+  }
+  
+
+  public function getUserInbox($username, $params) {
+    $ret = [];
+
+    foreach ($params as $param => $value) {
+      $ret[$param] = [];
+      
+      // Build the query
+      $query = '
+      SELECT X.*
+      FROM Post P JOIN ' . $param . ' X USING(postId)
+      WHERE P.username = ?
+      ';
+      
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      while($row = $result->fetch_assoc()) {
+        $ret[$param][] = $row;
+      }
     }
 
     return $ret;

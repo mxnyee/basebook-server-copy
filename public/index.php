@@ -35,6 +35,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
   $group->post('/login', \UserController::class . ':login');
   $group->get('/{username}', \UserController::class . ':getUser');
   $group->patch('/{username}', \UserController::class . ':updateUser');
+  $group->get('/{username}/inbox', \UserController::class . ':getUserInbox');
   $group->get('/{username}/inventory', \UserController::class . ':getUserInventory');
   $group->get('/{username}/stats', \UserController::class . ':getUserStats');
   $group->get('/{username}/ranking', \UserController::class . ':getUserRanking');

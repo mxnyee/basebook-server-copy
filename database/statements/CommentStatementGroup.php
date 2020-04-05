@@ -69,7 +69,7 @@ class CommentStatementGroup extends StatementGroup {
     $ret = [];
 
     // Build the query
-    $query = 'SELECT commentId, text, timestamp';
+    $query = 'SELECT commentId, postId, text, timestamp';
     foreach (array_keys($filters) as $filter) {
       $query .= ', ' . $filter;
     }
