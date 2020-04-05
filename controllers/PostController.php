@@ -4,11 +4,15 @@ require_once 'Controller.php';
 class PostController extends Controller {
   private $postStatementGroup;
   private $locationStatementGroup;
+  private $marketStatementGroup;
 
-  public function __construct(DatabaseConnection $conn, Validator $validator, PostStatementGroup $postStatementGroup, LocationStatementGroup $locationStatementGroup) {
+  public function __construct(DatabaseConnection $conn, Validator $validator,
+    PostStatementGroup $postStatementGroup, LocationStatementGroup $locationStatementGroup, 
+    MarketStatementGroup $marketStatementGroup) {
     parent::__construct($conn, $validator);
     $this->postStatementGroup = $postStatementGroup;
     $this->locationStatementGroup = $locationStatementGroup;
+    $this->marketStatementGroup = $marketStatementGroup;
   }
 
 
@@ -118,7 +122,8 @@ class PostController extends Controller {
       [ 'username' => $username, 'reactionType' => $reactionType ] = $body;
 
       $this->conn->beginTransaction();
-      $result = $this->postStatementGroup->addPostReaction($postId, $username, $reactionType);
+      $reactionValue = $this->marketStatementGroup->getUserReactionValue($username, $reactionType);
+      $result = $this->postStatementGroup->AddUserReactionToPost($username, $postId, $reactionValue);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
@@ -135,6 +140,31 @@ class PostController extends Controller {
   }
 
   public function removePostReaction($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId, 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $result = $this->postStatementGroup->checkForUserReactionToPost($username, $postId);
+      $result = $this->postStatementGroup->removeUserReactionToPost($username, $postId);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
+    }
   }
 }

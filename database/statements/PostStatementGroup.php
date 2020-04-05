@@ -117,12 +117,38 @@ class PostStatementGroup extends StatementGroup {
   }
 
 
-  public function addPostReaction($postId, $username, $reactionType) {
+  public function addUserReactionToPost($username, $postId, $value) {
     $ret = [];
 
-    
+    $stmt = $this->statements['addUserReactionToPost'];
+    $stmt->bind_param('ssss', $username, $postId, $value, $value);
+    $stmt->execute();
 
+    $ret = [
+      'username' => $username, 
+      'postId' => $postId,
+      'value' => $value
+    ];
+    
     return $ret;
+  }
+
+
+  public function checkForUserReactionToPost($username, $postId) {
+    $stmt = $this->statements['checkForUserReactionToPost'];
+    $stmt->bind_param('ss', $username, $postId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+      throw new NotFoundException('User ' . $username . ' did not react to that post.');
+    }
+  }
+
+
+  public function removeUserReactionToPost($username, $postId) {
+    $stmt = $this->statements['removeUserReactionToPost'];
+    $stmt->bind_param('ss', $username, $postId);
+    $stmt->execute();
   }
 
 }

@@ -130,36 +130,6 @@ class UserStatementGroup extends StatementGroup {
   }
 
   
-  public function getUserSuperpowers($username) {
-    $ret = [];
-
-    $stmt = $this->statements['getUserSuperpowers'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-      $ret[] = $row;
-    }
-
-    return $ret;
-  }
-
-  
-  public function getUserAccessories($username) {
-    $ret = [];
-
-    $stmt = $this->statements['getUserAccessories'];
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-      $ret[] = $row;
-    }
-
-    return $ret;
-  }
-
-  
   public function getUserRankByNumPosts($username) {
     $ret = [];
 

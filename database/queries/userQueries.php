@@ -3,7 +3,7 @@
 const USER_QUERIES = [
 
   'getNumUsers' => '
-    SELECT COUNT(username) as numUsers
+    SELECT COUNT(username) AS numUsers
     FROM Account
   ',
 
@@ -21,7 +21,7 @@ const USER_QUERIES = [
   'checkUserPassword' => '
     SELECT username, password
     FROM Account
-    WHERE username = ? and password = ?
+    WHERE username = ? AND password = ?
   ',
 
   'getAllUserInfo' => '
@@ -30,30 +30,14 @@ const USER_QUERIES = [
     WHERE username = ?
   ',
 
-  'getUserSuperpowers' => '
-    SELECT itemId, itemName, description, expiryDate
-    FROM Purchase
-    JOIN AccountUpgrade USING(itemId)
-    LEFT JOIN Superpower USING(itemId)
-    WHERE username = ?
-  ',
-
-  'getUserAccessories' => '
-    SELECT itemId, itemName, description, color
-    FROM Purchase
-    JOIN AccountUpgrade USING(itemId)
-    LEFT JOIN Accessory USING(itemId)
-    WHERE username = ?
-  ',
-
   'getUserRankByNumPosts' => '
-    SELECT COUNT(username) as userRankByNumPosts
+    SELECT COUNT(username) AS userRankByNumPosts
     FROM NumPostsByUser
     WHERE numPosts > ALL (
         SELECT numPosts FROM NumPostsByUser WHERE username = ?
       )
-      or (username <= ?
-        and numPosts = ALL (
+      OR (username <= ?
+        AND numPosts = ALL (
             SELECT numPosts FROM NumPostsByUser WHERE username = ?
           )
       )
@@ -66,13 +50,13 @@ const USER_QUERIES = [
   ',
 
   'getUserRankByNumComments' => '
-    SELECT COUNT(username) as userRankByNumComments
+    SELECT COUNT(username) AS userRankByNumComments
     FROM NumCommentsByUser
     WHERE numComments > ALL (
         SELECT numComments FROM NumCommentsByUser WHERE username = ?
       )
-      or (username <= ?
-        and numComments = ALL (
+      OR (username <= ?
+        AND numComments = ALL (
             SELECT numComments FROM NumCommentsByUser WHERE username = ?
           )
       )

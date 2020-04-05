@@ -5,11 +5,15 @@ require_once 'Controller.php';
 class userController extends Controller {
   private $userStatementGroup;
   private $locationStatementGroup;
+  private $marketStatementGroup;
 
-  public function __construct(DatabaseConnection $conn, Validator $validator, UserStatementGroup $userStatementGroup, LocationStatementGroup $locationStatementGroup) {
+  public function __construct(DatabaseConnection $conn, Validator $validator, 
+    UserStatementGroup $userStatementGroup, LocationStatementGroup $locationStatementGroup,
+    MarketStatementGroup $marketStatementGroup) {
     parent::__construct($conn, $validator);
     $this->userStatementGroup = $userStatementGroup;
     $this->locationStatementGroup = $locationStatementGroup;
+    $this->marketStatementGroup = $marketStatementGroup;
   }
 
 
@@ -158,8 +162,8 @@ class userController extends Controller {
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
-      $result['superpowers'] = $this->userStatementGroup->getUserSuperpowers($username);
-      $result['accessories'] = $this->userStatementGroup->getUserAccessories($username);
+      $result['superpowers'] = $this->marketStatementGroup->getUserSuperpowers($username);
+      $result['accessories'] = $this->marketStatementGroup->getUserAccessories($username);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);

@@ -5,7 +5,7 @@ const LOCATION_QUERIES = [
   'checkForCity' => '
     SELECT city, state
     FROM City
-    WHERE city = ? and state = ?
+    WHERE city = ? AND state = ?
   ',
   
   'insertCity' => '
@@ -16,7 +16,7 @@ const LOCATION_QUERIES = [
   'checkForLocation' => '
     SELECT locationName, city, state
     FROM Location
-    WHERE locationName = ? and city = ? and state = ?
+    WHERE locationName = ? AND city = ? AND state = ?
   ',
   
   'insertLocation' => '
