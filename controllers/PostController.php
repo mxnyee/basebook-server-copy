@@ -98,6 +98,32 @@ class PostController extends Controller {
     }
   }
 
+  
+  public function deletePost($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->postStatementGroup->deletePost($postId);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
   public function addPostReaction($request, $response, $args) {
     $validParams = [];
     $validFields = ['username', 'reactionType'];

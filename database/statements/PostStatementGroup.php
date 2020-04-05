@@ -128,6 +128,13 @@ class PostStatementGroup extends StatementGroup {
   }
 
 
+  public function deletePost($postId) {
+    $stmt = $this->statements['deletePost'];
+    $stmt->bind_param('i', $postId);
+    $stmt->execute();
+  }
+  
+
   public function addUserReactionToPost($username, $postId, $value) {
     $ret = [];
     $postId = intval($postId);

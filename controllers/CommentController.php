@@ -18,6 +18,7 @@ class CommentController extends Controller {
     $this->marketStatementGroup = $marketStatementGroup;
   }
 
+
   public function createComment($request, $response, $args) {
     $validParams = [];
     $validFields = ['username', 'text'];
@@ -44,6 +45,7 @@ class CommentController extends Controller {
     }
   }
 
+
   public function getFilteredComments($request, $response, $args) {
     $validParams = ['username', 'numLikes', 'numDislikes'];
     $validFields = [];
@@ -67,6 +69,33 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+
+
+  public function deleteComment($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId, 'commentId' => $commentId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->commentStatementGroup->checkForComment($commentId, $postId);
+      $this->commentStatementGroup->deleteComment($commentId, $postId);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
 
   public function addCommentReaction($request, $response, $args) {
     $validParams = [];
@@ -99,6 +128,7 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+  
 
   public function removeCommentReaction($request, $response, $args) {
     $validParams = [];

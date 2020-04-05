@@ -12,6 +12,11 @@ const COMMENT_QUERIES = [
     FROM Comment
     WHERE commentId = ? AND postId = ?
   ',
+
+  'deleteComment' => '
+    DELETE FROM Comment
+    WHERE commentId = ? AND postId = ?
+  ',
   
   'addUserReactionToComment' => '
     INSERT INTO CommentReaction(username, commentId, postId, value)

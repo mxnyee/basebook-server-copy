@@ -92,6 +92,13 @@ class CommentStatementGroup extends StatementGroup {
   }
 
 
+  public function deleteComment($commentId, $postId) {
+    $stmt = $this->statements['deleteComment'];
+    $stmt->bind_param('ii', $commentId, $postId);
+    $stmt->execute();
+  }
+
+
   public function addUserReactionToComment($username, $commentId, $postId, $value) {
     $ret = [];
     $commentId = intval($commentId);

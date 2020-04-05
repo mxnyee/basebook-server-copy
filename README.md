@@ -290,6 +290,10 @@ Response:
 }
 ```
 
+## Delete a post
+
+DELETE /post/{postId}
+
 ### React to a post
 
 POST /post/{postId}/reaction
@@ -376,6 +380,10 @@ Response:
   ]
 }
 ```
+
+## Delete a comment
+
+DELETE /post/{postId}/comment/{commentId}
 
 ### React to a comment
 
