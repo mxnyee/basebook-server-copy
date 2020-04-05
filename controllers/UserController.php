@@ -8,8 +8,8 @@ class userController extends Controller {
   private $marketStatementGroup;
 
   public function __construct(DatabaseConnection $conn, Validator $validator, 
-    UserStatementGroup $userStatementGroup, LocationStatementGroup $locationStatementGroup,
-    MarketStatementGroup $marketStatementGroup) {
+      UserStatementGroup $userStatementGroup, LocationStatementGroup $locationStatementGroup,
+      MarketStatementGroup $marketStatementGroup) {
     parent::__construct($conn, $validator);
     $this->userStatementGroup = $userStatementGroup;
     $this->locationStatementGroup = $locationStatementGroup;

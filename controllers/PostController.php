@@ -4,14 +4,16 @@ require_once 'Controller.php';
 class PostController extends Controller {
   private $postStatementGroup;
   private $locationStatementGroup;
+  private $userStatementGroup;
   private $marketStatementGroup;
 
   public function __construct(DatabaseConnection $conn, Validator $validator,
-    PostStatementGroup $postStatementGroup, LocationStatementGroup $locationStatementGroup, 
-    MarketStatementGroup $marketStatementGroup) {
+      PostStatementGroup $postStatementGroup, LocationStatementGroup $locationStatementGroup, 
+      UserStatementGroup $userStatementGroup, MarketStatementGroup $marketStatementGroup) {
     parent::__construct($conn, $validator);
     $this->postStatementGroup = $postStatementGroup;
     $this->locationStatementGroup = $locationStatementGroup;
+    $this->userStatementGroup = $userStatementGroup;
     $this->marketStatementGroup = $marketStatementGroup;
   }
 
@@ -35,6 +37,7 @@ class PostController extends Controller {
       ] = $body;
 
       $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
       $this->locationStatementGroup->checkForCity($city, $state);
       $this->locationStatementGroup->checkForLocation($locationName, $city, $state);
       $result = $this->postStatementGroup->insertPost($username, $title, $text, $locationName, $city, $state);
@@ -107,6 +110,8 @@ class PostController extends Controller {
       [ 'username' => $username, 'reactionType' => $reactionType ] = $body;
 
       $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $this->postStatementGroup->checkForPost($postId);
       $this->marketStatementGroup->removeExpiredPurchases();
       $reactionValue = $this->marketStatementGroup->getUserReactionValue($username, $reactionType);
       $result = $this->postStatementGroup->AddUserReactionToPost($username, $postId, $reactionValue);
@@ -132,6 +137,8 @@ class PostController extends Controller {
       [ 'postId' => $postId, 'username' => $username ] = $args;
 
       $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $this->postStatementGroup->checkForPost($postId);
       $result = $this->postStatementGroup->checkForUserReactionToPost($username, $postId);
       $result = $this->postStatementGroup->removeUserReactionToPost($username, $postId);
       $this->conn->endTransaction();

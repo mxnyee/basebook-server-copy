@@ -139,12 +139,12 @@ INSERT INTO PostReaction VALUES ('charlie', 3, -1);
 INSERT INTO PostReaction VALUES ('alpha', 4, 3);
 INSERT INTO PostReaction VALUES ('bravo', 4, 2);
 
-INSERT INTO Comment VALUES (1, 2, 'bravo', '2020-02-12 16:21:22', 'My favrite!!!');
-INSERT INTO Comment VALUES (2, 2, 'bravo', '2020-02-12 16:22:13', '*favorite oops');
-INSERT INTO Comment VALUES (3, 2, 'delta', '2020-02-21 20:27:03', 'So good');
-INSERT INTO Comment VALUES (1, 3, 'charlie', '2020-02-03 13:51:02', 'Floof');
-INSERT INTO Comment VALUES (1, 4, 'delta', '2020-02-24 08:12:32', 'Nice!');
-INSERT INTO Comment VALUES (2, 4, 'echo', '2020-03-08 22:11:54', 'What kind?');
+INSERT INTO Comment VALUES (1, 2, 'bravo', 'My favrite!!!', '2020-02-12 16:21:22');
+INSERT INTO Comment VALUES (2, 2, 'bravo', '*favorite oops', '2020-02-12 16:22:13');
+INSERT INTO Comment VALUES (3, 2, 'delta', 'So good', '2020-02-21 20:27:03');
+INSERT INTO Comment VALUES (1, 3, 'charlie', 'Floof', '2020-02-03 13:51:02');
+INSERT INTO Comment VALUES (1, 4, 'delta', 'Nice!', '2020-02-24 08:12:32');
+INSERT INTO Comment VALUES (2, 4, 'echo', 'What kind?', '2020-03-08 22:11:54');
 
 INSERT INTO CommentReaction VALUES ('charlie', 1, 2, -1);
 INSERT INTO CommentReaction VALUES ('delta', 1, 2, -1);

@@ -39,6 +39,17 @@ class PostStatementGroup extends StatementGroup {
   }
 
 
+  public function checkForPost($postId) {
+    $stmt = $this->statements['checkForPost'];
+    $stmt->bind_param('i', $postId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+      throw new NotFoundException('Post does not exist.');
+    }
+  }
+
+
   public function getPostProperty($postId, $property) {
     $ret = [];
 
@@ -52,7 +63,7 @@ class PostStatementGroup extends StatementGroup {
     ';
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bind_param('s', $postId);
+    $stmt->bind_param('i', $postId);
     $stmt->execute();
     $result = $stmt->get_result();
     $ret = $result->fetch_assoc();
@@ -119,9 +130,10 @@ class PostStatementGroup extends StatementGroup {
 
   public function addUserReactionToPost($username, $postId, $value) {
     $ret = [];
+    $postId = intval($postId);
 
     $stmt = $this->statements['addUserReactionToPost'];
-    $stmt->bind_param('ssss', $username, $postId, $value, $value);
+    $stmt->bind_param('siss', $username, $postId, $value, $value);
     $stmt->execute();
 
     $ret = [
@@ -136,7 +148,7 @@ class PostStatementGroup extends StatementGroup {
 
   public function checkForUserReactionToPost($username, $postId) {
     $stmt = $this->statements['checkForUserReactionToPost'];
-    $stmt->bind_param('ss', $username, $postId);
+    $stmt->bind_param('si', $username, $postId);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows == 0) {
@@ -147,7 +159,7 @@ class PostStatementGroup extends StatementGroup {
 
   public function removeUserReactionToPost($username, $postId) {
     $stmt = $this->statements['removeUserReactionToPost'];
-    $stmt->bind_param('ss', $username, $postId);
+    $stmt->bind_param('si', $username, $postId);
     $stmt->execute();
   }
 

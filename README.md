@@ -330,6 +330,7 @@ Response:
 ```
 {
   "commentId": 107,
+  "postId": 45,
   "username": "jane",
   "text": "Looks fun!",
   "timestamp": "2020-03-30 19:12:10",
@@ -340,9 +341,9 @@ Response:
 
 ### Get the comments on a post and filter the details
 
-GET /post/{postId}/comment?username&timestamp&numLikes&numDislikes
+GET /post/{postId}/comment?username&numLikes&numDislikes
 
-All query parameters are optional. If none are specified, each comment will only contain `commentId` and `text`.
+All query parameters are optional. If none are specified, each comment will only contain `commentId`, `text`, and `timestamp`.
 
 Response:
 ```

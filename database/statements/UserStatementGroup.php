@@ -196,4 +196,5 @@ class UserStatementGroup extends StatementGroup {
         throw new ForbiddenException('Upgrade your account to see this info.');
       }
     }
+    
 }

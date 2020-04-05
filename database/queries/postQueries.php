@@ -6,6 +6,12 @@ const POST_QUERIES = [
     INSERT INTO Post(username, title, text, locationName, city, state)
     VALUES(?, ?, ?, ?, ?, ?)
   ',
+
+  'checkForPost' => '
+    SELECT postId
+    FROM Post
+    WHERE postId = ?
+  ',
   
   'addUserReactionToPost' => '
     INSERT INTO PostReaction(username, postId, value)
