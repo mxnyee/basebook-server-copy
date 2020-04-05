@@ -6,6 +6,7 @@
         "slim/http": "^1.0",
         "php-di/php-di": "^6.0",
         "selective/config": "^0.1.1",
-        "vlucas/phpdotenv": "^4.1"
+        "vlucas/phpdotenv": "^4.1",
+        "justinrainbow/json-schema": "^5.2"
     }
 }

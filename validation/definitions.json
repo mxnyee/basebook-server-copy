@@ -1,0 +1,54 @@
+{
+    "accountType": {
+        "type": "string",
+        "enum": ["Regular", "Premium", "Deluxe"]
+    },
+    "username": {
+        "type": "string",
+        "pattern": "^\\w+$",
+        "minLength": 4,
+        "maxLength": 64
+    },
+    "email": {
+        "type": "string",
+        "format": "email"
+    },
+    "password": {
+        "type": "string",
+        "pattern": "^\\w[\\w!@#$%^&*,.?']*$",
+        "minLength": 4,
+        "maxLength": 64
+    },
+    "name": {
+        "type": "string",
+        "maxLength": 64
+    },
+    "locationName": {
+        "type": "string",
+        "maxLength": 64
+    },
+    "city": {
+        "type": "string",
+        "maxLength": 64
+    },
+    "state": {
+        "type": "string",
+        "enum": ["AB", "BC", "MB", "NB", "NL", "NT", "NS", "NU", "ON", "PE", "QC", "SK", "YT", "AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+    },
+    "title": {
+        "type": "string",
+        "maxLength": 64
+    },
+    "text": {
+        "type": "string",
+        "maxLength": 1024
+    },
+    "itemId": {
+        "type": "number",
+        "minimum": 0
+    },
+    "reactionType": {
+        "type": "string",
+        "enum": ["like", "dislike"]
+    }
+}

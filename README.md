@@ -44,6 +44,22 @@ Request:
   "accountType": "Regular"
 }
 ```
+
+Response:
+```
+{
+  "username": "john",
+  "email": "johnsmith@example.com",
+  "password": "12345",
+  "name": "John Smith",
+  "city": "Vancouver",
+  "state": "BC",
+  "country": "CA",
+  "numCoins": 0,
+  "accountType": "Regular"
+}
+```
+
 ### Login as an existing user
 
 POST /user/login
@@ -67,6 +83,7 @@ Response:
   "name": "John Smith",
   "city": "Vancouver",
   "state": "BC",
+  "country": "CA",
   "numCoins": 645,
   "accountType": "Regular"
 }
@@ -79,21 +96,22 @@ PATCH /user/{username}
 Request:
 ```
 {
-  "username": "johnny",
+  "email": "johnnysmith@example.com",
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",
-  "state": "WA",
+  "state": "WA"
 }
 ```
 Response:
 ```
 {
-  "email": "johnny",
+  "email": "johnnysmith@example.com",
   "password": "67890",
   "name": "Johnny Smith",
   "city": "Seattle",
   "state": "WA",
+  "country": "US",
 }
 ```
 
@@ -135,20 +153,20 @@ Response:
 }
 ```
 
-### See the user leaderboard
+### See a user's ranking
 
-GET /user/{username}/leaderboard
+GET /user/{username}/ranking
 
 Response:
 ```
 {
-  "topNumPosts": [
+  "postRanking": [
     { "username": "jane", "numPosts": 34 },
     { "username": "john", "numPosts": 31 },
     { "username": "greg", "numPosts": 21 },
     { "username": "tom", "numPosts": 8 }
   ],
-  "topNumComments": [
+  "commentRanking": [
     { "username": "greg", "numPosts": 45 },
     { "username": "john", "numPosts": 20 },
     { "username": "jane", "numPosts": 4 },
@@ -175,13 +193,14 @@ Request:
 Response:
 ```
 {
-  "postId": "12345678",
+  "postId": 45,
   "username": "john",
   "title": "The best cinnamon buns",
   "text": "Visited the bakery today. Delicious! Their coffee is good too.",
   "locationName": "Grounds for Coffee",
   "city": "Vancouver",
   "state": "BC",
+  "country": "CA",
   "timestamp": "2020-01-22 12:20:05",
   "numLikes": 0,
   "numDislikes": 0,
@@ -191,30 +210,36 @@ Response:
 
 ### Fetch a feed of posts and filter the details
 
-GET /post?username={true}&title={true}&locationName={true}&city={true}&state={true}&timestamp={true}&numLikes={true}&numDislikes={true}&numComments={true}
+GET /post?username&locationName&city&state&country&numLikes&numDislikes&numComments
+
+All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, `text`, and `timestamp`.
 
 Response:
 ```
 {
   "result": [
     {
-      "postId": "12345678",
+      "postId": 45,
       "username": "john",
       "title": "The best cinnamon buns",
+      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-22 12:20:05",
       "numLikes": 15,
       "numDislikes": 3,
       "numComments": 6
     },
     {
-      "postId": "23456789",
+      "postId": 14,
       "username": "jane",
       "title": "My new puppy",
+      "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-10 15:51:40",
       "numLikes": 21,
       "numDislikes": 0,
@@ -224,32 +249,38 @@ Response:
 }
 ```
 
-### Search for posts by title and/or location
+### Search for posts
 
-GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}
+GET /post/search?username={username}&title={title}&locationName={locationName}&city={city}&state={state}&country={country}
+
+All query parameters are optional. If none are specified, all posts will be returned.
 
 Response:
 ```
 {
   "result": [
     {
-      "postId": "12345678",
+      "postId": 45,
       "username": "john",
       "title": "The best cinnamon buns",
+      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
       "locationName": "Grounds for Coffee",
       "city": "Vancouver",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-22 12:20:05",
       "numLikes": 15,
       "numDislikes": 3,
       "numComments": 6
     },
     {
-      "postId": "23456789",
+      "postId": 14,
       "username": "jane",
       "title": "My new puppy",
+      "text": "Golden retriever :D reminds me of my childhood buddy",
       "city": "Richmond",
       "state": "BC",
+      "country": "CA",
       "timestamp": "2020-01-10 15:51:40",
       "numLikes": 21,
       "numDislikes": 0,
@@ -266,14 +297,15 @@ POST /post/{postId}/reaction
 Request:
 ```
 {
-  "username": "jane"
+  "username": "jane",
+  "reactionType": "like"
 }
 ```
 Response:
 ```
 {
   "username": "jane",
-  "postId": "12345678",
+  "postId": 3,
   "value": 1
 }
 ```
@@ -297,7 +329,8 @@ Request:
 Response:
 ```
 {
-  "commentId": "1111",
+  "commentId": 107,
+  "postId": 45,
   "username": "jane",
   "text": "Looks fun!",
   "timestamp": "2020-03-30 19:12:10",
@@ -308,14 +341,16 @@ Response:
 
 ### Get the comments on a post and filter the details
 
-GET /post/{postId}/comment?username={true}&timestamp={true}&numLikes={true}&numDislikes={true}
+GET /post/{postId}/comment?username&numLikes&numDislikes
+
+All query parameters are optional. If none are specified, each comment will only contain `commentId`, `text`, and `timestamp`.
 
 Response:
 ```
 {
   "result": [
     {
-      "commentId": "1111",
+      "commentId": 107,
       "username": "jane",
       "text": "Looks fun!",
       "timestamp": "2020-03-30 19:12:10",
@@ -323,7 +358,7 @@ Response:
       "numDislikes": 0
     },
     {
-      "commentId": "2222",
+      "commentId": 35,
       "username": "tom",
       "text": "Let's go again next time",
       "timestamp": "2020-02-26 21:10:32",
@@ -331,7 +366,7 @@ Response:
       "numDislikes": 0
     },
     {
-      "commentId": "3333",
+      "commentId": 70,
       "username": "greg",
       "text": "woah",
       "timestamp": "2020-02-23 01:03:18",
@@ -349,15 +384,16 @@ POST /post/{postId}/comment/{commentId}/reaction
 Request:
 ```
 {
-  "username": "jane"
+  "username": "jane",
+  "reactionType": "dislike"
 }
 ```
 Response:
 ```
 {
   "username": "jane",
-  "commentId": "3333",
-  "postId": "12345678",
+  "commentId": 70,
+  "postId": 35,
   "value": -1
 }
 ```
@@ -375,14 +411,14 @@ Response:
 {
   "superpowers": [
     {
-      "itemId": "111",
+      "itemId": 2,
       "itemName": "Double Like",
       "description": "Gives 2 coins every time you like a post or comment.",
       "price": 200,
       "duration": 3
     },
     {
-      "itemId": "222",
+      "itemId": 6,
       "itemName": "Triple Like",
       "description": "Gives 3 coins every time you like a post or comment.",
       "price": 400,
@@ -391,7 +427,7 @@ Response:
   ],
   "accessories": [
     {
-      "itemId": "333",
+      "itemId": 40,
       "itemName": "Badge",
       "description": "A shiny badge to put on your profile.",
       "price": 500
@@ -408,14 +444,14 @@ Request:
 ```
 {
   "username": "john",
-  "itemId": "111"
+  "itemId": 3
 }
 ```
 Response:
 ```
 {
   "username": "john",
-  "itemId": "111",
+  "itemId": 3,
   "expiryDate": "2020-04-10"
 }
 ```
