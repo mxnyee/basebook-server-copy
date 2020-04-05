@@ -2,6 +2,11 @@
 
 const MARKET_QUERIES = [
 
+  'removeExpiredPurchases' => '
+    DELETE FROM Purchase
+    WHERE expiryDate < CURDATE()
+  ',
+
   'getUserSuperpowers' => '
     SELECT itemId, itemName, description, expiryDate
     FROM Purchase

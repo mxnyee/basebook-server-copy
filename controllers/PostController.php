@@ -122,6 +122,7 @@ class PostController extends Controller {
       [ 'username' => $username, 'reactionType' => $reactionType ] = $body;
 
       $this->conn->beginTransaction();
+      $this->marketStatementGroup->removeExpiredPurchases();
       $reactionValue = $this->marketStatementGroup->getUserReactionValue($username, $reactionType);
       $result = $this->postStatementGroup->AddUserReactionToPost($username, $postId, $reactionValue);
       $this->conn->endTransaction();

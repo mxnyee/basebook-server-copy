@@ -11,6 +11,12 @@ class MarketStatementGroup extends StatementGroup {
   }
 
   
+  public function removeExpiredPurchases() {
+    $stmt = $this->statements['removeExpiredPurchases'];
+    $stmt->execute();
+  }
+
+  
   public function getUserSuperpowers($username) {
     $ret = [];
 
