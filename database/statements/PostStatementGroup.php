@@ -116,4 +116,13 @@ class PostStatementGroup extends StatementGroup {
     return $ret;
   }
 
+
+  public function addPostReaction($postId, $username, $reactionType) {
+    $ret = [];
+
+    
+
+    return $ret;
+  }
+
 }

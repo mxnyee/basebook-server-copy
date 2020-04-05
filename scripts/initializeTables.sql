@@ -111,9 +111,9 @@ INSERT INTO AccountUpgrade VALUES (4, 'Badge', 'A shiny badge to put on your pro
 INSERT INTO AccountUpgrade VALUES (5, 'Star', 'You''re a star!', 1000);
 INSERT INTO AccountUpgrade VALUES (6, 'Heart', 'Self care.', 2000);
 
-INSERT INTO Superpower VALUES (1, 3);
-INSERT INTO Superpower VALUES (2, 1);
-INSERT INTO Superpower VALUES (3, 3);
+INSERT INTO Superpower VALUES (1, 2, 1, 3);
+INSERT INTO Superpower VALUES (2, 3, 1, 1);
+INSERT INTO Superpower VALUES (3, 1, 2, 3);
 
 INSERT INTO Accessory VALUES (4, '#16D3F0');
 INSERT INTO Accessory VALUES (5, '#FCBA03');

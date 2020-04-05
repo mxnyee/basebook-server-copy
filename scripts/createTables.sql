@@ -54,6 +54,8 @@ CREATE TABLE AccountUpgrade (
 
 CREATE TABLE Superpower (
   itemId SMALLINT,
+  likeValue TINYINT NOT NULL,
+  dislikeValue TINYINT NOT NULL,
   duration TINYINT NOT NULL,
   PRIMARY KEY (itemId),
   FOREIGN KEY (itemId) REFERENCES AccountUpgrade(itemId)
@@ -70,7 +72,7 @@ CREATE TABLE Accessory (
     ON DELETE CASCADE
 );
 
-CREATE TABLE purchASe (
+CREATE TABLE Purchase (
   username VARCHAR(64),
   itemId SMALLINT,
   expiryDate DATE,
@@ -83,7 +85,7 @@ CREATE TABLE purchASe (
     ON DELETE CASCADE
 );
 
-CREATE TABLE post (
+CREATE TABLE Post (
   postId SMALLINT AUTO_INCREMENT,
   username VARCHAR(64) NOT NULL,
   title VARCHAR(64) NOT NULL,

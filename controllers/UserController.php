@@ -60,10 +60,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [
-        'username' => $username,
-        'password' => $password
-      ] = $body;
+      [ 'username' => $username, 'password' => $password ] = $body;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
@@ -93,9 +90,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [
-        'username' => $username
-      ] = $args;
+      [ 'username' => $username ] = $args;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
@@ -125,9 +120,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
-      [
-        'username' => $username
-      ] = $args;
+      [ 'username' => $username ] = $args;
       $city = (array_key_exists('city', $body))? $body['city'] : null;
       $state = (array_key_exists('state', $body))? $body['state'] : null;
 
@@ -161,9 +154,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [
-        'username' => $username
-      ] = $args;
+      [ 'username' => $username ] = $args;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
@@ -194,9 +185,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [
-        'username' => $username
-      ] = $args;
+      [ 'username' => $username ] = $args;
 
       $this->conn->beginTransaction();
       $result = [];
@@ -228,9 +217,7 @@ class userController extends Controller {
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [
-        'username' => $username
-      ] = $args;
+      [ 'username' => $username ] = $args;
       $span = 2;  // Show the ranking of 5 users total (2 below and 2 above the current user)
       $numRowsToGet = 2 * $span + 1;
       

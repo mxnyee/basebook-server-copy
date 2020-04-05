@@ -106,7 +106,32 @@ class PostController extends Controller {
   }
 
   public function addPostReaction($request, $response, $args) {
-    return $response;
+    $validParams = [];
+    $validFields = ['username', 'reactionType'];
+    $requiredFields = ['username', 'reactionType'];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId ] = $args;
+      [ 'username' => $username, 'reactionType' => $reactionType ] = $body;
+
+      $this->conn->beginTransaction();
+      $result = $this->postStatementGroup->addPostReaction($postId, $username, $reactionType);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      switch (get_class($e)) {
+        case 'BadRequestException': return handleBadRequest($response, $e->getMessage());
+        case 'NotFoundException': return handleNotFound($response, $e->getMessage());
+        case 'InternalServerErrorException': return handleInternalServerError($response, $e->getMessage());
+        default: throw $e;
+      }
+    }
   }
 
   public function removePostReaction($request, $response, $args) {

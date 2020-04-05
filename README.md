@@ -297,7 +297,8 @@ POST /post/{postId}/reaction
 Request:
 ```
 {
-  "username": "jane"
+  "username": "jane",
+  "reactionType": "like"
 }
 ```
 Response:
@@ -382,7 +383,8 @@ POST /post/{postId}/comment/{commentId}/reaction
 Request:
 ```
 {
-  "username": "jane"
+  "username": "jane",
+  "reactionType": "dislike"
 }
 ```
 Response:
