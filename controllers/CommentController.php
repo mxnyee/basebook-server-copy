@@ -78,6 +78,7 @@ class CommentController extends Controller {
     $requiredFields = [];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
+    if (is_null($body)) return responseNoContent($response);
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);

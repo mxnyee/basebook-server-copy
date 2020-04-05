@@ -34,7 +34,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
   $group->post('/signup', \UserController::class . ':signup');
   $group->post('/login', \UserController::class . ':login');
   $group->get('/{username}', \UserController::class . ':getUser');
-  $group->patch('/{username}', \UserController::class . ':updateUser');
+  $group->patch('/{username}', \UserController::class . ':editUser');
   $group->get('/{username}/inventory', \UserController::class . ':getUserInventory');
   $group->get('/{username}/activity', \UserController::class . ':getUserActivity');
   $group->get('/{username}/inbox', \UserController::class . ':getUserInbox');

@@ -100,12 +100,13 @@ class userController extends Controller {
   }
 
 
-  public function updateUser($request, $response, $args) {
+  public function editUser($request, $response, $args) {
     $validParams = [];
     $validFields = ['email', 'password', 'name', 'city', 'state'];
     $requiredFields = [];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
+    if (is_null($body)) return responseNoContent($response);
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
@@ -121,7 +122,7 @@ class userController extends Controller {
 
       if (isset($body['city'])) $body['city'] = $city;
       if (isset($body['state'])) $body['state'] = $state;
-      $result = $this->userStatementGroup->updateUserInfo($username, $body);
+      $result = $this->userStatementGroup->editUserInfo($username, $body);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);

@@ -104,7 +104,7 @@ class UserStatementGroup extends StatementGroup {
   }
 
 
-  public function updateUserInfo($username, $fields) {
+  public function editUserInfo($username, $fields) {
     $ret = [];
 
     $numFields = count($fields);

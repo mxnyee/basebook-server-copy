@@ -105,10 +105,12 @@ class PostController extends Controller {
     $requiredFields = [];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
-
+    if (is_null($body)) return responseNoContent($response);
+    
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
       [ 'postId' => $postId ] = $args;
+      
       $locationName = (isset($body['locationName']))? $body['locationName'] : null;
       $city = (isset($body['city']))? $body['city'] : null;
       $state = (isset($body['state']))? $body['state'] : null;
