@@ -128,6 +128,40 @@ class PostStatementGroup extends StatementGroup {
   }
 
 
+  public function editPost($postId, $fields) {
+    $ret = [];
+
+    $numFields = count($fields);
+    $values = array_values($fields);
+    $values[] = $postId;
+
+    // Build the query
+    $query = 'UPDATE Post SET postId = ?';
+    foreach ($fields as $field => $value) {
+      $query .= ', ' . $field . ' = ?';
+    }
+    $query .= ' WHERE postId = ?';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('i' . str_repeat('s', $numFields) . 'i', $postId, ...$values);
+    $stmt->execute();
+
+    $ret = $fields;
+    if (array_key_exists('state', $fields)) {
+      $ret['country'] = $this->getPostProperty($postId, 'country');
+    }
+
+    return $ret;
+  }
+
+
+  public function deletePost($postId) {
+    $stmt = $this->statements['deletePost'];
+    $stmt->bind_param('i', $postId);
+    $stmt->execute();
+  }
+  
+
   public function addUserReactionToPost($username, $postId, $value) {
     $ret = [];
     $postId = intval($postId);

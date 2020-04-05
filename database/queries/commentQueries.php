@@ -3,13 +3,18 @@
 const COMMENT_QUERIES = [
 
   'insertComment' => '
-    INSERT INTO Comment(postId, username, text)
-    VALUES(?, ?, ?)
+    INSERT INTO Comment(commentId, postId, username, text)
+    VALUES(?, ?, ?, ?)
   ',
 
   'checkForComment' => '
     SELECT commentId, postId
     FROM Comment
+    WHERE commentId = ? AND postId = ?
+  ',
+
+  'deleteComment' => '
+    DELETE FROM Comment
     WHERE commentId = ? AND postId = ?
   ',
   

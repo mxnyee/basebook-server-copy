@@ -13,8 +13,8 @@ class MarketController extends Controller {
     $this->userStatementGroup = $userStatementGroup;
   }
 
-  public function getAllItems($request, $response, $args) {
-    $validParams = [];
+  public function getSortedItems($request, $response, $args) {
+    $validParams = ['itemName', 'price'];
     $validFields = [];
     $requiredFields = [];
     $params = $request->getQueryParams();
@@ -25,8 +25,8 @@ class MarketController extends Controller {
 
       $this->conn->beginTransaction();
       $result = [];
-      $result['superpowers'] = $this->marketStatementGroup->getAllSuperpowers();
-      $result['accessories'] = $this->marketStatementGroup->getAllAccessories();
+      $result['superpowers'] = $this->marketStatementGroup->getSortedSuperpowers($params);
+      $result['accessories'] = $this->marketStatementGroup->getSortedAccessories($params);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);

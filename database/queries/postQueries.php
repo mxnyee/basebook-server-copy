@@ -12,6 +12,11 @@ const POST_QUERIES = [
     FROM Post
     WHERE postId = ?
   ',
+
+  'deletePost' => '
+    DELETE FROM Post
+    WHERE postId = ?
+  ',
   
   'addUserReactionToPost' => '
     INSERT INTO PostReaction(username, postId, value)

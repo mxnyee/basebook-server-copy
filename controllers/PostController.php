@@ -22,7 +22,7 @@ class PostController extends Controller {
   public function createPost($request, $response, $args) {
     $validParams = [];
     $validFields = ['username', 'title', 'text', 'locationName', 'city', 'state'];
-    $requiredFields = ['username', 'title', 'text', 'locationName', 'city', 'state'];
+    $requiredFields = ['username', 'title', 'text'];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
 
@@ -97,6 +97,68 @@ class PostController extends Controller {
       return handleThrown($response, $e);
     }
   }
+
+
+  public function editPost($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['title', 'text', 'locationName', 'city', 'state'];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+    if (is_null($body)) return responseNoContent($response);
+    
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [ 'postId' => $postId ] = $args;
+      
+      $locationName = (isset($body['locationName']))? $body['locationName'] : null;
+      $city = (isset($body['city']))? $body['city'] : null;
+      $state = (isset($body['state']))? $body['state'] : null;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      if ((!!$city || !!$state) && !$locationName) $locationName = $this->postStatementGroup->getPostProperty($postId, 'locationName');
+      if ((!!$locationName || !!$state) && !$city) $city = $this->postStatementGroup->getPostProperty($postId, 'city');
+      if ((!!$locationName || !!$city) && !$state) $state = $this->postStatementGroup->getPostProperty($postId, 'state');
+      $this->locationStatementGroup->checkForCity($city, $state);
+      $this->locationStatementGroup->checkForLocation($locationName, $city, $state);
+
+      $result = $this->postStatementGroup->editPost($postId, $body);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+  
+
+  public function deletePost($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->postStatementGroup->deletePost($postId);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
 
   public function addPostReaction($request, $response, $args) {
     $validParams = [];

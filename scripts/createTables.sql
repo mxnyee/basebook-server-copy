@@ -24,6 +24,7 @@ CREATE TABLE Location (
 CREATE TABLE Permissions (
   AccountType VARCHAR(16),
   canSeeStats BOOLEAN NOT NULL,
+  canSeeTopFans BOOLEAN NOT NULL,
   canSeeRanking BOOLEAN NOT NULL,
   PRIMARY KEY (AccountType)
 );
@@ -99,6 +100,7 @@ CREATE TABLE PostReaction (
   username VARCHAR(64),
   postId SMALLINT,
   value TINYINT NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username, postId),
   FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE
@@ -109,7 +111,7 @@ CREATE TABLE PostReaction (
 );
 
 CREATE TABLE Comment (
-  commentId SMALLINT AUTO_INCREMENT,
+  commentId SMALLINT,
   postId SMALLINT,
   username VARCHAR(64) NOT NULL,
   text VARCHAR(1024) NOT NULL,
@@ -128,6 +130,7 @@ CREATE TABLE CommentReaction (
   commentId SMALLINT,
   postId SMALLINT,
   value TINYINT NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username, commentId, postId),
   FOREIGN KEY (username) REFERENCES Account(username)
     ON UPDATE CASCADE

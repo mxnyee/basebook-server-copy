@@ -34,9 +34,12 @@ $app->group('/user', function (RouteCollectorProxy $group) {
   $group->post('/signup', \UserController::class . ':signup');
   $group->post('/login', \UserController::class . ':login');
   $group->get('/{username}', \UserController::class . ':getUser');
-  $group->patch('/{username}', \UserController::class . ':updateUser');
+  $group->patch('/{username}', \UserController::class . ':editUser');
   $group->get('/{username}/inventory', \UserController::class . ':getUserInventory');
+  $group->get('/{username}/activity', \UserController::class . ':getUserActivity');
+  $group->get('/{username}/inbox', \UserController::class . ':getUserInbox');
   $group->get('/{username}/stats', \UserController::class . ':getUserStats');
+  $group->get('/{username}/top-fans', \UserController::class . ':getUserTopFans');
   $group->get('/{username}/ranking', \UserController::class . ':getUserRanking');
 });
 
@@ -46,44 +49,23 @@ $app->group('/post', function (RouteCollectorProxy $group) {
   $group->post('', \PostController::class . ':createPost');
   $group->get('', \PostController::class . ':getFilteredPosts');
   $group->get('/search', \PostController::class . ':searchPosts');
+  $group->patch('/{postId}', \PostController::class . ':editPost');
+  $group->delete('/{postId}', \PostController::class . ':deletePost');
   $group->post('/{postId}/reaction', \PostController::class . ':addPostReaction');
   $group->delete('/{postId}/reaction/{username}', \PostController::class . ':removePostReaction');
   // Comments
   $group->post('/{postId}/comment', \CommentController::class . ':createComment');
   $group->get('/{postId}/comment', \CommentController::class . ':getFilteredComments');
+  $group->patch('/{postId}/comment/{commentId}', \CommentController::class . ':editComment');
+  $group->delete('/{postId}/comment/{commentId}', \CommentController::class . ':deleteComment');
   $group->post('/{postId}/comment/{commentId}/reaction', \CommentController::class . ':addCommentReaction');
   $group->delete('/{postId}/comment/{commentId}/reaction/{username}', \CommentController::class . ':removeCommentReaction');
 });
 
 // Market route
 $app->group('/market', function (RouteCollectorProxy $group) {
-  $group->get('', \MarketController::class . ':getAllItems');
+  $group->get('', \MarketController::class . ':getSortedItems');
   $group->post('/purchase', \MarketController::class . ':purchaseItem');
-});
-
-// For testing!!
-$app->post('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('POST /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->get('/test', function (Request $request, Response $response) {
-  $response->getBody()->write('GET /test ' . PHP_EOL . 'Request received!');
-  return $response;
-});
-$app->put('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('PUT /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->patch('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('PATCH /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->delete('/test', function (Request $request, Response $response) {
-  $response->getBody()->write('DELETE /test ' . PHP_EOL . 'Request received!');
-  return $response;
 });
 
 $app->run();

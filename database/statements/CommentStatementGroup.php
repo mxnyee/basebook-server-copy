@@ -10,14 +10,13 @@ class CommentStatementGroup extends StatementGroup {
   }
 
 
-  public function insertComment($postId, $username, $text) {
+  public function insertComment($commentId, $postId, $username, $text) {
     $ret = [];
     $postId = intval($postId);
 
     $stmt = $this->statements['insertComment'];
-    $stmt->bind_param('iss', $postId, $username, $text);
+    $stmt->bind_param('iiss', $commentId, $postId, $username, $text);
     $stmt->execute();
-    $commentId = $stmt->insert_id;
 
     $ret = [
       'commentId' => $commentId,
@@ -69,7 +68,7 @@ class CommentStatementGroup extends StatementGroup {
     $ret = [];
 
     // Build the query
-    $query = 'SELECT commentId, text, timestamp';
+    $query = 'SELECT commentId, postId, text, timestamp';
     foreach (array_keys($filters) as $filter) {
       $query .= ', ' . $filter;
     }
@@ -89,6 +88,37 @@ class CommentStatementGroup extends StatementGroup {
     }
 
     return $ret;
+  }
+
+
+  public function editComment($commentId, $postId, $fields) {
+    $ret = [];
+
+    $numFields = count($fields);
+    $values = array_values($fields);
+    $values[] = $commentId;
+    $values[] = $postId;
+
+    // Build the query
+    $query = 'UPDATE Comment SET commentId = ?';
+    foreach ($fields as $field => $value) {
+      $query .= ', ' . $field . ' = ?';
+    }
+    $query .= ' WHERE commentId = ? AND postId = ?';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('i' . str_repeat('s', $numFields) . 'ii', $commentId, ...$values);
+    $stmt->execute();
+
+    $ret = $fields;
+    return $ret;
+  }
+
+
+  public function deleteComment($commentId, $postId) {
+    $stmt = $this->statements['deleteComment'];
+    $stmt->bind_param('ii', $commentId, $postId);
+    $stmt->execute();
   }
 
 

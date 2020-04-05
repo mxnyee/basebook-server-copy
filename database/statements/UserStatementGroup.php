@@ -85,6 +85,7 @@ class UserStatementGroup extends StatementGroup {
   public function getUserProperty($username, $property) {
     $ret = [];
 
+    // Build the query
     $query = '
       SELECT ' . $property . ' 
       FROM Account LEFT JOIN Country USING(state)
@@ -103,7 +104,7 @@ class UserStatementGroup extends StatementGroup {
   }
 
 
-  public function updateUserInfo($username, $fields) {
+  public function editUserInfo($username, $fields) {
     $ret = [];
 
     $numFields = count($fields);
@@ -128,6 +129,84 @@ class UserStatementGroup extends StatementGroup {
 
     return $ret;
   }
+  
+
+  public function getUserActivity($username, $params) {
+    $ret = [];
+
+    foreach ($params as $param => $value) {
+      $ret[$param] = [];
+      
+      // Build the query
+      $query = '
+        SELECT *
+        FROM ' . $param . '
+        WHERE username = ?
+        ORDER BY timestamp DESC
+      ';
+      
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      while($row = $result->fetch_assoc()) {
+        $ret[$param][] = $row;
+      }
+    }
+
+    return $ret;
+  }
+  
+
+  public function getUserInbox($username, $params) {
+    $ret = [];
+
+    foreach ($params as $param => $value) {
+      $ret[$param] = [];
+      
+      // Build the query
+      $query = '
+      SELECT X.*
+      FROM Post P JOIN ' . $param . ' X USING(postId)
+      WHERE P.username = ?
+      ORDER BY timestamp DESC
+      ';
+      
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      while($row = $result->fetch_assoc()) {
+        $ret[$param][] = $row;
+      }
+    }
+
+    return $ret;
+  }
+  
+
+  public function getUserTopFans($username, $param) {
+    $ret = [];
+      
+    // Build the query
+    $query = '
+    SELECT DISTINCT X1.username FROM ' . $param . ' X1 WHERE NOT EXISTS (
+      SELECT postId FROM Post WHERE username = ?
+      EXCEPT
+      SELECT postId FROM ' . $param . ' X2 WHERE X2.username = X1.username
+    )
+    ';
+    
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
 
   
   public function getUserRankByNumPosts($username) {
@@ -145,13 +224,16 @@ class UserStatementGroup extends StatementGroup {
   
   public function getRankingByNumPosts($offset, $limit) {
     $ret = [];
+    $rank = $offset + 1;
 
     $stmt = $this->statements['getRankingByNumPosts'];
     $stmt->bind_param('ii', $offset, $limit);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
+      $row['rank'] = $rank;
       $ret[] = $row;
+      $rank++;
     }
 
     return $ret;
@@ -173,13 +255,16 @@ class UserStatementGroup extends StatementGroup {
   
   public function getRankingByNumComments($offset, $limit) {
     $ret = [];
+    $rank = $offset + 1;
 
     $stmt = $this->statements['getRankingByNumComments'];
     $stmt->bind_param('ii', $offset, $limit);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
+      $row['rank'] = $rank;
       $ret[] = $row;
+      $rank++;
     }
 
     return $ret;

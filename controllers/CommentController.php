@@ -18,6 +18,7 @@ class CommentController extends Controller {
     $this->marketStatementGroup = $marketStatementGroup;
   }
 
+
   public function createComment($request, $response, $args) {
     $validParams = [];
     $validFields = ['username', 'text'];
@@ -33,7 +34,8 @@ class CommentController extends Controller {
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
-      $result = $this->commentStatementGroup->insertComment($postId, $username, $text);
+      $commentId = $this->postStatementGroup->getPostProperty($postId, 'numComments') + 1;
+      $result = $this->commentStatementGroup->insertComment($commentId, $postId, $username, $text);
       $this->conn->endTransaction();
 
       return responseCreated($response, $result);
@@ -43,6 +45,7 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+
 
   public function getFilteredComments($request, $response, $args) {
     $validParams = ['username', 'numLikes', 'numDislikes'];
@@ -67,6 +70,60 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+  
+
+  public function editComment($request, $response, $args) {
+    $validParams = [];
+    $validFields = ['text'];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+    if (is_null($body)) return responseNoContent($response);
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
+      [ 'postId' => $postId, 'commentId' => $commentId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->commentStatementGroup->checkForComment($commentId, $postId);
+      $result = $this->commentStatementGroup->editComment($commentId, $postId, $body);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
+  public function deleteComment($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'postId' => $postId, 'commentId' => $commentId ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->postStatementGroup->checkForPost($postId);
+      $this->commentStatementGroup->checkForComment($commentId, $postId);
+      $this->commentStatementGroup->deleteComment($commentId, $postId);
+      $this->conn->endTransaction();
+
+      return responseNoContent($response);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
 
   public function addCommentReaction($request, $response, $args) {
     $validParams = [];
@@ -99,6 +156,7 @@ class CommentController extends Controller {
       return handleThrown($response, $e);
     }
   }
+  
 
   public function removeCommentReaction($request, $response, $args) {
     $validParams = [];

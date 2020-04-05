@@ -10,10 +10,22 @@ class MarketStatementGroup extends StatementGroup {
   }
 
 
-  public function getAllSuperpowers() {
+  public function getSortedSuperpowers($params) {
     $ret = [];
 
-    $stmt = $this->statements['getAllSuperpowers'];
+    // Build the query
+    $query = '
+      SELECT itemId, itemName, description, price, duration
+      FROM AccountUpgrade
+      JOIN Superpower USING(itemId)
+      ORDER BY';
+    foreach ($params as $param=> $value) {
+      $query .= ' ' . $param . ' ASC,';
+    }
+    $query .= ' itemId ASC';
+    echo $query;
+    
+    $stmt = $this->conn->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
@@ -24,10 +36,25 @@ class MarketStatementGroup extends StatementGroup {
   }
 
 
-  public function getAllAccessories() {
+  public function getSortedAccessories($params) {
     $ret = [];
 
-    $stmt = $this->statements['getAllAccessories'];
+    // Build the query
+    $query = '
+      SELECT itemId, itemName, description, price
+      FROM AccountUpgrade
+      WHERE itemId NOT IN (
+        SELECT itemId
+        FROM Superpower
+      )
+      ORDER BY';
+    foreach ($params as $param=> $value) {
+      $query .= ' ' . $param . ' ASC,';
+    }
+    $query .= ' itemId ASC';
+    echo $query;
+    
+    $stmt = $this->conn->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {

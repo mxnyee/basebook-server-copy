@@ -100,24 +100,29 @@ class userController extends Controller {
   }
 
 
-  public function updateUser($request, $response, $args) {
+  public function editUser($request, $response, $args) {
     $validParams = [];
     $validFields = ['email', 'password', 'name', 'city', 'state'];
     $requiredFields = [];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
+    if (is_null($body)) return responseNoContent($response);
 
     try {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, false);
       [ 'username' => $username ] = $args;
-      $city = (array_key_exists('city', $body))? $body['city'] : null;
-      $state = (array_key_exists('state', $body))? $body['state'] : null;
+      $city = (isset($body['city']))? $body['city'] : null;
+      $state = (isset($body['state']))? $body['state'] : null;
 
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
+      if (!!$state && !$city) $city = $this->userStatementGroup->getUserProperty($username, 'city');
       if (!!$city && !$state) $state = $this->userStatementGroup->getUserProperty($username, 'state');
       $this->locationStatementGroup->checkForCity($city, $state);
-      $result = $this->userStatementGroup->updateUserInfo($username, $body);
+
+      if (isset($body['city'])) $body['city'] = $city;
+      if (isset($body['state'])) $body['state'] = $state;
+      $result = $this->userStatementGroup->editUserInfo($username, $body);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
@@ -154,6 +159,56 @@ class userController extends Controller {
     }
   }
 
+  
+  public function getUserActivity($request, $response, $args) {
+    $validParams = ['post', 'comment', 'postReaction', 'commentReaction'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserActivity($username, $params);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
+  public function getUserInbox($request, $response, $args) {
+    $validParams = ['comment', 'postReaction'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserInbox($username, $params);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
 
   public function getUserStats($request, $response, $args) {
     $validParams = [];
@@ -172,6 +227,34 @@ class userController extends Controller {
       $this->userStatementGroup->checkUserPermissions($username, 'canSeeStats');
       $result['numPosts'] = $this->userStatementGroup->getUserProperty($username, 'numPosts');
       $result['numComments'] = $this->userStatementGroup->getUserProperty($username, 'numComments');
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
+  public function getUserTopFans($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $result = [];
+      $this->userStatementGroup->checkForUser($username);
+      $this->userStatementGroup->checkUserPermissions($username, 'canSeeTopFans');
+      $result['comment'] = $this->userStatementGroup->getUserTopFans($username, 'comment');
+      $result['postReaction'] = $this->userStatementGroup->getUserTopFans($username, 'postReaction');
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
