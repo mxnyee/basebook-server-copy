@@ -2,23 +2,6 @@
 
 const MARKET_QUERIES = [
 
-  'getAllSuperpowers' => '
-    SELECT itemId, itemName, description, price, duration
-    FROM AccountUpgrade
-    JOIN Superpower USING(itemId)
-    ORDER BY itemName DESC
-  ',
-
-  'getAllAccessories' => '
-    SELECT itemId, itemName, description, price
-    FROM AccountUpgrade
-    WHERE itemId NOT IN (
-      SELECT itemId
-      FROM Superpower
-    )
-    ORDER BY itemName DESC
-  ',
-
   'checkForItem' => '
     SELECT itemId
     FROM AccountUpgrade

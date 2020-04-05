@@ -50,11 +50,11 @@ class Validator {
   }
 
 
-  private function validateBody($data, $validData, $requiredData, $useDependencies) {
-    if (is_null($data)) {
+  private function validateBody($data, $validData, $requiredData, $useDependencies) { 
+    if (!empty($requiredData) && is_null($data)) {
       throw new BadRequestException('Data is null.');
     }
-    
+
     $object = (object)$data;
     $schema = buildSchema($validData, $requiredData, $useDependencies);
 
@@ -73,6 +73,7 @@ class Validator {
 
 
   private function fillMissingData(&$data, $validData) {
+    if (is_null($data)) return;
     foreach($validData as $key) {
       if (!array_key_exists($key, $data)) {
         $data[$key] = NULL;

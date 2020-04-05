@@ -64,7 +64,7 @@ $app->group('/post', function (RouteCollectorProxy $group) {
 
 // Market route
 $app->group('/market', function (RouteCollectorProxy $group) {
-  $group->get('', \MarketController::class . ':getAllItems');
+  $group->get('', \MarketController::class . ':getSortedItems');
   $group->post('/purchase', \MarketController::class . ':purchaseItem');
 });
 

@@ -567,9 +567,11 @@ Response:
 
 DELETE /post/{postId}/comment/{commentId}/reaction/{username}
 
-### See all items available in the market
+### See all items available in the market and sort
 
-GET /market
+GET /market?price&itemId
+
+All query parameters are optional. Order matters. If none are specified, items will by sorted by `itemId`.
 
 Response:
 ```
@@ -592,10 +594,16 @@ Response:
   ],
   "accessories": [
     {
-      "itemId": 40,
-      "itemName": "Badge",
-      "description": "A shiny badge to put on your profile.",
-      "price": 500
+      "itemId": 5,
+      "itemName": "Star",
+      "description": "You're a star!",
+      "price": 1000
+    },
+    {
+      "itemId": 6,
+      "itemName": "Heart",
+      "description": "Self care.",
+      "price": 2000
     }
   ]
 }
