@@ -9,6 +9,104 @@ class MarketStatementGroup extends StatementGroup {
     parent::__construct($conn, MARKET_QUERIES);
   }
 
+
+  public function getAllSuperpowers() {
+    $ret = [];
+
+    $stmt = $this->statements['getAllSuperpowers'];
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
+
+  public function getAllAccessories() {
+    $ret = [];
+
+    $stmt = $this->statements['getAllAccessories'];
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
+
+  public function checkForItem($itemId) {
+    $stmt = $this->statements['checkForItem'];
+    $stmt->bind_param('i', $itemId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+      throw new NotFoundException('Item not found.');
+    }
+  }
+
+
+  public function getItemProperty($itemId, $property) {
+    $ret = [];
+
+    $query = '
+      SELECT ' . $property . ' 
+      FROM AccountUpgrade
+      LEFT JOIN Superpower USING(itemId)
+      LEFT JOIN Accessory USING(itemId)
+      WHERE itemId = ?
+    ';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('i', $itemId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+
+    return $ret[$property];
+  }
+
+
+  public function insertPurchase($username, $itemId, $duration) {
+    $ret = [];
+    $itemId = intval($itemId);
+
+    $stmt = $this->statements['insertPurchase'];
+    $stmt->bind_param('sii', $username, $itemId, $duration);
+    $stmt->execute();
+    
+    $ret = [
+      'username' => $username,
+      'itemId' => $itemId
+    ];
+    $ret['expiryDate'] = $this->getPurchaseProperty($username, $itemId, 'expiryDate');
+
+    return $ret;
+  }
+
+
+  public function getPurchaseProperty($usrname, $itemId, $property) {
+    $ret = [];
+
+    $query = '
+      SELECT ' . $property . ' 
+      FROM Purchase
+      WHERE username = ? AND itemId = ?
+    ';
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('si', $username, $itemId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+    $ret = (!!$ret)? $ret[$property] : null;
+    
+    return $ret;
+  }
+
   
   public function removeExpiredPurchases() {
     $stmt = $this->statements['removeExpiredPurchases'];
