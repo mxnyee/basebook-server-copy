@@ -9,7 +9,7 @@ const LOCATION_QUERIES = [
   ',
   
   'insertCity' => '
-    INSERT INTO City
+    INSERT INTO City(city, state)
     VALUES(?, ?)
   ',
 
@@ -20,7 +20,7 @@ const LOCATION_QUERIES = [
   ',
   
   'insertLocation' => '
-    INSERT INTO Location
+    INSERT INTO Location(locationName, city, state)
     VALUES(?, ?, ?)
   ',
   

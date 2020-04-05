@@ -51,9 +51,11 @@ class PostController extends Controller {
 
 
   public function getFilteredPosts($request, $response, $args) {
-    $validParams = ['username', 'title', 'locationName', 'city', 'state', 'timestamp', 'numLikes', 'numDislikes', 'numComments'];
+    $validParams = ['username', 'title', 'locationName', 'city', 'state', 'numLikes', 'numDislikes', 'numComments'];
     $validFields = [];
     $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
 
     try {
       $body = $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);

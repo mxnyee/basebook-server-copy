@@ -210,9 +210,9 @@ Response:
 
 ### Fetch a feed of posts and filter the details
 
-GET /post?username&locationName&city&state&country&timestamp&numLikes&numDislikes&numComments
+GET /post?username&locationName&city&state&country&numLikes&numDislikes&numComments
 
-All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, and `text`.
+All query parameters are optional. If none are specified, each post will only contain `postId`, `title`, `text`, and `timestamp`.
 
 Response:
 ```
