@@ -94,9 +94,9 @@ INSERT INTO Location VALUES ('Main Street', 'North Vancouver', 'BC');
 INSERT INTO Location VALUES ('Metrotown', 'Burnaby', 'BC');
 INSERT INTO Location VALUES ('Aberdeen', 'Richmond', 'BC');
 
-INSERT INTO Permissions VALUE ('regular', FALSE, FALSE);
-INSERT INTO Permissions VALUE ('premium', TRUE, FALSE);
-INSERT INTO Permissions VALUE ('deluxe', TRUE, TRUE);
+INSERT INTO Permissions VALUE ('regular', TRUE, FALSE, FALSE);
+INSERT INTO Permissions VALUE ('premium', TRUE, TRUE, FALSE);
+INSERT INTO Permissions VALUE ('deluxe', TRUE, TRUE, TRUE);
 
 INSERT INTO Account VALUES ('alpha', 'alpha@example.com', 'amber', 'Alpha', 'Vancouver', 'BC', 200, 'Deluxe');
 INSERT INTO Account VALUES ('bravo', 'bravo@example.com', 'bronze', 'Bravo', 'Victoria', 'BC', 153, 'Premium');

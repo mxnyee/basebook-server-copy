@@ -181,6 +181,30 @@ class UserStatementGroup extends StatementGroup {
 
     return $ret;
   }
+  
+
+  public function getUserTopFans($username, $param) {
+    $ret = [];
+      
+    // Build the query
+    $query = '
+    SELECT DISTINCT X1.username FROM ' . $param . ' X1 WHERE NOT EXISTS (
+      SELECT postId FROM Post WHERE username = ?
+      EXCEPT
+      SELECT postId FROM ' . $param . ' X2 WHERE X2.username = X1.username
+    )
+    ';
+    
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
 
   
   public function getUserRankByNumPosts($username) {

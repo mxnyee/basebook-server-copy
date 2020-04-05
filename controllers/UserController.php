@@ -233,6 +233,34 @@ class userController extends Controller {
   }
 
 
+  public function getUserTopFans($request, $response, $args) {
+    $validParams = [];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $result = [];
+      $this->userStatementGroup->checkForUser($username);
+      $this->userStatementGroup->checkUserPermissions($username, 'canSeeTopFans');
+      $result['comment'] = $this->userStatementGroup->getUserTopFans($username, 'comment');
+      $result['postReaction'] = $this->userStatementGroup->getUserTopFans($username, 'postReaction');
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
   public function getUserRanking($request, $response, $args) {
     $validParams = [];
     $validFields = [];

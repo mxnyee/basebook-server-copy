@@ -24,6 +24,7 @@ CREATE TABLE Location (
 CREATE TABLE Permissions (
   AccountType VARCHAR(16),
   canSeeStats BOOLEAN NOT NULL,
+  canSeeTopFans BOOLEAN NOT NULL,
   canSeeRanking BOOLEAN NOT NULL,
   PRIMARY KEY (AccountType)
 );

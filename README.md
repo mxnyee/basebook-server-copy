@@ -251,6 +251,25 @@ Response:
 }
 ```
 
+### See a user's top fans
+
+GET /user/{username}/top-fans
+
+Response:
+```
+{
+  "comment": [
+    { "username": "greg" },
+    { "username": "fred" }
+  ],
+  "postReaction": [
+    { "username": "greg" },
+    { "username": "jane" },
+    { "username": "fred" }
+  ]
+}
+```
+
 ### See a user's ranking
 
 GET /user/{username}/ranking

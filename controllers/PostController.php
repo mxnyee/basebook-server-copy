@@ -22,7 +22,7 @@ class PostController extends Controller {
   public function createPost($request, $response, $args) {
     $validParams = [];
     $validFields = ['username', 'title', 'text', 'locationName', 'city', 'state'];
-    $requiredFields = ['username', 'title', 'text', 'locationName', 'city', 'state'];
+    $requiredFields = ['username', 'title', 'text'];
     $params = $request->getQueryParams();
     $body = $request->getParsedBody();
 
