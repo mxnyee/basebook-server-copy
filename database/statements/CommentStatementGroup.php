@@ -98,7 +98,7 @@ class CommentStatementGroup extends StatementGroup {
     $postId = intval($postId);
 
     $stmt = $this->statements['addUserReactionToComment'];
-    $stmt->bind_param('siiss', $username, $commentId, $postId, $value, $value);
+    $stmt->bind_param('siis', $username, $commentId, $postId, $value);
     $stmt->execute();
 
     $ret = [
@@ -120,6 +120,16 @@ class CommentStatementGroup extends StatementGroup {
     if ($result->num_rows == 0) {
       throw new NotFoundException('User ' . $username . ' did not react to that comment.');
     }
+  }
+
+
+  public function getUserReactionToComment($username, $commentId, $postId) {
+    $stmt = $this->statements['getUserReactionToComment'];
+    $stmt->bind_param('sii', $username, $commentId, $postId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+    return $ret['value'];
   }
 
 

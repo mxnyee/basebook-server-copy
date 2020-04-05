@@ -112,9 +112,12 @@ class PostController extends Controller {
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
+      $author = $this->postStatementGroup->getPostProperty($postId, 'username');
       $this->marketStatementGroup->removeExpiredPurchases();
       $reactionValue = $this->marketStatementGroup->getUserReactionValue($username, $reactionType);
-      $result = $this->postStatementGroup->AddUserReactionToPost($username, $postId, $reactionValue);
+      $this->userStatementGroup->takeCoinsFromSender($username, $reactionValue);
+      $this->userStatementGroup->giveCoinsToReceiver($author, $reactionValue);
+      $result = $this->postStatementGroup->addUserReactionToPost($username, $postId, $reactionValue);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
@@ -139,11 +142,14 @@ class PostController extends Controller {
       $this->conn->beginTransaction();
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
-      $result = $this->postStatementGroup->checkForUserReactionToPost($username, $postId);
-      $result = $this->postStatementGroup->removeUserReactionToPost($username, $postId);
+      $author = $this->postStatementGroup->getPostProperty($postId, 'username');
+      $this->postStatementGroup->checkForUserReactionToPost($username, $postId);
+      $reactionValue = $this->postStatementGroup->getUserReactionToPost($username, $postId);
+      $this->userStatementGroup->giveCoinsToReceiver($author, -($reactionValue));
+      $this->postStatementGroup->removeUserReactionToPost($username, $postId);
       $this->conn->endTransaction();
 
-      return responseNoContent($response, $result);
+      return responseNoContent($response);
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();

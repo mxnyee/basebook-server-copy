@@ -2,7 +2,6 @@
 
 require_once 'StatementGroup.php';
 require_once __DIR__ . '/../queries/marketQueries.php';
-require_once __DIR__ . '/../../constants/reactions.php';
 
 class MarketStatementGroup extends StatementGroup {
 

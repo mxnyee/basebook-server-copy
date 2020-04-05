@@ -72,6 +72,17 @@ const USER_QUERIES = [
     SELECT *
     FROM Account JOIN Permissions USING(accountType)
     WHERE username = ?
+  ',
+
+  'takeCoinsFromSender' => '
+    UPDATE Account
+    SET numCoins = numCoins - GREATEST(?, 0)
+    WHERE username = ?
+  ',
+
+  'giveCoinsToReceiver' => '
+    UPDATE Account
+    SET numCoins = GREATEST(numCoins + (?), 0)
+    WHERE username = ?
   '
-  
 ];

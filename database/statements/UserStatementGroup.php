@@ -187,14 +187,32 @@ class UserStatementGroup extends StatementGroup {
 
 
   public function checkUserPermissions($username, $permissions) {
-      $stmt = $this->statements['checkUserPermissions'];
-      $stmt->bind_param('s', $username);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $ret = $result->fetch_assoc();
-      if ($ret[$permissions] == false) {
-        throw new ForbiddenException('Upgrade your account to see this info.');
-      }
+    $stmt = $this->statements['checkUserPermissions'];
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+    if ($ret[$permissions] == false) {
+      throw new ForbiddenException('Upgrade your account to see this info.');
     }
-    
+  }
+
+
+  public function takeCoinsFromSender($username, $value) {
+    $stmt = $this->statements['takeCoinsFromSender'];
+    $stmt->bind_param('is', $value, $username);
+    $stmt->execute();
+    $balance = $this->getUserProperty($username, 'numCoins');
+    if ($balance < 0) {
+      throw new ForbiddenException('You don\'t have enough coins to do that.');
+    }
+  }
+
+
+  public function giveCoinsToReceiver($username, $value) {
+    $stmt = $this->statements['giveCoinsToReceiver'];
+    $stmt->bind_param('is', $value, $username);
+    $stmt->execute();
+  }
+
 }

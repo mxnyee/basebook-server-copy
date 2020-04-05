@@ -16,10 +16,15 @@ const POST_QUERIES = [
   'addUserReactionToPost' => '
     INSERT INTO PostReaction(username, postId, value)
     VALUES(?, ?, ?)
-    ON DUPLICATE KEY UPDATE value = ?
   ',
 
   'checkForUserReactionToPost' => '
+    SELECT value
+    FROM PostReaction
+    WHERE username = ? AND postId = ?
+  ',
+
+  'getUserReactionToPost' => '
     SELECT value
     FROM PostReaction
     WHERE username = ? AND postId = ?

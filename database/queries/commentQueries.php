@@ -16,10 +16,15 @@ const COMMENT_QUERIES = [
   'addUserReactionToComment' => '
     INSERT INTO CommentReaction(username, commentId, postId, value)
     VALUES(?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE value = ?
   ',
 
   'checkForUserReactionToComment' => '
+    SELECT value
+    FROM CommentReaction
+    WHERE username = ? AND commentId = ? AND postId = ?
+  ',
+
+  'getUserReactionToComment' => '
     SELECT value
     FROM CommentReaction
     WHERE username = ? AND commentId = ? AND postId = ?

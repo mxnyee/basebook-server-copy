@@ -83,8 +83,11 @@ class CommentController extends Controller {
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
       $this->commentStatementGroup->checkForComment($commentId, $postId);
+      $author = $this->commentStatementGroup->getCommentProperty($commentId, $postId, 'username');
       $this->marketStatementGroup->removeExpiredPurchases();
       $reactionValue = $this->marketStatementGroup->getUserReactionValue($username, $reactionType);
+      $this->userStatementGroup->takeCoinsFromSender($username, $reactionValue);
+      $this->userStatementGroup->giveCoinsToReceiver($author, $reactionValue);
       $result = $this->commentStatementGroup->AddUserReactionToComment($username, $commentId, $postId, $reactionValue);
       $this->conn->endTransaction();
 
@@ -111,11 +114,14 @@ class CommentController extends Controller {
       $this->userStatementGroup->checkForUser($username);
       $this->postStatementGroup->checkForPost($postId);
       $this->commentStatementGroup->checkForComment($commentId, $postId);
-      $result = $this->commentStatementGroup->checkForUserReactionToComment($username, $commentId, $postId);
-      $result = $this->commentStatementGroup->removeUserReactionToComment($username, $commentId, $postId);
+      $author = $this->commentStatementGroup->getCommentProperty($commentId, $postId, 'username');
+      $this->commentStatementGroup->checkForUserReactionToComment($username, $commentId, $postId);
+      $reactionValue = $this->commentStatementGroup->getUserReactionToComment($username, $commentId, $postId);
+      $this->userStatementGroup->giveCoinsToReceiver($author, -($reactionValue));
+      $this->commentStatementGroup->removeUserReactionToComment($username, $commentId, $postId);
       $this->conn->endTransaction();
 
-      return responseNoContent($response, $result);
+      return responseNoContent($response);
 
     } catch (Exception $e) {
       $this->conn->rollbackTransaction();

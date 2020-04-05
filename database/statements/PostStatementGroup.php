@@ -133,7 +133,7 @@ class PostStatementGroup extends StatementGroup {
     $postId = intval($postId);
 
     $stmt = $this->statements['addUserReactionToPost'];
-    $stmt->bind_param('siss', $username, $postId, $value, $value);
+    $stmt->bind_param('sis', $username, $postId, $value);
     $stmt->execute();
 
     $ret = [
@@ -154,6 +154,16 @@ class PostStatementGroup extends StatementGroup {
     if ($result->num_rows == 0) {
       throw new NotFoundException('User ' . $username . ' did not react to that post.');
     }
+  }
+
+
+  public function getUserReactionToPost($username, $postId) {
+    $stmt = $this->statements['getUserReactionToPost'];
+    $stmt->bind_param('si', $username, $postId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ret = $result->fetch_assoc();
+    return $ret['value'];
   }
 
 
