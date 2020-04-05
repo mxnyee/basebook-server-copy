@@ -12,7 +12,10 @@ const MARKET_QUERIES = [
   'getAllAccessories' => '
     SELECT itemId, itemName, description, price
     FROM AccountUpgrade
-    JOIN Accessory USING(itemId)
+    WHERE itemId NOT IN (
+      SELECT itemId
+      FROM Superpower
+    )
     ORDER BY itemName DESC
   ',
 
@@ -42,11 +45,12 @@ const MARKET_QUERIES = [
   ',
 
   'getUserAccessories' => '
-    SELECT itemId, itemName, description, color
-    FROM Purchase
-    JOIN AccountUpgrade USING(itemId)
-    JOIN Accessory USING(itemId)
-    WHERE username = ?
+    SELECT itemId, itemName, description
+    FROM Purchase JOIN AccountUpgrade USING(itemId)
+    WHERE username = ? AND itemId NOT IN (
+      SELECT itemId
+      FROM Superpower
+    )
     ORDER BY itemName DESC
   '
 

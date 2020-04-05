@@ -56,7 +56,6 @@ class MarketStatementGroup extends StatementGroup {
       SELECT ' . $property . ' 
       FROM AccountUpgrade
       LEFT JOIN Superpower USING(itemId)
-      LEFT JOIN Accessory USING(itemId)
       WHERE itemId = ?
     ';
 

@@ -115,10 +115,6 @@ INSERT INTO Superpower VALUES (1, 1, 0, 3);
 INSERT INTO Superpower VALUES (2, 2, 0, 1);
 INSERT INTO Superpower VALUES (3, 0, 1, 3);
 
-INSERT INTO Accessory VALUES (4, '#16D3F0');
-INSERT INTO Accessory VALUES (5, '#FCBA03');
-INSERT INTO Accessory VALUES (6, '#FF307C');
-
 INSERT INTO Purchase VALUES ('alpha', 4, NULL);
 INSERT INTO Purchase VALUES ('alpha', 2, '2020-04-12');
 INSERT INTO Purchase VALUES ('bravo', 1, '2020-04-16');

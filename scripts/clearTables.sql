@@ -5,7 +5,6 @@ DELETE FROM Permissions;
 DELETE FROM Account;
 DELETE FROM AccountUpgrade;
 DELETE FROM Superpower;
-DELETE FROM Accessory;
 DELETE FROM Purchase;
 DELETE FROM Post;
 DELETE FROM PostReaction;

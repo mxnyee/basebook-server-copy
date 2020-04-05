@@ -63,15 +63,6 @@ CREATE TABLE Superpower (
     ON DELETE CASCADE
 );
 
-CREATE TABLE Accessory (
-  itemId SMALLINT,
-  color CHAR(7) NOT NULL DEFAULT '#00B7EB',
-  PRIMARY KEY (itemId),
-  FOREIGN KEY (itemId) REFERENCES AccountUpgrade(itemId)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-);
-
 CREATE TABLE Purchase (
   username VARCHAR(64),
   itemId SMALLINT,
