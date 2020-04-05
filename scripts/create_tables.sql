@@ -31,7 +31,7 @@ CREATE TABLE Permissions (
 CREATE TABLE Account (
   username VARCHAR(64),
   email VARCHAR(256) NOT NULL UNIQUE,
-  password VARCHAR(64) NOT NULL,
+  pASsword VARCHAR(64) NOT NULL,
   name VARCHAR(64),
   city VARCHAR(64),
   state CHAR(2),
@@ -70,7 +70,7 @@ CREATE TABLE Accessory (
     ON DELETE CASCADE
 );
 
-CREATE TABLE purchase (
+CREATE TABLE purchASe (
   username VARCHAR(64),
   itemId SMALLINT,
   expiryDate DATE,
@@ -145,54 +145,50 @@ CREATE TABLE CommentReaction (
 );
 
 CREATE VIEW NumPostsByUser(username, numPosts) AS (
-  SELECT username, COUNT(postId) as numPosts
+  SELECT username, COUNT(postId) AS numPosts
   FROM Account LEFT JOIN Post USING(username)
   GROUP BY username
   ORDER BY numPosts DESC, username ASC
 );
 
 CREATE VIEW NumCommentsByUser(username, numComments) AS (
-  SELECT username, COUNT(DISTINCT commentId, postId) as numComments
+  SELECT username, COUNT(DISTINCT commentId, postId) AS numComments
   FROM Account LEFT JOIN Comment USING(username)
   GROUP BY username
   ORDER BY numComments DESC, username ASC
 );
 
 CREATE VIEW NumLikesOnPost(postId, numLikes) AS (
-  SELECT postId, SUM(COALESCE(value, 0)) as numLikes
+  SELECT postId, SUM(LEAST(COALESCE(value, 0), 0)) AS numLikes
   FROM Post LEFT JOIN PostReaction USING(postId)
-  WHERE value >= 0 OR value IS NULL
   GROUP BY postId
   ORDER BY numLikes DESC
 );
 
 CREATE VIEW NumDislikesOnPost(postId, numDislikes) AS (
-  SELECT postId, SUM(COALESCE(ABS(value), 0)) as numDislikes
+  SELECT postId, ABS(SUM(LEAST(COALESCE(value, 0), 0))) AS numDislikes
   FROM Post LEFT JOIN PostReaction USING(postId)
-  WHERE value <= 0 OR value IS NULL
   GROUP BY postId
   ORDER BY numDislikes DESC
 );
 
 CREATE VIEW NumCommentsOnPost(postId, numComments) AS (
-  SELECT postId, COUNT(commentId) as numComments
+  SELECT postId, COUNT(commentId) AS numComments
   FROM Post LEFT JOIN Comment USING(postId)
   GROUP BY postId
   ORDER BY numComments DESC
 );
 
 CREATE VIEW NumLikesOnComment(commentId, postId, numLikes) AS (
-  SELECT commentId, postId, SUM(COALESCE(value, 0)) as numLikes
+  SELECT commentId, postId, SUM(LEAST(COALESCE(value, 0), 0)) AS numLikes
   FROM Comment LEFT JOIN CommentReaction USING(commentId, postId)
-  WHERE value >= 0 OR value IS NULL
   GROUP BY commentId, postId
   ORDER BY numLikes DESC
 );
 
 CREATE VIEW NumDislikesOnComment(commentId, postId, numDislikes) AS (
-  SELECT commentId, postId, SUM(COALESCE(ABS(value), 0)) as numDislikes
+  SELECT commentId, postId, ABS(SUM(LEAST(COALESCE(value, 0), 0))) AS numDislikes
   FROM Comment LEFT JOIN CommentReaction USING(commentId, postId)
-  WHERE value <= 0 OR value IS NULL
   GROUP BY commentId, postId
   ORDER BY numDislikes DESC
 );
