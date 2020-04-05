@@ -131,6 +131,32 @@ class UserStatementGroup extends StatementGroup {
   }
   
 
+  public function getUserActivity($username, $params) {
+    $ret = [];
+
+    foreach ($params as $param => $value) {
+      $ret[$param] = [];
+      
+      // Build the query
+      $query = '
+      SELECT *
+      FROM ' . $param . '
+      WHERE username = ?
+      ';
+      
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      while($row = $result->fetch_assoc()) {
+        $ret[$param][] = $row;
+      }
+    }
+
+    return $ret;
+  }
+  
+
   public function getUserInbox($username, $params) {
     $ret = [];
 

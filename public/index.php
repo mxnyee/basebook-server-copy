@@ -35,9 +35,11 @@ $app->group('/user', function (RouteCollectorProxy $group) {
   $group->post('/login', \UserController::class . ':login');
   $group->get('/{username}', \UserController::class . ':getUser');
   $group->patch('/{username}', \UserController::class . ':updateUser');
-  $group->get('/{username}/inbox', \UserController::class . ':getUserInbox');
   $group->get('/{username}/inventory', \UserController::class . ':getUserInventory');
+  $group->get('/{username}/activity', \UserController::class . ':getUserActivity');
+  $group->get('/{username}/inbox', \UserController::class . ':getUserInbox');
   $group->get('/{username}/stats', \UserController::class . ':getUserStats');
+  $group->get('/{username}/top-fans', \UserController::class . ':getUserTopFans');
   $group->get('/{username}/ranking', \UserController::class . ':getUserRanking');
 });
 
@@ -62,31 +64,6 @@ $app->group('/post', function (RouteCollectorProxy $group) {
 $app->group('/market', function (RouteCollectorProxy $group) {
   $group->get('', \MarketController::class . ':getAllItems');
   $group->post('/purchase', \MarketController::class . ':purchaseItem');
-});
-
-// For testing!!
-$app->post('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('POST /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->get('/test', function (Request $request, Response $response) {
-  $response->getBody()->write('GET /test ' . PHP_EOL . 'Request received!');
-  return $response;
-});
-$app->put('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('PUT /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->patch('/test', function (Request $request, Response $response) {
-  $data = $request->getParsedBody();
-  $response->getBody()->write('PATCH /test ' . PHP_EOL . 'Request received:' . PHP_EOL . var_export($data, true));
-  return $response;
-});
-$app->delete('/test', function (Request $request, Response $response) {
-  $response->getBody()->write('DELETE /test ' . PHP_EOL . 'Request received!');
-  return $response;
 });
 
 $app->run();

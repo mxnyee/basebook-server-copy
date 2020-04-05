@@ -129,31 +129,6 @@ class userController extends Controller {
   }
 
 
-  public function getUserInbox($request, $response, $args) {
-    $validParams = ['comment', 'postReaction'];
-    $validFields = [];
-    $requiredFields = [];
-    $params = $request->getQueryParams();
-    $body = $request->getParsedBody();
-
-    try {
-      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
-      [ 'username' => $username ] = $args;
-
-      $this->conn->beginTransaction();
-      $this->userStatementGroup->checkForUser($username);
-      $result = $this->userStatementGroup->getUserInbox($username, $params);
-      $this->conn->endTransaction();
-
-      return responseOk($response, $result);
-
-    } catch (Exception $e) {
-      $this->conn->rollbackTransaction();
-      return handleThrown($response, $e);
-    }
-  }
-
-
   public function getUserInventory($request, $response, $args) {
     $validParams = [];
     $validFields = [];
@@ -169,6 +144,56 @@ class userController extends Controller {
       $this->userStatementGroup->checkForUser($username);
       $result['superpowers'] = $this->marketStatementGroup->getUserSuperpowers($username);
       $result['accessories'] = $this->marketStatementGroup->getUserAccessories($username);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+  
+  public function getUserActivity($request, $response, $args) {
+    $validParams = ['post', 'comment', 'postReaction', 'commentReaction'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserActivity($username, $params);
+      $this->conn->endTransaction();
+
+      return responseOk($response, $result);
+
+    } catch (Exception $e) {
+      $this->conn->rollbackTransaction();
+      return handleThrown($response, $e);
+    }
+  }
+
+
+  public function getUserInbox($request, $response, $args) {
+    $validParams = ['comment', 'postReaction'];
+    $validFields = [];
+    $requiredFields = [];
+    $params = $request->getQueryParams();
+    $body = $request->getParsedBody();
+
+    try {
+      $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
+      [ 'username' => $username ] = $args;
+
+      $this->conn->beginTransaction();
+      $this->userStatementGroup->checkForUser($username);
+      $result = $this->userStatementGroup->getUserInbox($username, $params);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);

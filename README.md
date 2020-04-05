@@ -115,6 +115,90 @@ Response:
 }
 ```
 
+### See a user's inventory
+
+GET /user/{username}/inventory
+
+Response:
+```
+{
+  "superpowers": [
+    {
+      "itemId": "111",
+      "itemName": "Double Like",
+      "description": "Gives 2 coins every time you like a post or comment.",
+      "expiryDate": "2020-04-10"
+    }
+  ],
+  "accessories": [
+    {
+      "itemId": "333",
+      "itemName": "Badge",
+      "description": "A shiny badge to put on your profile.",
+      "color": "#00B7EB"
+    }
+  ]
+}
+```
+
+### See a user's activity
+
+GET /user/{username}/activity?post&comment&postReaction&commentReaction
+
+All query parameters are optional. If none are specified, no results will be returned.
+
+Response:
+```
+{
+  "post": [
+    {
+      "postId": 45,
+      "username": "john",
+      "title": "The best cinnamon buns",
+      "text": "Visited the bakery today. Delicious! Their coffee is good too.",
+      "locationName": "Grounds for Coffee",
+      "city": "Vancouver",
+      "state": "BC",
+      "country": "CA",
+      "timestamp": "2020-01-22 12:20:05",
+      "numLikes": 0,
+      "numDislikes": 0,
+      "numComments": 0
+    }
+  ],
+  "comment": [
+    {
+      "commentId": 1, 
+      "postId": 32,
+      "username": "john",
+      "text": "Safe travels!",
+      "timestamp": "2020-02-30 14:48:03",
+      "numLikes": 1,
+      "numDislikes": 0
+    }
+  ],
+  "postReaction:" [
+    {
+      "postId": 65,
+      "username": "john",
+      "value": -1
+    },
+    {
+      "postId": 13,
+      "username": "john",
+      "value": 1
+    },
+  ],
+  "commentReaction:" [
+    {
+      "postId": 12,
+      "username": "john",
+      "value": 2
+    },
+  ]
+}
+```
+
 ### See a user's inbox
 
 GET /user/{username}/inbox?comment&postReaction
@@ -150,33 +234,6 @@ Response:
       "postId": 51,
       "username": "greg",
       "value": 1
-    }
-  ]
-  ]
-}
-```
-
-### See a user's inventory
-
-GET /user/{username}/inventory
-
-Response:
-```
-{
-  "superpowers": [
-    {
-      "itemId": "111",
-      "itemName": "Double Like",
-      "description": "Gives 2 coins every time you like a post or comment.",
-      "expiryDate": "2020-04-10"
-    }
-  ],
-  "accessories": [
-    {
-      "itemId": "333",
-      "itemName": "Badge",
-      "description": "A shiny badge to put on your profile.",
-      "color": "#00B7EB"
     }
   ]
 }
