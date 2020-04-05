@@ -4,6 +4,7 @@ use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -22,6 +23,18 @@ $app = AppFactory::create();
 $app->setBasePath(getenv('BASE_PATH'));
 $app->addBodyParsingMiddleware();
 $app->addErrorMiddleware(true, true, true);
+
+// Enable CORS
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+  return $response;
+});
+$app->add(function ($request, $handler) {
+  $response = $handler->handle($request);
+  return $response
+    ->withHeader('Access-Control-Allow-Origin', '*')
+    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
 
 // Root
 $app->get('/', function (Request $request, Response $response) {
@@ -66,6 +79,11 @@ $app->group('/post', function (RouteCollectorProxy $group) {
 $app->group('/market', function (RouteCollectorProxy $group) {
   $group->get('', \MarketController::class . ':getSortedItems');
   $group->post('/purchase', \MarketController::class . ':purchaseItem');
+});
+
+// Catching all unknown methods. This route must be defined last.
+$app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($request, $response) {
+  throw new HttpNotFoundException($request);
 });
 
 $app->run();
