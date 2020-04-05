@@ -79,7 +79,7 @@ class PostController extends Controller {
 
 
   public function searchPosts($request, $response, $args) {
-    $validParams = ['username', 'title', 'locationName', 'city', 'state', 'country'];
+    $validParams = ['username', 'title', 'keyword', 'locationName', 'city', 'state', 'country'];
     $validFields = [];
     $requiredFields = [];
     $params = $request->getQueryParams();
@@ -89,7 +89,7 @@ class PostController extends Controller {
       $this->validator->validate($params, $body, $validParams, $validFields, $requiredFields, true);
 
       $this->conn->beginTransaction();
-      // $result = $this->postStatementGroup->searchPosts($params);
+      $result = $this->postStatementGroup->searchPosts($params);
       $this->conn->endTransaction();
 
       return responseOk($response, $result);

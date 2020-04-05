@@ -249,9 +249,9 @@ Response:
 }
 ```
 
-### Search for posts by title and/or location
+### Search for posts
 
-GET /post/search?title={title}&locationName={locationName}&city={city}&state={state}&country={country}
+GET /post/search?username={username}&title={title}&locationName={locationName}&city={city}&state={state}&country={country}
 
 All query parameters are optional. If none are specified, all posts will be returned.
 

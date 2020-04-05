@@ -86,4 +86,34 @@ class PostStatementGroup extends StatementGroup {
     return $ret;
   }
 
+
+  public function searchPosts($params) {
+    $ret = [];
+    $numParams = count($params);
+    $values = [];
+
+    // Build the query
+    $query = 'SELECT *
+      FROM Post LEFT JOIN Country USING(state)
+      JOIN NumLikesOnPost USING(postId)
+      JOIN NumDislikesOnPost USING(postId)
+      JOIN NumCommentsOnPost USING(postId)
+      WHERE TRUE';
+    foreach ($params as $key => $value) {
+      $values[] = '%' . $value . '%';
+      $query .= ' AND ' . $key . ' LIKE ?';
+    }
+    $query .= ' ORDER BY timestamp DESC';
+
+    $stmt = $this->conn->prepare($query);
+    if ($numParams > 0) $stmt->bind_param(str_repeat('s', $numParams), ...$values);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $ret[] = $row;
+    }
+
+    return $ret;
+  }
+
 }
