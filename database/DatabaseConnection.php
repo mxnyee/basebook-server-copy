@@ -7,10 +7,10 @@ class DatabaseConnection {
     $dbhost = getenv('DB_HOST');
     $dbuser = getenv('DB_USER');
     $dbpass = getenv('DB_PASS');
-    $db_name = getenv('DB_NAME');
+    $dbname = getenv('DB_NAME');
     
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    $this->conn = new mysqli($dbhost, $dbuser, $dbpass, $db_name);
+    $this->conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
     if ($this->conn->connect_error) {
         exit('Failed to connect to database.');
     }

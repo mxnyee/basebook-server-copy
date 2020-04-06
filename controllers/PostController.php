@@ -7,15 +7,18 @@ class PostController extends Controller {
   private $locationStatementGroup;
   private $userStatementGroup;
   private $marketStatementGroup;
+  private $commentStatementGroup;
 
   public function __construct(DatabaseConnection $conn, Validator $validator,
       PostStatementGroup $postStatementGroup, LocationStatementGroup $locationStatementGroup, 
-      UserStatementGroup $userStatementGroup, MarketStatementGroup $marketStatementGroup) {
+      UserStatementGroup $userStatementGroup, MarketStatementGroup $marketStatementGroup,
+      CommentStatementGroup $commentStatementGroup) {
     parent::__construct($conn, $validator);
     $this->postStatementGroup = $postStatementGroup;
     $this->locationStatementGroup = $locationStatementGroup;
     $this->userStatementGroup = $userStatementGroup;
     $this->marketStatementGroup = $marketStatementGroup;
+    $this->commentStatementGroup = $commentStatementGroup;
   }
 
 
@@ -65,6 +68,11 @@ class PostController extends Controller {
 
       $this->conn->beginTransaction();
       $result = $this->postStatementGroup->getFilteredPosts($params);
+
+      foreach ($result as &$post) {
+        $post['comments'] = $this->commentStatementGroup->getFilteredComments($post['postId'], ['username' => '', 'numLikes' => '', 'numDislikes' => '']);
+      }
+      
       $this->conn->endTransaction();
 
       return responseOk($response, $result);
