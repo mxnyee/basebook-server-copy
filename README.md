@@ -21,8 +21,8 @@
 
 10. `git clone https://github.com/mxnyee/basebook-server`
 11. Run `composer install`
-12. Copy `.env.example` into a new file named `.env` and edit the variables to match your setup. Set `BASE_PATH` to the root directory of your basebook-server project (relative to the document root of your webserver, which is usually www/ or htdocs/).
-13. Use the SQL scripts unders the scripts/ folder to initialize your database
+12. Use the SQL scripts unders the scripts/ folder to initialize your database
+13. Copy `.env.example` into a new file named `.env` and edit the variables to match your setup. Set `BASE_PATH` to the root directory of your basebook-server project (relative to the document root of your webserver, which is usually www/ or htdocs/).
 14. Visit `http://localhost/BASE_PATH` to see "Hello, World!"
 
 ## API
