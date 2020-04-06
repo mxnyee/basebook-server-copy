@@ -3,6 +3,7 @@
 foreach (glob(__DIR__ . '/*.php') as $filename) { require_once $filename; }
 
 function handleThrown($response, $error) {
+  error_log($error->getMessage());
   switch (get_class($error)) {
     case 'BadRequestException': return handleBadRequest($response, $error->getMessage());
     case 'ForbiddenException': return handleForbidden($response, $error->getMessage());

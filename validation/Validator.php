@@ -17,9 +17,18 @@ class Validator {
   
 
   public function validate($params, &$body, $validParams, $validFields, $requiredFields, $useDependencies) {
+    // $this->clean($body);
     $this->validateParams($params, $validParams);
     $this->validateBody($body, $validFields, $requiredFields, $useDependencies);
     if ($useDependencies) $this->fillMissingData($body, $validFields);
+  }
+
+
+  private function clean(&$data) {
+    if (is_null($data)) return;
+    foreach ($data as $key => $val) {
+      if (!isset($val) || is_null($val) || $val === '') unset($data[$key]);
+    }
   }
 
 
