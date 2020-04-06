@@ -460,7 +460,7 @@ Response:
 }
 ```
 
-## Delete a post
+### Delete a post
 
 `DELETE /post/{postId}`
 
@@ -582,7 +582,7 @@ Response:
 }
 ```
 
-## Delete a comment
+### Delete a comment
 
 `DELETE /post/{postId}/comment/{commentId}`
 
@@ -622,7 +622,7 @@ Response:
 
 ### See all items available in the market and sort them
 
-`GET /market?price&itemId`
+`GET /market?price&itemName`
 
 All query parameters are optional. Order matters. If none are specified, items will by sorted by `itemId`.
 

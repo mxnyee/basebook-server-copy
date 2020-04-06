@@ -23,7 +23,6 @@ class MarketStatementGroup extends StatementGroup {
       $query .= ' ' . $param . ' ASC,';
     }
     $query .= ' itemId ASC';
-    echo $query;
     
     $stmt = $this->conn->prepare($query);
     $stmt->execute();
